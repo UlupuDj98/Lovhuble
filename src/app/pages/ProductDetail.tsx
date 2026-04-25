@@ -18,6 +18,8 @@ export const ProductDetail = () => {
 
   const { slug, categoria, id } = router.query as Record<string, string>;
 
+  if (!router.isReady) return null;
+
   const product = slug && categoria
     ? products.find(p => p.slug === slug && p.categorySlug === categoria)
     : products.find(p => p.id === id);
@@ -27,7 +29,7 @@ export const ProductDetail = () => {
       <div className="pt-16 lg:pt-20 min-h-screen flex items-center justify-center bg-[#f5f5f7]">
         <div className="text-center">
           <h2 className="text-[24px] font-semibold text-[#1d1d1f] mb-[16px]">Prodotto non trovato</h2>
-          <Link href="/prodotti" className="text-[#6e6e73] hover:text-[#1d1d1f] transition-colors text-[15px]">
+          <Link href="/" className="text-[#6e6e73] hover:text-[#1d1d1f] transition-colors text-[15px]">
             Torna ai prodotti
           </Link>
         </div>
@@ -51,15 +53,15 @@ export const ProductDetail = () => {
 
   const breadcrumbItems = [
     { label: 'Home', href: '/' },
-    { label: 'Prodotti', href: '/prodotti' },
-    { label: product.category, href: '/prodotti' },
+    { label: product.category.trim(), href: `/prodotti/${product.categorySlug}` },
+    { label: product.subCategory, href: `/prodotti/${product.categorySlug}/${product.subCategorySlug}` },
     { label: product.name },
   ];
 
   return (
     <div className="pt-[68px] lg:pt-[130px] min-h-screen bg-[#f5f5f7]">
       {/* Breadcrumb */}
-      <div className="max-w-[980px] mx-auto px-6 lg:px-8 py-[28px]">
+      <div className="max-w-[980px] mx-auto px-6 lg:px-8 pb-[28px] pt-[46px] lg:pt-[36px]">
         <Breadcrumb items={breadcrumbItems} />
       </div>
 

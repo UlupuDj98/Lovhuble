@@ -61,14 +61,14 @@ export const ReviewsSection = () => {
   const doubled = [...reviews, ...reviews];
 
   return (
-    <section className="py-[88px] lg:py-[110px] bg-[#f5f5f7]">
+    <section className="py-[78px] lg:py-[110px] bg-[#f5f5f7]">
       <div className="max-w-[1120px] mx-auto px-6 lg:px-8 mb-[48px] lg:mb-[64px]">
         <motion.h2
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.7 }}
-          className="text-[40px] lg:text-[56px] tracking-[-0.015em] leading-[1.1]"
+          className="text-[32px] lg:text-[56px] tracking-[-0.015em] leading-[1.1]"
         >
           <span className="text-[#1d1d1f] font-semibold">Cosa Dicono i Nostri Clienti. </span>
           <span className="text-[#86868b] font-inter">La loro soddisfazione è la nostra priorità</span>

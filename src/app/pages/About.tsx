@@ -1,6 +1,6 @@
+import Link from 'next/link';
 import { motion } from 'motion/react';
 import { Heart, Shield, Sparkles, Target, Users, Award } from 'lucide-react';
-import Link from 'next/link';
 
 export const About = () => {
   const values = [
@@ -45,22 +45,59 @@ export const About = () => {
 
   return (
     <div className="pt-[68px] lg:pt-[80px]">
-      {/* Hero Section */}
-      <section className="py-[110px] lg:py-[140px] bg-[#fbfbfd]">
-        <div className="max-w-[980px] mx-auto px-6 lg:px-8">
+      {/* Hero — stesso stile della Home */}
+      <section className="relative h-[555px] lg:h-[700px] flex items-center justify-center overflow-hidden bg-[#fbfbfd]">
+
+
+        {/* Back button */}
+        <motion.div
+          initial={{ opacity: 0, x: -8 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4 }}
+          className="absolute top-[40px] lg:top-[60px] left-6 lg:left-8 z-10"
+        >
+          <Link href="/">
+            <span className="inline-flex items-center gap-[6px] bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors text-white text-[13px] lg:text-[18px] font-medium px-[12px] lg:px-[16px] py-[6px] lg:py-[8px] rounded-full">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Home
+            </span>
+          </Link>
+        </motion.div>
+        
+        <motion.div
+          initial={{ scale: 1.05, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.4, ease: [0.25, 0.1, 0.25, 1] }}
+          className="absolute inset-0 z-0"
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-[#fbfbfd] z-10" />
+          <img
+            src="hero.png"
+            alt="Chi siamo"
+            className="w-full h-full object-cover"
+          />
+        </motion.div>
+
+        <div className="relative z-20 text-center px-6 max-w-[980px] mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
           >
-            <h1 className="text-[48px] lg:text-[80px] font-semibold tracking-[-0.015em] text-[#1d1d1f] mb-[24px] leading-[1.05]">
+            <h1 className="text-[48px] lg:text-[80px] font-semibold tracking-[-0.015em] text-white mb-[18px] leading-[1.05]">
               Chi Siamo
             </h1>
-            <p className="text-[21px] lg:text-[28px] text-[#6e6e73] font-normal leading-[1.4] tracking-[-0.003em] max-w-[740px] mx-auto">
-              Lovehuble è la destinazione premium per chi cerca prodotti di benessere intimo di alta qualità, con discrezione e professionalità.
-            </p>
           </motion.div>
+          <motion.p
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.6, duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
+            className="text-[21px] lg:text-[28px] text-white/90 font-normal leading-[1.3] tracking-[-0.003em] max-w-[740px] mx-auto"
+          >
+            Lovehuble è la destinazione premium per chi cerca prodotti di benessere intimo di alta qualità, con discrezione e professionalità.
+          </motion.p>
         </div>
       </section>
 
@@ -90,7 +127,7 @@ export const About = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
-              className="bg-[#fbfbfd] rounded-[24px] p-[48px]"
+              className="bg-white rounded-[24px] p-[48px] shadow-[0_10px_30px_rgba(0,0,0,0.25)]"
             >
               <h3 className="text-[32px] font-semibold tracking-[-0.015em] text-[#1d1d1f] mb-[24px] leading-[1.1]">
                 Perché Lovehuble?
@@ -152,7 +189,7 @@ export const About = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ delay: index * 0.1, duration: 0.6 }}
-                className="bg-white rounded-[20px] p-[32px]"
+                className="bg-white rounded-[20px] p-[32px] shadow-[0_10px_30px_rgba(0,0,0,0.25)]"
               >
                 <div className="w-[48px] h-[48px] bg-[#1d1d1f] rounded-[12px] flex items-center justify-center mb-[20px]">
                   <value.icon className="w-[24px] h-[24px] text-white" strokeWidth={1.5} />
@@ -196,35 +233,6 @@ export const About = () => {
                 </div>
               </motion.div>
             ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-[110px] lg:py-[140px] bg-[#1d1d1f]">
-        <div className="max-w-[820px] mx-auto px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="text-[40px] lg:text-[56px] font-semibold tracking-[-0.015em] text-white mb-[24px] leading-[1.07]">
-              Inizia il Tuo Viaggio
-            </h2>
-            <p className="text-[19px] lg:text-[21px] text-white/70 font-normal leading-[1.4] tracking-[-0.003em] mb-[40px]">
-              Esplora la nostra selezione curata di prodotti premium per il tuo benessere
-            </p>
-            <Link href="/prodotti">
-              <motion.button
-                whileHover={{ scale: 1.02, boxShadow: '0 8px 30px rgba(255, 255, 255, 0.2)' }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ duration: 0.2 }}
-                className="bg-white text-[#1d1d1f] px-[28px] py-[14px] rounded-full text-[17px] font-normal"
-              >
-                Scopri il Catalogo
-              </motion.button>
-            </Link>
           </motion.div>
         </div>
       </section>

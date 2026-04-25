@@ -7,17 +7,19 @@ export const Footer = () => {
     informazioni: [
       { name: 'Chi Siamo', href: '/about' },
       { name: 'Contatti', href: '/contact' },
-      { name: 'FAQ', href: '/faq' },
+      { name: 'Guida', href: '/guide' },
     ],
     servizi: [
-      { name: 'Spedizioni', href: '/shipping' },
-      { name: 'Resi e Rimborsi', href: '/returns' },
-      { name: 'Metodi di Pagamento', href: '/payment' },
+      { name: 'Sex Toys',            href: '/prodotti/sex-toys' },
+      { name: 'Abbigliamento e Lingerie', href: '/prodotti/abbigliamento' },
+      { name: 'BDSM',                href: '/prodotti/bdsm' },
+      { name: 'Salute e Benessere',  href: '/prodotti/salute-benessere' },
+      { name: 'Giochi e Gadget',     href: '/prodotti/giochi' },
     ],
     legale: [
-      { name: 'Privacy Policy', href: '/privacy' },
-      { name: 'Termini e Condizioni', href: '/terms' },
-      { name: 'Cookie Policy', href: '/cookies' },
+      { name: 'Privacy Policy', href: '/privacy-policy' },
+      { name: 'Termini e Condizioni', href: '/termini-e-condizioni' },
+      { name: 'Cookie Policy', href: '/cookie-policy' },
     ],
   };
 
@@ -38,9 +40,6 @@ export const Footer = () => {
                 style={{ filter: 'invert(1)' }}
               />
             </div>
-            <p className="text-[15px] text-white/70 leading-[1.6] mb-[24px] font-normal">
-              Il tuo negozio di fiducia per prodotti intimi premium e benessere sessuale.
-            </p>
             <div className="space-y-[12px]">
               <a
                 href="mailto:info@sense.com"
@@ -85,7 +84,7 @@ export const Footer = () => {
           {/* Servizi */}
           <div>
             <h4 className="text-[17px] font-semibold mb-[20px] tracking-[-0.003em]">
-              Servizi
+              Navigazione
             </h4>
             <ul className="space-y-[12px]">
               {footerLinks.servizi.map((link) => (
@@ -123,35 +122,32 @@ export const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="border-t border-white/10 pt-[32px]">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-[16px] md:space-y-0">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-[16px]">
             <p className="text-[13px] text-white/50 font-normal">
               © 2024 Lovehuble. Tutti i diritti riservati.
             </p>
-            <div className="flex items-center space-x-[24px]">
-              <Link
-                href="/privacy"
-                className="text-[13px] text-white/50 hover:text-white/70 transition-colors duration-200"
-              >
-                Privacy
-              </Link>
-              <Link
-                href="/terms"
-                className="text-[13px] text-white/50 hover:text-white/70 transition-colors duration-200"
-              >
-                Termini
-              </Link>
-              <Link
-                href="/shipping"
-                className="text-[13px] text-white/50 hover:text-white/70 transition-colors duration-200"
-              >
-                Spedizioni
-              </Link>
-              <Link
-                href="/returns"
-                className="text-[13px] text-white/50 hover:text-white/70 transition-colors duration-200"
-              >
-                Resi
-              </Link>
+            <div className="flex flex-row flex-wrap justify-center md:justify-end gap-[8px]">
+              {[
+                { src: '/payments/visa.svg', alt: 'Visa', w: 54 },
+                { src: '/payments/mastercard.svg', alt: 'Mastercard', w: 27 },
+                { src: '/payments/paypal.svg', alt: 'PayPal', w: 15 },
+                { src: '/payments/applepay.svg', alt: 'Apple Pay', w: 45 },
+                { src: '/payments/googlepay.svg', alt: 'Google Pay', w: 45 },
+                { src: '/payments/klarna.svg', alt: 'Klarna', w: 48 },
+              ].map((p) => (
+                <div
+                  key={p.alt}
+                  className="flex justify-center items-center bg-white/10 hover:bg-white/20 rounded-md px-[8px] py-[6px] transition-colors duration-200"
+                >
+                  <Image
+                    src={p.src}
+                    alt={p.alt}
+                    width={p.w}
+                    height={18}
+                    className="object-contain h-[14px] w-auto opacity-80 hover:opacity-100 transition-opacity"
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </div>

@@ -98,7 +98,7 @@ export const CartDrawer = () => {
                   <p className="text-[15px] text-[#6e6e73] mb-[24px] font-normal">
                     Scopri i nostri prodotti premium
                   </p>
-                  <Link href="/prodotti" onClick={closeCart}>
+                  <Link href="/" onClick={closeCart}>
                     <motion.button
                       whileHover={{ scale: 1.01, boxShadow: '0 8px 30px rgba(29, 29, 31, 0.15)' }}
                       whileTap={{ scale: 0.99 }}
@@ -214,7 +214,7 @@ export const CartDrawer = () => {
                   </motion.button>
 
                   <Link
-                    href="/prodotti"
+                    href="/"
                     onClick={closeCart}
                     className="block text-center text-[#6e6e73] hover:text-[#1d1d1f] transition-colors text-[13px] font-normal"
                   >

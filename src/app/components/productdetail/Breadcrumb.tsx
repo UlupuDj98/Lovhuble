@@ -12,7 +12,7 @@ interface BreadcrumbProps {
 
 export const Breadcrumb = ({ items }: BreadcrumbProps) => (
   <nav aria-label="breadcrumb">
-    <ol className="flex items-center flex-wrap gap-[6px] text-[13px] text-[#6e6e73]">
+    <ol className="flex items-center flex-wrap gap-[6px] text-[14px] lg:text-[15px] text-[#6e6e73]">
       {items.map((item, i) => (
         <li key={i} className="flex items-center gap-[6px]">
           {i > 0 && <ChevronRight className="w-[12px] h-[12px] flex-shrink-0 text-[#acacac]" strokeWidth={2} />}

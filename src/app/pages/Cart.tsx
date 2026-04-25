@@ -24,7 +24,7 @@ export const Cart = () => {
             <p className="text-[17px] text-[#6e6e73] mb-[32px] font-normal">
               Scopri la nostra collezione curata di prodotti premium
             </p>
-            <Link href="/prodotti">
+            <Link href="/">
               <motion.button
                 whileHover={{ scale: 1.01, boxShadow: '0 8px 30px rgba(29, 29, 31, 0.15)' }}
                 whileTap={{ scale: 0.99 }}
@@ -153,7 +153,7 @@ export const Cart = () => {
               </motion.button>
 
               <Link
-                href="/prodotti"
+                href="/"
                 className="block text-center text-[#6e6e73] hover:text-[#1d1d1f] transition-colors text-[14px] font-normal"
               >
                 Continua gli Acquisti

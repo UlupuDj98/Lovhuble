@@ -43,7 +43,7 @@ export const Hero = () => (
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.8, duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
       >
-        <Link href="/prodotti">
+        <Link href="/">
           <motion.button
             whileHover={{ scale: 1.01, boxShadow: '0 8px 30px rgba(255, 255, 255, 0.15)' }}
             whileTap={{ scale: 0.99 }}

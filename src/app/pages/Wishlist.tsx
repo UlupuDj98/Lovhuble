@@ -30,7 +30,7 @@ export const Wishlist = () => {
           <p className="text-[17px] text-[#6e6e73] mb-[32px] font-normal">
             Salva i prodotti che ami per trovarli facilmente
           </p>
-          <Link href="/prodotti">
+          <Link href="/">
             <motion.button
               whileHover={{ scale: 1.01, boxShadow: '0 8px 30px rgba(29, 29, 31, 0.15)' }}
               whileTap={{ scale: 0.99 }}
@@ -99,7 +99,7 @@ export const Wishlist = () => {
           className="mt-[48px] text-center"
         >
           <Link
-            href="/prodotti"
+            href="/"
             className="text-[14px] text-[#6e6e73] hover:text-[#1d1d1f] transition-colors font-normal"
           >
             Continua a Sfogliare

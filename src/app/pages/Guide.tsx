@@ -1,6 +1,6 @@
+import Link from 'next/link';
 import { motion } from 'motion/react';
 import { Heart, Shield, Package, HelpCircle, BookOpen, Sparkles } from 'lucide-react';
-import { ProductFinder } from '../components/ProductFinder';
 
 export const Guide = () => {
   const sections = [
@@ -36,43 +36,50 @@ export const Guide = () => {
     },
   ];
 
-  const faqs = [
-    {
-      question: 'Come funziona la garanzia di rimborso?',
-      answer: 'Offriamo una garanzia soddisfatti o rimborsati di 30 giorni su tutti i prodotti. Se non sei completamente soddisfatto, puoi restituire l\'articolo per un rimborso completo.',
-    },
-    {
-      question: 'I prodotti sono sicuri da usare?',
-      answer: 'Tutti i nostri prodotti sono realizzati con materiali body-safe certificati (silicone medicale, ABS, acciaio inossidabile). Sono testati dermatologicamente e conformi alle normative europee.',
-    },
-    {
-      question: 'Come posso tracciare il mio ordine?',
-      answer: 'Riceverai un\'email con il numero di tracciamento non appena il tuo ordine viene spedito. Potrai seguire la spedizione in tempo reale.',
-    },
-    {
-      question: 'Quali metodi di pagamento accettate?',
-      answer: 'Accettiamo tutte le principali carte di credito e debito (Visa, Mastercard, American Express), PayPal e bonifico bancario.',
-    },
-  ];
-
   return (
     <div className="pt-[68px] lg:pt-[80px]">
-      {/* Hero Section */}
-      <section className="py-[88px] lg:py-[110px] bg-[#fbfbfd]">
-        <div className="max-w-[980px] mx-auto px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
+      {/* Hero */}
+      <section className="relative h-[400px] lg:h-[500px] flex items-end overflow-hidden">
+        <div className="absolute inset-0">
+          <img src="/sfondi/lubrificanti.avif" alt="Guida Lovehuble" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70" />
+        </div>
+
+        {/* Back button */}
+        <motion.div
+          initial={{ opacity: 0, x: -8 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4 }}
+          className="absolute top-[35px] lg:top-[50px] left-6 lg:left-8 z-10"
+        >
+          <Link href="/">
+            <span className="inline-flex items-center gap-[6px] bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors text-white text-[13px] lg:text-[15px] font-medium px-[12px] py-[6px] rounded-full">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Home
+            </span>
+          </Link>
+        </motion.div>
+
+        {/* Title */}
+        <div className="relative z-10 w-full max-w-[980px] mx-auto px-6 lg:px-8 pb-[48px] lg:pb-[64px]">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
+            transition={{ duration: 0.6 }}
+            className="text-[40px] lg:text-[64px] font-semibold tracking-[-0.015em] text-white mb-[10px] leading-[1.07]"
           >
-            <h1 className="text-[48px] lg:text-[64px] font-semibold tracking-[-0.015em] text-[#1d1d1f] mb-[18px] leading-[1.05]">
-              Guida Lovehuble
-            </h1>
-            <p className="text-[21px] lg:text-[24px] text-[#6e6e73] font-normal leading-[1.4] tracking-[-0.003em] max-w-[640px] mx-auto">
-              Tutto quello che devi sapere per vivere un'esperienza straordinaria
-            </p>
-          </motion.div>
+            Guida Lovehuble
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.6 }}
+            className="text-[17px] lg:text-[21px] text-white/85 font-normal leading-[1.4] tracking-[-0.003em] max-w-[560px]"
+          >
+            Tutto quello che devi sapere per vivere un'esperienza straordinaria
+          </motion.p>
         </div>
       </section>
 
@@ -87,7 +94,7 @@ export const Guide = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ delay: index * 0.1, duration: 0.6 }}
-                className="bg-[#fbfbfd] rounded-[20px] p-[32px]"
+                className="bg-white rounded-[20px] p-[32px] shadow-[0_10px_30px_rgba(0,0,0,0.25)]"
               >
                 <div className="w-[48px] h-[48px] bg-[#1d1d1f] rounded-[12px] flex items-center justify-center mb-[20px]">
                   <section.icon className="w-[24px] h-[24px] text-white" strokeWidth={1.5} />
@@ -101,96 +108,6 @@ export const Guide = () => {
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Product Finder Section */}
-      <section className="py-[88px] lg:py-[110px] bg-[#fbfbfd]">
-        <div className="max-w-[980px] mx-auto px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-            className="mb-[48px] text-center"
-          >
-            <h2 className="text-[40px] lg:text-[48px] font-semibold tracking-[-0.015em] text-[#1d1d1f] mb-[18px] leading-[1.07]">
-              Non Sai da Dove Iniziare?
-            </h2>
-            <p className="text-[19px] lg:text-[21px] text-[#6e6e73] font-normal leading-[1.4] tracking-[-0.003em] max-w-[640px] mx-auto">
-              Lascia che ti aiutiamo a trovare il prodotto perfetto per le tue esigenze
-            </p>
-          </motion.div>
-          
-          <ProductFinder />
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-[88px] lg:py-[110px] bg-[#fbfbfd]">
-        <div className="max-w-[820px] mx-auto px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-[64px]"
-          >
-            <h2 className="text-[40px] lg:text-[48px] font-semibold tracking-[-0.015em] text-[#1d1d1f] mb-[18px] leading-[1.07]">
-              Domande Frequenti
-            </h2>
-            <p className="text-[19px] lg:text-[21px] text-[#6e6e73] font-normal leading-[1.4] tracking-[-0.003em]">
-              Le risposte alle domande più comuni
-            </p>
-          </motion.div>
-
-          <div className="space-y-[24px]">
-            {faqs.map((faq, index) => (
-              <motion.div
-                key={faq.question}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ delay: index * 0.1, duration: 0.6 }}
-                className="bg-white rounded-[20px] p-[32px]"
-              >
-                <h3 className="text-[21px] font-semibold text-[#1d1d1f] mb-[12px] tracking-[-0.007em]">
-                  {faq.question}
-                </h3>
-                <p className="text-[17px] text-[#6e6e73] leading-[1.47] font-normal">
-                  {faq.answer}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-[88px] lg:py-[110px] bg-[#f5f5f7]">
-        <div className="max-w-[820px] mx-auto px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="text-[40px] lg:text-[48px] font-semibold tracking-[-0.015em] text-[#1d1d1f] mb-[18px] leading-[1.07]">
-              Hai altre domande?
-            </h2>
-            <p className="text-[19px] lg:text-[21px] text-[#6e6e73] font-normal leading-[1.4] tracking-[-0.003em] mb-[32px]">
-              Il nostro team è qui per aiutarti
-            </p>
-            <motion.a
-              href="mailto:supporto@lovehuble.com"
-              whileHover={{ scale: 1.02, boxShadow: '0 8px 30px rgba(0, 0, 0, 0.12)' }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.2 }}
-              className="inline-block bg-[#1d1d1f] text-white px-[28px] py-[14px] rounded-full text-[17px] font-normal"
-            >
-              Contattaci
-            </motion.a>
-          </motion.div>
         </div>
       </section>
     </div>

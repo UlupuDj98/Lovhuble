@@ -45,7 +45,7 @@ export const Faq = () => {
   };
 
   return (
-    <section className="py-[88px] lg:py-[110px] bg-[#f5f5f7]">
+    <section className="py-[78px] lg:py-[110px] bg-[#f5f5f7]">
       <div className="max-w-[1120px] mx-auto px-6 lg:px-8">
 
         {/* Heading */}
@@ -54,7 +54,7 @@ export const Faq = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.7 }}
-          className="text-[40px] lg:text-[56px]  tracking-[-0.015em] leading-[1.1] mb-[56px] lg:mb-[72px]"
+          className="text-[32px] lg:text-[56px]  tracking-[-0.015em] leading-[1.1] mb-[56px] lg:mb-[72px]"
         >
           <span className="text-[#1d1d1f] font-semibold">FAQ. </span>
           <span className="text-[#86868b] font-inter">

@@ -25,7 +25,7 @@ export const Newsletter = () => {
             transition={{ duration: 0.5 }}
             className="text-center py-[32px]"
           >
-            <h3 className="text-[28px] lg:text-[36px] font-semibold tracking-[-0.015em] text-[#1d1d1f] mb-[12px]">
+            <h3 className="text-[24px] lg:text-[36px] font-semibold tracking-[-0.015em] text-[#1d1d1f] mb-[12px]">
               Grazie per l'iscrizione!
             </h3>
             <p className="text-[16px] text-[#6e6e73]">
@@ -42,10 +42,10 @@ export const Newsletter = () => {
               transition={{ duration: 0.7 }}
               className="lg:w-[38%] mb-[40px] lg:mb-0 flex-shrink-0"
             >
-              <h2 className="text-[36px] lg:text-[48px] font-semibold tracking-[-0.015em] leading-[1.1] text-[#1d1d1f] mb-[16px]">
+              <h2 className="text-[30px] lg:text-[48px] font-semibold tracking-[-0.015em] leading-[1.1] text-[#1d1d1f] mb-[16px]">
                 10€ di SCONTO<br className="hidden sm:block" /> per te!
               </h2>
-              <p className="text-[16px] lg:text-[17px] text-[#6e6e73] leading-[1.6] font-normal">
+              <p className="text-[14px] lg:text-[17px] text-[#6e6e73] leading-[1.6] font-normal">
                 Iscriviti alla nostra newsletter e godi di sconti, regali e consigli hot
               </p>
             </motion.div>
@@ -98,7 +98,7 @@ export const Newsletter = () => {
                     className="mt-[3px] w-[15px] h-[15px] flex-shrink-0 accent-[#1d1d1f] cursor-pointer"
                     required
                   />
-                  <span className="text-[13px] text-[#6e6e73] leading-[1.6]">
+                  <span className="text-[12px] lg:text-[13px] text-[#6e6e73] leading-[1.6]">
                     Dichiaro di aver preso visione dell&apos;
                     <Link href="/privacy" className="font-semibold underline text-[#1d1d1f]">
                       informativa
