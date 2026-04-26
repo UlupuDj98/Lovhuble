@@ -7,8 +7,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { products } from '../data/products';
+import { categories } from '../data/products';
 
-const TRENDING = ['Vibratori', 'Dildo', 'Per Coppie', 'Lubrificanti', 'Atmosfera'];
+const TRENDING = categories.map(c => c.name);
 
 interface SearchModalProps {
   isOpen: boolean;

@@ -113,11 +113,11 @@ export const Novita = () => {
           style={{
             paddingTop: '60px',
             paddingBottom: '60px',
-            paddingLeft: '24px',
-            paddingRight: '24px',
+            paddingLeft: '34px',
+            paddingRight: '34px',
             marginTop: '-60px',
             marginBottom: '-60px',
-            scrollPaddingLeft: '24px',
+            scrollPaddingLeft: '34px',
             cursor: 'grab',
           } as React.CSSProperties}
         >

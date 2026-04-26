@@ -38,7 +38,7 @@ export const ProdottiCorrelati = ({ currentProduct }: ProdottiCorrelatiProps) =>
           {related.map((product, i) => (
             <motion.div
               key={product.id}
-              className="aspect-[3/4]"
+              className="h-[380px] lg:h-[520px]"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}

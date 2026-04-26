@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Heart, ShoppingCart } from 'lucide-react';
 import { Product } from '../../data/products';
+import { ProductRating } from './ProductRating';
 
 interface ProductCardProps {
   product: Product;
@@ -23,7 +24,7 @@ export const ProductCard = ({ product, onWishlist, wishlisted, imageSrc }: Produ
           src={imageSrc ?? product.image}
           alt={product.name}
           fill
-          className="object-contain p-[28px] group-hover:scale-105 transition-transform duration-300"
+          className="object-contain p-[10px] lg:p-[20px] group-hover:scale-105 transition-transform duration-300"
         />
 
         <button
@@ -42,20 +43,19 @@ export const ProductCard = ({ product, onWishlist, wishlisted, imageSrc }: Produ
       </div>
 
       {/* Info */}
-      <div className="flex-shrink-0 px-[14px] pb-[14px] pt-[4px] lg:px-[20px] lg:pb-[20px]">
-        <p className="text-[12px] lg:text-[20px] font-semibold text-[#1d1d1f] mb-[10px] lg:mb-[20px] leading-[1.3] tracking-[-0.003em]">
+      <div className="flex-shrink-0 px-[14px] pb-[24px] pt-[4px] lg:px-[20px] lg:pb-[20px] text-center">
+        <div className="mb-[8px] lg:mb-[12px]">
+          <ProductRating />
+        </div>
+        <p className="text-[10px] lg:text-[14px]  text-[#1d1d1f] mb-[4px] lg:mb-[10px] leading-[1.3] tracking-[-0.003em]">
+          {product.subCategory}
+        </p>
+
+        <p className="text-[14px] lg:text-[20px] font-semibold text-[#1d1d1f] mb-[10px] lg:mb-[20px] leading-[1.3] tracking-[-0.003em]">
           {product.name}
         </p>
-        <div className="flex items-center justify-between gap-[6px] lg:gap-[8px]">
-          <span className="text-[15px] lg:text-[22px] font-semibold text-[#1d1d1f]">€{product.price}</span>
-          <button
-            onClick={e => e.preventDefault()}
-            className="bg-[#d4a5a5] hover:bg-[#c89090] text-white text-[11px] lg:text-[18px]  font-medium px-[12px] py-[6px] lg:px-[18px] lg:py-[8px] rounded-full transition-colors duration-200 whitespace-nowrap"
-          >
-            <span className='flex gap-2 items-center'>Aggiungi  <ShoppingCart className="w-[16px] h-[16px] lg:w-[22px] lg:h-[22px]" />
-          </span>
-          
-          </button>
+        <div className="gap-[6px] lg:gap-[8px]">
+          <span className="text-[16px] lg:text-[22px] font-semibold text-[#1d1d1f] text-center">€{product.price}</span>
         </div>
       </div>
     </div>

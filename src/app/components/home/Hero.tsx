@@ -48,7 +48,7 @@ export const Hero = () => (
             whileHover={{ scale: 1.01, boxShadow: '0 8px 30px rgba(255, 255, 255, 0.15)' }}
             whileTap={{ scale: 0.99 }}
             transition={{ duration: 0.2 }}
-            className="bg-[#d4a5a5] text-black px-[22px] py-[12px] rounded-full text-[17px] font-normal shadow-sm"
+            className="bg-[#d4a5a5] text-black px-[22px] py-[12px] font-semibold rounded-full text-[17px]  shadow-sm"
           >
             Acquista Ora
           </motion.button>

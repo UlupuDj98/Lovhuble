@@ -111,12 +111,12 @@ export const Esclusive = () => {
           className="scrollbar-hide flex gap-[16px] lg:gap-[20px] overflow-x-auto snap-x snap-mandatory select-none"
           style={{
             paddingTop: '60px',
-            paddingBottom: '60px',
-            paddingLeft: '24px',
-            paddingRight: '24px',
+            paddingBottom: '80px',
+            paddingLeft: '38px',
+            paddingRight: '34px',
             marginTop: '-60px',
             marginBottom: '-60px',
-            scrollPaddingLeft: '24px',
+            scrollPaddingLeft: '34px',
             cursor: 'grab',
           } as React.CSSProperties}
         >

@@ -10,6 +10,7 @@ import { SubCategoriesSection } from '../components/home/SubCategorySection';
 import { FilterBar, FilterState } from '../components/product/FilterBar';
 import { PriceRangeBar } from '../components/product/PriceRangeBar';
 import { PageHeader } from '../components/PageHeader';
+import { Breadcrumb } from '../components/productdetail/Breadcrumb';
 import { maxPriceForSubCategory } from '../utils/price';
 
 export const Subcategory = () => {
@@ -59,6 +60,14 @@ export const Subcategory = () => {
         backLabel={categoryLabel}
       />
 
+      <div className="relative z-10 max-w-[1120px] mx-auto px-6 lg:px-8 pt-[20px]">
+        <Breadcrumb items={[
+          { label: 'Home', href: '/' },
+          { label: categoryLabel, href: `/prodotti/${categorySlug}` },
+          { label: subCategoryLabel },
+        ]} />
+      </div>
+
       {/* Altre subcategorie della stessa categoria */}
       <SubCategoriesSection mainCategorySlug={categorySlug} />
 
@@ -86,11 +95,11 @@ export const Subcategory = () => {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-[16px] lg:gap-[20px]">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-[16px] lg:gap-[20px] -mx-2 lg:mx-0">
                 {filteredProducts.map((product, i) => (
                   <motion.div
                     key={product.id}
-                    className="aspect-[270/425] lg:aspect-[340/526]"
+                    className="h-[380px] lg:h-[520px]"
                     initial={{ opacity: 0, y: 24 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05, duration: 0.5 }}

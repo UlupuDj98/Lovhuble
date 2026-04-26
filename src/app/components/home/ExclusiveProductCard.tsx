@@ -18,7 +18,7 @@ export const ExclusiveProductCard = ({ product, imageSrc, gradientColor = '#ffff
     href={`/prodotti/${product.categorySlug}/${product.subCategorySlug}/${product.slug}`}
     className="block group"
   >
-    <div className="relative w-full h-[380px] lg:h-[640px] rounded-[28px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.18)] transition-shadow duration-300 group-hover:shadow-[0_12px_40px_rgba(0,0,0,0.28)]">
+    <div className="relative w-full h-[380px] lg:h-[640px] rounded-[28px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.18)] transition-shadow duration-300">
       {/* Image */}
       <Image
         src={imageSrc ?? product.image}
