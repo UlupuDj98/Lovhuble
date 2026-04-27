@@ -40,7 +40,7 @@ export function LiveChat() {
             exit={{ scale: 0 }}
             transition={{ delay: isOpen ? 0 : 0.2, type: 'spring' }}
             onClick={() => setIsOpen(!isOpen)}
-            className="fixed bottom-2 md:bottom-4 right-0 md:right-4 z-40 w-34 h-38 lg:h-46 lg:w-46 cursor-pointer"
+            className="fixed bottom-2 md:bottom-4 right-0 md:right-4 z-50 w-34 h-38 lg:h-46 lg:w-46 cursor-pointer"
           >
             <div className="pointer-events-none w-full h-full drop-shadow-[0_4px_12px_rgba(0,0,0,0.25)]">
               <Spline
@@ -56,11 +56,24 @@ export function LiveChat() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            onClick={() => setIsOpen(false)}
+            className="fixed inset-0 z-40"
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25 }}
-            className="fixed bottom-40 md:bottom-48 right-6 md:right-8 z-40 w-[calc(100vw-3rem)] md:w-[380px] rounded-[20px] bg-white shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-black/[0.06] overflow-hidden"
+            className="fixed bottom-40 md:bottom-48 right-6 md:right-8 z-50 w-[calc(100vw-3rem)] md:w-[380px] rounded-[20px] bg-white shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-black/[0.06] overflow-hidden"
           >
             <div className="absolute top-0 right-0 p-2">
               <button
@@ -79,8 +92,8 @@ export function LiveChat() {
                   <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-[#f5f5f7]" />
                 </div>
                 <div>
-                  <div className="text-[#1d1d1f] font-semibold text-[15px]">Supporto Clienti</div>
-                  <div className="text-[12px] text-[#86868b] font-normal">Online · Risponde in ~2min</div>
+                  <div className="text-[#1d1d1f] font-semibold text-[15px]">Assistente AI</div>
+                  <div className="text-[12px] text-[#86868b] font-normal">Online · Basato su gpt-4o-mini</div>  
                 </div>
               </div>
             </div>
