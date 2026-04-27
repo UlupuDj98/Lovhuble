@@ -40,7 +40,7 @@ export function LiveChat() {
             exit={{ scale: 0 }}
             transition={{ delay: isOpen ? 0 : 0.2, type: 'spring' }}
             onClick={() => setIsOpen(!isOpen)}
-            className="fixed bottom-2 md:bottom-4 right-0 md:right-4 z-40 w-30 h-38 lg:h-46 lg:w-46 cursor-pointer"
+            className="fixed bottom-2 md:bottom-4 right-0 md:right-4 z-40 w-34 h-38 lg:h-46 lg:w-46 cursor-pointer"
           >
             <div className="pointer-events-none w-full h-full drop-shadow-[0_4px_12px_rgba(0,0,0,0.25)]">
               <Spline
