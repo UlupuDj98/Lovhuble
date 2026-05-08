@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { MessageCircle, X, Send } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Spline from '@splinetool/react-spline';
+import { useCart } from '../context/CartContext';
 
 function makeSplineTransparent(spline: any) {
   const r = spline._renderer ?? spline.renderer;
@@ -17,6 +18,7 @@ export function LiveChat() {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [isVisible, setIsVisible] = useState(false);
+  const { isCartOpen } = useCart();
 
   useEffect(() => {
     if (window.innerWidth >= 768) {
@@ -33,7 +35,7 @@ export function LiveChat() {
   return (
     <>
       <AnimatePresence>
-        {isVisible && (
+        {isVisible && !isCartOpen && (
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}

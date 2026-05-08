@@ -1,11 +1,12 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'motion/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { subCategories } from '../../data/products';
+import { getSubCategories } from '../../lib/medusa-data';
+import type { SubCategory } from '../../data/products';
 
 const SCROLL_AMOUNT = 380;
 
@@ -31,9 +32,18 @@ const CategoryCard = ({ title, imageSrc, link }: { title: string; imageSrc: stri
 );
 
 export const SubCategoriesSection = ({ mainCategorySlug }: SubCategoriesSectionProps) => {
-  const items = subCategories
-    .filter(s => s.parentSlug === mainCategorySlug)
-    .map(s => ({ title: s.name, imageSrc: s.image, link: `/prodotti/${mainCategorySlug}/${s.slug}` }));
+  const [subCats, setSubCats] = useState<SubCategory[]>([]);
+
+  useEffect(() => {
+    if (!mainCategorySlug) return;
+    getSubCategories(mainCategorySlug).then(setSubCats);
+  }, [mainCategorySlug]);
+
+  const items = subCats.map(s => ({
+    title: s.name,
+    imageSrc: s.image,
+    link: `/prodotti/${mainCategorySlug}/${s.slug}`,
+  }));
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const dragState = useRef({ active: false, startX: 0, scrollLeft: 0, moved: false });

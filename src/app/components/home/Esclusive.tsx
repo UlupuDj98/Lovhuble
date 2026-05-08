@@ -1,13 +1,12 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { exclusiveProducts } from '../../data/products';
 import { useWishlist } from '../../context/WishlistContext';
 import { ExclusiveProductCard } from './ExclusiveProductCard';
-
-
+import { getExclusiveProducts } from '../../lib/medusa-data';
+import type { Product } from '../../data/products';
 
 const SCROLL_AMOUNT = 380;
 
@@ -15,6 +14,11 @@ export const Esclusive = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const dragState = useRef({ active: false, startX: 0, scrollLeft: 0, moved: false });
   const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    getExclusiveProducts().then(setProducts).catch(console.error);
+  }, []);
 
   const onScroll = () => {
     setCanScrollLeft((scrollRef.current?.scrollLeft ?? 0) > 0);
@@ -78,7 +82,7 @@ export const Esclusive = () => {
           style={{ background: 'linear-gradient(to left, #f5f5f7 0%, transparent 100%)' }}
         />
 
-        {/* Chevron left — lg only, on hover */}
+      {/* Chevron left — lg only, on hover */}
         <motion.button
           aria-label="Scorri a sinistra"
           onClick={() => scrollBy('left')}
@@ -88,7 +92,7 @@ export const Esclusive = () => {
         >
           <ChevronLeft className="w-[20px] h-[20px] text-[#1d1d1f]" strokeWidth={1.5} />
         </motion.button>
-
+        
         {/* Chevron right — lg only, on hover */}
         <motion.button
           aria-label="Scorri a destra"
@@ -120,7 +124,7 @@ export const Esclusive = () => {
             cursor: 'grab',
           } as React.CSSProperties}
         >
-          {exclusiveProducts.map((product, i) => (
+          {products.map((product, i) => (
             <motion.div
               key={product.id}
               className=" w-[330px] h-[360px] lg:w-[730px] lg:h-[600px] flex-shrink-0 snap-start"

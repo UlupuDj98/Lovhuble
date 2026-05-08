@@ -1,7 +1,9 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { products, Product } from '../../data/products';
+import type { Product } from '../../data/products';
+import { getProductsByCategory, getProductsByCollection } from '../../lib/medusa-data';
 import { ProductCard } from '../product/ProductCard';
 import { useWishlist } from '../../context/WishlistContext';
 
@@ -11,12 +13,26 @@ interface ProdottiCorrelatiProps {
 
 export const ProdottiCorrelati = ({ currentProduct }: ProdottiCorrelatiProps) => {
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const [related, setRelated] = useState<Product[]>([]);
 
-  // Prima stessa categoria, poi altre categorie, max 6
-  const related = [
-    ...products.filter(p => p.id !== currentProduct.id && p.category === currentProduct.category),
-    ...products.filter(p => p.id !== currentProduct.id && p.category !== currentProduct.category),
-  ].slice(0, 6);
+  useEffect(() => {
+    async function load() {
+      const sameCat = await getProductsByCategory(currentProduct.subCategorySlug);
+      const filtered = sameCat.filter(p => p.id !== currentProduct.id);
+
+      if (filtered.length >= 6) {
+        setRelated(filtered.slice(0, 6));
+        return;
+      }
+
+      const sameCollection = await getProductsByCollection(currentProduct.categorySlug);
+      const extra = sameCollection.filter(
+        p => p.id !== currentProduct.id && !filtered.some(f => f.id === p.id)
+      );
+      setRelated([...filtered, ...extra].slice(0, 6));
+    }
+    load().catch(console.error);
+  }, [currentProduct.id, currentProduct.subCategorySlug, currentProduct.categorySlug]);
 
   if (related.length === 0) return null;
 
@@ -33,7 +49,6 @@ export const ProdottiCorrelati = ({ currentProduct }: ProdottiCorrelatiProps) =>
           Potrebbero Piacerti Anche
         </motion.h2>
 
-        {/* Grid: 2 col su sm, 3 col su md, 4 col su lg — 2 righe */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-[14px] lg:gap-[18px]">
           {related.map((product, i) => (
             <motion.div

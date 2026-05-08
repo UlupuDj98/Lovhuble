@@ -1,28 +1,41 @@
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { products } from '../data/products';
 import { Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Breadcrumb } from '../components/productdetail/Breadcrumb';
 import { ImageGallery } from '../components/productdetail/ImageGallery';
 import { ProdottiCorrelati } from '../components/productdetail/ProdottiCorrelati';
+import { getProductByHandle } from '../lib/medusa-data';
+import type { Product } from '../data/products';
 
 export const ProductDetail = () => {
   const router = useRouter();
   const { addItem, openCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const [added, setAdded] = useState(false);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const { slug, categoria, id } = router.query as Record<string, string>;
+  const { slug } = router.query as Record<string, string>;
 
-  if (!router.isReady) return null;
+  useEffect(() => {
+    if (!slug || !router.isReady) return;
+    setLoading(true);
+    getProductByHandle(slug)
+      .then(setProduct)
+      .finally(() => setLoading(false));
+  }, [slug, router.isReady]);
 
-  const product = slug && categoria
-    ? products.find(p => p.slug === slug && p.categorySlug === categoria)
-    : products.find(p => p.id === id);
+  if (!router.isReady || loading) {
+    return (
+      <div className="pt-16 lg:pt-20 min-h-screen flex items-center justify-center bg-[#f5f5f7]">
+        <p className="text-[17px] text-[#6e6e73]">Caricamento...</p>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -39,10 +52,11 @@ export const ProductDetail = () => {
 
   const handleAddToCart = () => {
     addItem({
-      id: product.id,
+      variantId: product.variantId ?? '',
       name: product.name,
       price: product.price,
-      image: product.images[0],
+      image: product.images[0] ?? product.image,
+      productUrl: `/prodotti/${product.categorySlug}/${product.subCategorySlug}/${product.slug}`,
     });
     setAdded(true);
     setTimeout(() => {
@@ -60,16 +74,13 @@ export const ProductDetail = () => {
 
   return (
     <div className="pt-[68px] lg:pt-[130px] min-h-screen bg-[#f5f5f7]">
-      {/* Breadcrumb */}
       <div className="max-w-[980px] mx-auto px-6 lg:px-8 pb-[28px] pt-[46px] lg:pt-[36px]">
         <Breadcrumb items={breadcrumbItems} />
       </div>
 
-      {/* Product Detail */}
       <section className="pb-[72px]">
         <div className="max-w-[980px] mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-[48px] lg:gap-[80px]">
-            {/* Image Gallery */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
@@ -78,7 +89,6 @@ export const ProductDetail = () => {
               <ImageGallery images={product.images} alt={product.name} />
             </motion.div>
 
-            {/* Details */}
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
@@ -101,24 +111,24 @@ export const ProductDetail = () => {
                 {product.description}
               </p>
 
-              {/* Features */}
-              <div>
-                <h3 className="text-[18px] font-semibold text-[#1d1d1f] mb-[14px] tracking-[-0.003em]">
-                  Caratteristiche
-                </h3>
-                <ul className="space-y-[10px]">
-                  {product.features.map((feature) => (
-                    <li key={feature} className="flex items-start space-x-[12px]">
-                      <div className="w-[18px] h-[18px] rounded-full bg-white flex items-center justify-center flex-shrink-0 mt-[2px] shadow-[0_1px_4px_rgba(0,0,0,0.1)]">
-                        <Check className="w-[10px] h-[10px] text-[#1d1d1f]" strokeWidth={3} />
-                      </div>
-                      <span className="text-[14px] text-[#6e6e73] leading-[1.5] font-normal">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {product.features.length > 0 && (
+                <div>
+                  <h3 className="text-[18px] font-semibold text-[#1d1d1f] mb-[14px] tracking-[-0.003em]">
+                    Caratteristiche
+                  </h3>
+                  <ul className="space-y-[10px]">
+                    {product.features.map((feature) => (
+                      <li key={feature} className="flex items-start space-x-[12px]">
+                        <div className="w-[18px] h-[18px] rounded-full bg-white flex items-center justify-center flex-shrink-0 mt-[2px] shadow-[0_1px_4px_rgba(0,0,0,0.1)]">
+                          <Check className="w-[10px] h-[10px] text-[#1d1d1f]" strokeWidth={3} />
+                        </div>
+                        <span className="text-[14px] text-[#6e6e73] leading-[1.5] font-normal">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
-              {/* CTA buttons */}
               <div className="pt-[4px] space-y-[12px]">
                 <motion.button
                   onClick={handleAddToCart}
@@ -157,7 +167,6 @@ export const ProductDetail = () => {
         </div>
       </section>
 
-      {/* Prodotti Correlati */}
       <ProdottiCorrelati currentProduct={product} />
     </div>
   );

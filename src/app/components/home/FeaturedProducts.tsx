@@ -1,14 +1,12 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { products } from '../../data/products';
+import type { Product } from '../../data/products';
+import { getAllProducts } from '../../lib/medusa-data';
 import { ProductCard } from '../product/ProductCard';
 import { useWishlist } from '../../context/WishlistContext';
-
-const featuredIds = ['1', '2', '3', '4', '5', '6'];
-const featuredProducts = products.filter(p => featuredIds.includes(p.id));
 
 const SCROLL_AMOUNT = 380;
 
@@ -16,6 +14,11 @@ export const FeaturedProducts = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const dragState = useRef({ active: false, startX: 0, scrollLeft: 0, moved: false });
   const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    getAllProducts().then(all => setFeaturedProducts(all.slice(0, 6))).catch(console.error);
+  }, []);
 
   const onScroll = () => {
     setCanScrollLeft((scrollRef.current?.scrollLeft ?? 0) > 0);

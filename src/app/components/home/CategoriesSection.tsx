@@ -1,21 +1,17 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'motion/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { categories as rawCategories } from '../../data/products';
+import { getCollections } from '../../lib/medusa-data';
 
-const categories = rawCategories.map(c => ({
-  title: c.name,
-  imageSrc: c.image,
-  link: `/prodotti/${c.slug}`,
-}));
+type CategoryCard = { title: string; imageSrc: string; link: string };
 
 const SCROLL_AMOUNT = 380;
 
-const CategoryCard = ({ category }: { category: typeof categories[0] }) => (
+const CategoryCard = ({ category }: { category: CategoryCard }) => (
   <Link href={category.link} className="flex flex-col items-center gap-[16px] group">
     <div className="w-[160px] h-[160px] lg:w-[200px] lg:h-[200px] rounded-full bg-white shadow-[0_10px_30px_rgba(0,0,0,0.12)] flex items-center justify-center overflow-hidden group-hover:shadow-[0_14px_40px_rgba(0,0,0,0.18)] transition-shadow duration-300">
       <Image
@@ -36,6 +32,13 @@ export const CategoriesSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const dragState = useRef({ active: false, startX: 0, scrollLeft: 0, moved: false });
   const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [categories, setCategories] = useState<CategoryCard[]>([]);
+
+  useEffect(() => {
+    getCollections().then(cols =>
+      setCategories(cols.map(c => ({ title: c.name, imageSrc: c.image, link: `/prodotti/${c.slug}` })))
+    );
+  }, []);
 
   const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     const el = scrollRef.current;
