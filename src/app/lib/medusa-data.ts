@@ -1,6 +1,8 @@
 import type { Product, Category, SubCategory } from '../data/products'
 
-const BASE = process.env.NEXT_PUBLIC_MEDUSA_URL ?? 'http://localhost:9000'
+const BASE = typeof window !== 'undefined'
+  ? '/api/medusa'
+  : (process.env.NEXT_PUBLIC_MEDUSA_URL ?? 'http://localhost:9000')
 const PUB_KEY = process.env.NEXT_PUBLIC_MEDUSA_KEY ?? ''
 const REGION_ID = process.env.NEXT_PUBLIC_MEDUSA_REGION_ID ?? ''
 
