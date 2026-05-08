@@ -1,15 +1,15 @@
 'use client';
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Search, X, TrendingUp, Clock, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { products } from '../data/products';
-import { categories } from '../data/products';
+import { getCollections, searchProducts } from '../lib/medusa-data';
+import type { Product } from '../data/products';
 
-const TRENDING = categories.map(c => c.name);
+const TRENDING_FALLBACK = ['Sex Toys', 'Lingerie', 'BDSM', 'Lubrificanti', 'Giochi', 'Speciali'];
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -19,6 +19,8 @@ interface SearchModalProps {
 export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
   const [query, setQuery] = useState('');
   const [recent, setRecent] = useState<string[]>([]);
+  const [results, setResults] = useState<Product[]>([]);
+  const [trending, setTrending] = useState<string[]>(TRENDING_FALLBACK);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -33,12 +35,16 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
     return () => window.removeEventListener('keydown', handle);
   }, [isOpen, onClose]);
 
-  const results = useMemo(() => {
-    if (!query.trim()) return [];
-    const q = query.toLowerCase();
-    return products
-      .filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q))
-      .slice(0, 6);
+  useEffect(() => {
+    getCollections().then(cols => setTrending(cols.map(c => c.name))).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (!query.trim()) { setResults([]); return; }
+    const timer = setTimeout(() => {
+      searchProducts(query.trim()).then(r => setResults(r.slice(0, 6))).catch(console.error);
+    }, 300);
+    return () => clearTimeout(timer);
   }, [query]);
 
   const addRecent = (term: string) =>
@@ -117,7 +123,7 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
                               transition={{ delay: i * 0.04 }}
                             >
                               <Link
-                                href={`/prodotti/${product.categorySlug}/${product.slug}`}
+                                href={`/prodotti/${product.categorySlug}/${product.subCategorySlug}/${product.slug}`}
                                 onClick={() => { addRecent(query.trim()); onClose(); }}
                                 className="group flex items-center gap-3 p-3 rounded-[12px] hover:bg-[#f5f5f7] transition-colors"
                               >
@@ -160,7 +166,7 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
                         <p className="text-[10px] font-bold tracking-[0.1em] text-[#86868b] uppercase">Ricerche popolari</p>
                       </div>
                       <div className="flex flex-wrap gap-[8px]">
-                        {TRENDING.map(term => (
+                        {trending.map(term => (
                           <button
                             key={term}
                             onClick={() => setQuery(term)}

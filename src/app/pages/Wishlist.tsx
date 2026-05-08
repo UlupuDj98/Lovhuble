@@ -2,15 +2,12 @@ import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
 import { Heart, X } from 'lucide-react';
 import { useWishlist } from '../context/WishlistContext';
-import { products } from '../data/products';
 import { ProductCard } from '../components/product/ProductCard';
 
 export const Wishlist = () => {
   const { items, removeFromWishlist, isInWishlist, toggleWishlist } = useWishlist();
 
-  const wishlistProducts = items
-    .map(item => products.find(p => p.id === item.id))
-    .filter(Boolean) as typeof products;
+  const wishlistProducts = items;
 
   if (items.length === 0) {
     return (
@@ -74,8 +71,8 @@ export const Wishlist = () => {
                 transition={{ delay: i * 0.05, duration: 0.4 }}
               >
                 <ProductCard
-                  product={product}
-                  badge={product.category}
+                  product={product as any}
+                  badge=""
                   wishlisted={isInWishlist(product.id)}
                   onWishlist={e => { e.preventDefault(); toggleWishlist(product); }}
                 />

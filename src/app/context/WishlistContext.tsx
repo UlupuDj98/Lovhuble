@@ -1,11 +1,15 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { toast } from 'sonner';
 
-interface WishlistItem {
+export interface WishlistItem {
   id: string;
   name: string;
   price: number;
   image: string;
+  slug: string;
+  categorySlug: string;
+  subCategorySlug: string;
+  subCategory: string;
 }
 
 interface WishlistContextType {

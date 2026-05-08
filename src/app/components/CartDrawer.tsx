@@ -1,7 +1,6 @@
 import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
-import { getProductUrl } from '../data/products';
 import { Minus, Plus, X, ShoppingBag } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
@@ -125,7 +124,7 @@ export const CartDrawer = () => {
                         className="flex gap-[16px] bg-[#f5f5f7] rounded-[16px] p-[16px]"
                       >
                         <Link
-                          href={getProductUrl(item.id)}
+                          href={item.productUrl ?? '/prodotti'}
                           onClick={closeCart}
                           className="w-[80px] h-[80px] flex-shrink-0 rounded-[12px] overflow-hidden bg-white"
                         >
@@ -139,7 +138,7 @@ export const CartDrawer = () => {
                         <div className="flex-1 flex flex-col justify-between min-w-0">
                           <div>
                             <Link
-                              href={getProductUrl(item.id)}
+                              href={item.productUrl ?? '/prodotti'}
                               onClick={closeCart}
                             >
                               <h3 className="text-[15px] font-semibold text-[#1d1d1f] mb-[4px] tracking-[-0.003em] hover:text-[#6e6e73] transition-colors truncate">
@@ -147,7 +146,7 @@ export const CartDrawer = () => {
                               </h3>
                             </Link>
                             <p className="text-[15px] font-normal text-[#1d1d1f]">
-                              €{item.price}
+                              €{item.price.toFixed(2)}
                             </p>
                           </div>
 
@@ -204,14 +203,16 @@ export const CartDrawer = () => {
                     </div>
                   </div>
 
-                  <motion.button
-                    whileHover={{ scale: 1.01, boxShadow: '0 8px 30px rgba(29, 29, 31, 0.15)' }}
-                    whileTap={{ scale: 0.99 }}
-                    transition={{ duration: 0.2 }}
-                    className="w-full bg-[#1d1d1f] text-white py-[14px] rounded-full text-[15px] font-normal hover:bg-[#424245] transition-colors duration-200 mb-[12px] shadow-sm"
-                  >
-                    Procedi al Pagamento
-                  </motion.button>
+                  <Link href="/checkout" onClick={closeCart}>
+                    <motion.button
+                      whileHover={{ scale: 1.01, boxShadow: '0 8px 30px rgba(29, 29, 31, 0.15)' }}
+                      whileTap={{ scale: 0.99 }}
+                      transition={{ duration: 0.2 }}
+                      className="w-full bg-[#1d1d1f] text-white py-[14px] rounded-full text-[15px] font-normal hover:bg-[#424245] transition-colors duration-200 mb-[12px] shadow-sm"
+                    >
+                      Procedi al Pagamento
+                    </motion.button>
+                  </Link>
 
                   <Link
                     href="/"

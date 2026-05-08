@@ -1,19 +1,32 @@
+'use client';
+
 import Link from 'next/link';
 import { ShoppingBag, Menu, X, Heart, User, LogIn, Search, ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import ComponenteScorrevole from './banda-scorrevole/Componente-Scorrevole';
 import { SearchModal } from './SearchModal';
-import { categories, subCategories } from '../data/products';
+import { getCollections, getSubCategories } from '../lib/medusa-data';
+import type { Category, SubCategory } from '../data/products';
 
 export const Navigation = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [openCategory, setOpenCategory] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
   const { totalItems, openCart } = useCart();
   const { items: wishlistItems } = useWishlist();
+
+  useEffect(() => {
+    getCollections().then(cols => {
+      setCategories(cols);
+      Promise.all(cols.map(c => getSubCategories(c.slug)))
+        .then(results => setSubCategories(results.flat()));
+    });
+  }, []);
 
   const close = () => setIsSidebarOpen(false);
 
