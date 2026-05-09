@@ -2,16 +2,10 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { toast } from 'sonner';
+import { medusa } from '@/app/lib/medusa';
 
-const BASE = process.env.NEXT_PUBLIC_MEDUSA_URL ?? 'http://localhost:9000'
-const PUB_KEY = process.env.NEXT_PUBLIC_MEDUSA_KEY ?? ''
 const REGION_ID = process.env.NEXT_PUBLIC_MEDUSA_REGION_ID ?? ''
 const CART_ID_KEY = 'lovehuble-cart-id'
-
-const HEADERS = {
-  'Content-Type': 'application/json',
-  'x-publishable-api-key': PUB_KEY,
-}
 
 export interface CartItem {
   id: string;       // line_item.id (cali_...)
@@ -28,10 +22,12 @@ interface AddItemInput {
   price: number;
   image: string;
   productUrl?: string;
+  quantity?: number;
 }
 
 interface CartContextType {
   items: CartItem[];
+  cartId: string | null;
   addItem: (input: AddItemInput) => Promise<void>;
   removeItem: (lineItemId: string) => Promise<void>;
   updateQuantity: (lineItemId: string, quantity: number) => Promise<void>;
@@ -45,33 +41,22 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapItems(rawItems: any[]): CartItem[] {
   return (rawItems ?? []).map(item => ({
     id: item.id,
     name: item.product_title ?? item.title ?? '',
-    price: (item.unit_price ?? 0) / 100,
+    price: item.unit_price ?? 0,
     image: item.thumbnail ?? '',
     quantity: item.quantity ?? 1,
     productUrl: item.metadata?.productUrl,
   }))
 }
 
-// POST/DELETE su cart restituiscono { cart } o { parent: cart } a seconda del metodo
-function extractCart(data: any) {
-  return data.cart ?? data.parent ?? {}
-}
-
-async function cartFetch(path: string, method = 'GET', body?: object) {
-  const res = await fetch(`${BASE}${path}`, {
-    method,
-    headers: HEADERS,
-    ...(body ? { body: JSON.stringify(body) } : {}),
-  })
-  if (!res.ok) {
-    const err = await res.text().catch(() => '')
-    throw new Error(`Cart ${method} ${path}: ${res.status} ${err}`)
-  }
-  return res.json()
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function extractItems(data: any): CartItem[] {
+  const cart = data?.cart ?? data?.parent ?? data ?? {}
+  return mapItems(cart.items ?? [])
 }
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
@@ -79,13 +64,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartId, setCartId] = useState<string | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // Carica carrello esistente da localStorage al mount
+  // Carica carrello esistente al mount
   useEffect(() => {
     const saved = typeof window !== 'undefined' ? localStorage.getItem(CART_ID_KEY) : null
     if (!saved) return
     setCartId(saved)
-    cartFetch(`/store/carts/${saved}`)
-      .then(data => setItems(mapItems(extractCart(data).items)))
+    medusa.store.cart.retrieve(saved)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .then(data => setItems(mapItems((data as any).cart?.items ?? [])))
       .catch(() => {
         localStorage.removeItem(CART_ID_KEY)
         setCartId(null)
@@ -94,10 +80,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   async function getOrCreateCartId(): Promise<string> {
     if (cartId) return cartId
-    const saved = localStorage.getItem(CART_ID_KEY)
+    const saved = typeof window !== 'undefined' ? localStorage.getItem(CART_ID_KEY) : null
     if (saved) { setCartId(saved); return saved }
-    const data = await cartFetch('/store/carts', 'POST', { region_id: REGION_ID })
-    const id = extractCart(data).id
+
+    // SDK include il JWT se presente → Medusa imposta customer_id sul cart automaticamente
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const data = await medusa.store.cart.create({ region_id: REGION_ID } as any)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const id = (data as any).cart?.id
     localStorage.setItem(CART_ID_KEY, id)
     setCartId(id)
     return id
@@ -107,12 +97,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     if (!input.variantId) { toast.error('Variante prodotto non trovata'); return }
     try {
       const id = await getOrCreateCartId()
-      const data = await cartFetch(`/store/carts/${id}/line-items`, 'POST', {
+      const data = await medusa.store.cart.createLineItem(id, {
         variant_id: input.variantId,
-        quantity: 1,
+        quantity: input.quantity ?? 1,
         metadata: { productUrl: input.productUrl },
       })
-      setItems(mapItems(extractCart(data).items))
+      setItems(extractItems(data))
       toast.success('Aggiunto al carrello', { description: input.name })
     } catch {
       toast.error('Errore aggiunta al carrello')
@@ -122,8 +112,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const removeItem = async (lineItemId: string) => {
     if (!cartId) return
     try {
-      const data = await cartFetch(`/store/carts/${cartId}/line-items/${lineItemId}`, 'DELETE')
-      setItems(mapItems(extractCart(data).items))
+      const data = await medusa.store.cart.deleteLineItem(cartId, lineItemId)
+      setItems(extractItems(data))
       toast.success('Rimosso dal carrello')
     } catch {
       toast.error('Errore rimozione dal carrello')
@@ -134,8 +124,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     if (quantity <= 0) { removeItem(lineItemId); return }
     if (!cartId) return
     try {
-      const data = await cartFetch(`/store/carts/${cartId}/line-items/${lineItemId}`, 'POST', { quantity })
-      setItems(mapItems(extractCart(data).items))
+      const data = await medusa.store.cart.updateLineItem(cartId, lineItemId, { quantity })
+      setItems(extractItems(data))
     } catch {
       toast.error('Errore aggiornamento quantità')
     }
@@ -143,12 +133,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const clearCart = async () => {
     try {
-      const data = await cartFetch('/store/carts', 'POST', { region_id: REGION_ID })
-      const id = extractCart(data).id
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data = await medusa.store.cart.create({ region_id: REGION_ID } as any)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const id = (data as any).cart?.id
       localStorage.setItem(CART_ID_KEY, id)
       setCartId(id)
       setItems([])
-      toast.success('Carrello svuotato')
     } catch {
       toast.error('Errore svuotamento carrello')
     }
@@ -160,6 +151,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   return (
     <CartContext.Provider value={{
       items,
+      cartId,
       addItem,
       removeItem,
       updateQuantity,

@@ -4,29 +4,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { formatPrice } from '../utils/price';
+import { medusa } from '../lib/medusa';
 
-const BASE = process.env.NEXT_PUBLIC_MEDUSA_URL ?? 'http://localhost:9000';
-const PUB_KEY = process.env.NEXT_PUBLIC_MEDUSA_KEY ?? '';
 const CART_ID_KEY = 'lovehuble-cart-id';
-
-const HEADERS = {
-  'Content-Type': 'application/json',
-  'x-publishable-api-key': PUB_KEY,
-};
-
-async function storePost(path: string, body?: object) {
-  const res = await fetch(`${BASE}${path}`, {
-    method: 'POST',
-    headers: HEADERS,
-    ...(body ? { body: JSON.stringify(body) } : {}),
-  });
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    throw new Error(data.message ?? `${res.status}`);
-  }
-  return res.json();
-}
 
 interface FormState {
   email: string;
@@ -44,7 +26,8 @@ interface OrderResult {
 }
 
 export const Checkout = () => {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, clearCart, cartId: contextCartId } = useCart();
+  const { customer } = useAuth();
 
   const [form, setForm] = useState<FormState>({
     email: '', first_name: '', last_name: '',
@@ -60,13 +43,22 @@ export const Checkout = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    const cartId = typeof window !== 'undefined' ? localStorage.getItem(CART_ID_KEY) : null;
-    if (!cartId) { setError('Carrello non trovato'); return; }
+    const cartId = contextCartId ?? (typeof window !== 'undefined' ? localStorage.getItem(CART_ID_KEY) : null);
+    if (!cartId) { setError('Carrello non trovato. Aggiungi prodotti al carrello.'); return; }
 
     setLoading(true);
     try {
-      await storePost(`/store/carts/${cartId}`, {
-        email: form.email,
+      // Se l'utente è loggato, trasferisce il cart al suo account prima di completarlo
+      if (customer) {
+        try {
+          await medusa.store.cart.transferCart(cartId)
+        } catch (err) {
+          console.warn('[checkout] transferCart failed (probabile già associato):', err)
+        }
+      }
+
+      const { cart } = await medusa.store.cart.update(cartId, {
+        email: customer?.email ?? form.email,
         shipping_address: {
           first_name: form.first_name,
           last_name: form.last_name,
@@ -78,18 +70,18 @@ export const Checkout = () => {
         },
       });
 
-      const { payment_collection } = await storePost('/store/payment-collections', { cart_id: cartId });
-      await storePost(`/store/payment-collections/${payment_collection.id}/payment-sessions`, {
+      await medusa.store.payment.initiatePaymentSession(cart, {
         provider_id: 'pp_system_system',
       });
 
-      const result = await storePost(`/store/carts/${cartId}/complete`);
+      const result = await medusa.store.cart.complete(cartId);
       if (result.type !== 'order') throw new Error('Ordine non completato');
 
       setOrder({ id: result.order.id, display_id: result.order.display_id });
       await clearCart();
-    } catch (err: any) {
-      setError(err.message ?? 'Errore durante il checkout');
+    } catch (err: unknown) {
+      const msg = (err as { message?: string })?.message;
+      setError(msg ?? 'Errore durante il checkout');
     } finally {
       setLoading(false);
     }
@@ -184,7 +176,16 @@ export const Checkout = () => {
 
               {/* Contatto */}
               <Card title="Contatto">
-                <Field label="Email" name="email" type="email" value={form.email} onChange={set} placeholder="tu@email.com" required />
+                <Field
+                  label="Email"
+                  name="email"
+                  type="email"
+                  value={customer?.email ?? form.email}
+                  onChange={customer ? () => {} : set}
+                  placeholder="tu@email.com"
+                  required
+                  disabled={!!customer}
+                />
               </Card>
 
               {/* Indirizzo */}

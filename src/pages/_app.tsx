@@ -1,5 +1,6 @@
 import type { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
+import { AuthProvider } from '@/app/context/AuthContext'
 import { CartProvider } from '@/app/context/CartContext'
 import { WishlistProvider } from '@/app/context/WishlistContext'
 import { Navigation } from '@/app/components/Navigation'
@@ -33,10 +34,12 @@ function AppInner({ Component, pageProps }: AppProps) {
 
 export default function App(props: AppProps) {
   return (
-    <WishlistProvider>
-      <CartProvider>
-        <AppInner {...props} />
-      </CartProvider>
-    </WishlistProvider>
+    <AuthProvider>
+      <WishlistProvider>
+        <CartProvider>
+          <AppInner {...props} />
+        </CartProvider>
+      </WishlistProvider>
+    </AuthProvider>
   )
 }

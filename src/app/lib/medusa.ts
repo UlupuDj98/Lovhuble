@@ -10,4 +10,11 @@ const getBaseUrl = () => {
 export const medusa = new Medusa({
   baseUrl: getBaseUrl(),
   publishableKey: process.env.NEXT_PUBLIC_MEDUSA_KEY ?? '',
+  auth: {
+    type: 'jwt',
+    jwtTokenStorageKey: 'lovehuble_auth_token',
+    // 'local' = localStorage → persiste tra refresh di pagina
+    // Lato server Next.js non esiste localStorage: il SDK fa automaticamente fallback a 'memory'
+    jwtTokenStorageMethod: 'local',
+  },
 })
