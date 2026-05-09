@@ -36,7 +36,7 @@ export const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
     <div className="flex flex-col gap-[16px]">
       {/* Main image */}
       <div
-        className="relative aspect-[3/4] rounded-[24px] overflow-hidden bg-white shadow-[0_8px_40px_rgba(0,0,0,0.08)]"
+        className="relative lg:w-[480px] h-[500px] sm:h-[650px] lg:h-[650px] rounded-[24px] overflow-hidden bg-white shadow-[0_8px_40px_rgba(0,0,0,0.08)]"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
@@ -87,13 +87,13 @@ export const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
 
       {/* Thumbnails — desktop */}
       {images.length > 1 && (
-        <div className="hidden lg:flex gap-[10px] justify-center">
+        <div className="hidden lg:flex gap-[20px] justify-center items-center">
           {images.map((img, i) => (
             <button
               key={i}
               onClick={() => navigate(i)}
               aria-label={`Vai alla foto ${i + 1}`}
-              className={`relative w-[76px] h-[76px] rounded-[14px] overflow-hidden bg-white border-2 transition-all duration-200 ${
+              className={`relative w-[155px] h-[140px] rounded-[14px] overflow-hidden bg-white border-2 transition-all duration-200 ${
                 selected === i
                   ? 'border-[#1d1d1f] shadow-[0_2px_10px_rgba(0,0,0,0.15)]'
                   : 'border-transparent opacity-55 hover:opacity-90 hover:border-[#acacac]'

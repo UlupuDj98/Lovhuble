@@ -1,4 +1,4 @@
-import type { Product, Category, SubCategory } from '../data/products'
+import type { Product, ProductOption, ProductVariant, Category, SubCategory } from '../data/products'
 
 const BASE = typeof window !== 'undefined'
   ? '/api/medusa'
@@ -32,21 +32,37 @@ async function storeGet<T>(path: string, params: Record<string, string> = {}): P
   return res.json()
 }
 
-const FIELDS = '+collection,+variants.calculated_price,+metadata'
+const FIELDS = '+collection,+material,+weight,+height,+width,+length,+options,+options.values,+variants,+variants.calculated_price,+variants.options,+metadata'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapProduct(p: any): Product {
-  const variant = p.variants?.[0]
-  const priceAmount = variant?.calculated_price?.calculated_amount
-    ?? variant?.prices?.[0]?.amount
+  const firstVariant = p.variants?.[0]
+  const priceAmount = firstVariant?.calculated_price?.calculated_amount
+    ?? firstVariant?.prices?.[0]?.amount
     ?? 0
   const collection = p.collection ?? {}
   const meta = p.metadata ?? {}
+
+  const options: ProductOption[] = (p.options ?? []).map((opt: any) => ({
+    title: opt.title as string,
+    values: (opt.values ?? []).map((v: any) => v.value as string),
+  }))
+
+  const variants: ProductVariant[] = (p.variants ?? []).map((v: any) => {
+    const amount = v.calculated_price?.calculated_amount ?? v.prices?.[0]?.amount ?? 0
+    const variantOptions: Record<string, string> = {}
+    for (const optVal of v.options ?? []) {
+      const opt = (p.options ?? []).find((o: any) => o.id === optVal.option_id)
+      if (opt) variantOptions[opt.title] = optVal.value
+    }
+    return { id: v.id, title: v.title, options: variantOptions, price: amount / 100 }
+  })
 
   return {
     id: p.id,
     name: p.title,
     slug: p.handle,
+    subtitle:p.subtitle ?? '',
     category: collection.title ?? '',
     categorySlug: collection.handle ?? '',
     subCategory: meta.subCategory ?? '',
@@ -56,9 +72,16 @@ function mapProduct(p: any): Product {
     images: p.images?.map((img: any) => img.url).filter(Boolean) ?? (p.thumbnail ? [p.thumbnail] : []),
     description: p.description ?? '',
     features: (meta.features as string[]) ?? [],
-    inStock: variant?.manage_inventory ? (variant.inventory_quantity ?? 0) > 0 : true,
+    inStock: firstVariant?.manage_inventory ? (firstVariant.inventory_quantity ?? 0) > 0 : true,
     exclusive: meta.exclusive === true,
-    variantId: variant?.id ?? '',
+    variantId: firstVariant?.id ?? '',
+    material: p.material ?? undefined,
+    height: p.height ?? undefined,
+    width: p.width ?? undefined,
+    length: p.length ?? undefined,
+    weight: p.weight ?? undefined,
+    options: options.length > 0 ? options : undefined,
+    variants: variants.length > 0 ? variants : undefined,
   }
 }
 

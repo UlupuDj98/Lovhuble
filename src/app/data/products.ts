@@ -11,10 +11,23 @@ export interface SubCategory {
   image: string;
 }
 
+export interface ProductOption {
+  title: string;
+  values: string[];
+}
+
+export interface ProductVariant {
+  id: string;
+  title: string;
+  options: Record<string, string>;
+  price: number;
+}
+
 export interface Product {
   id: string;
   name: string;
   slug: string;
+  subtitle: string;
   category: string;
   categorySlug: string;
   subCategory: string;
@@ -27,4 +40,11 @@ export interface Product {
   inStock: boolean;
   exclusive?: boolean;
   variantId?: string;
+  material?: string;
+  height?: number;
+  width?: number;
+  length?: number;
+  weight?: number;
+  options?: ProductOption[];
+  variants?: ProductVariant[];
 }

@@ -6,10 +6,12 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
+import { useAuth } from '../context/AuthContext';
 import ComponenteScorrevole from './banda-scorrevole/Componente-Scorrevole';
 import { SearchModal } from './SearchModal';
 import { getCollections, getSubCategories } from '../lib/medusa-data';
 import type { Category, SubCategory } from '../data/products';
+import Image from 'next/image';
 
 export const Navigation = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -19,6 +21,7 @@ export const Navigation = () => {
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
   const { totalItems, openCart } = useCart();
   const { items: wishlistItems } = useWishlist();
+  const { customer, logout } = useAuth();
 
   useEffect(() => {
     getCollections().then(cols => {
@@ -43,7 +46,7 @@ export const Navigation = () => {
                 whileHover={{ opacity: 0.7 }}
                 transition={{ duration: 0.2 }}
               >
-                <img src='logo-1.png' alt="Lovehuble" className="h-[48px] lg:h-[58px]" />
+                <Image height={0} width={0}  sizes="100vw" src='/logo-1.png' alt="Lovehuble" className="h-[48px] lg:h-[58px] w-auto" />
               </motion.div>
             </Link>
 
@@ -61,32 +64,18 @@ export const Navigation = () => {
                 <Search className="w-[17px] h-[17px] text-[#1d1d1f]" strokeWidth={1.5} />
               </motion.button>
 
-              {/* Wishlist — desktop only */}
-              <Link href="/wishlist" className="relative group hidden lg:block" aria-label="Preferiti">
-                <motion.div
-                  whileHover={{ opacity: 0.7 }}
-                  transition={{ duration: 0.2 }}
-                  className="p-2"
-                >
-                  <Heart className="w-[17px] h-[17px] text-[#1d1d1f]" strokeWidth={1.5} />
-                  {wishlistItems.length > 0 && (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      key={wishlistItems.length}
-                      className="absolute top-0 right-0 w-[18px] h-[18px] bg-[#d4a5a5] text-white rounded-full flex items-center justify-center text-[10px] font-medium"
-                    >
-                      <motion.span
-                        initial={{ scale: 1.5, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ duration: 0.3, ease: 'easeOut' }}
-                      >
-                        {wishlistItems.length}
-                      </motion.span>
-                    </motion.div>
-                  )}
+              {/* Account — desktop only */}
+              <Link
+                href={customer ? '/account' : '/login'}
+                className="hidden lg:block p-2"
+                aria-label="Account"
+              >
+                <motion.div whileHover={{ opacity: 0.7 }} transition={{ duration: 0.2 }}>
+                  <User className="w-[17px] h-[17px] text-[#1d1d1f]" strokeWidth={1.5} />
                 </motion.div>
               </Link>
+
+      
 
               {/* Cart */}
               <button onClick={openCart} className="relative group" aria-label="Apri carrello">
@@ -274,20 +263,44 @@ export const Navigation = () => {
                     Account
                   </p>
                   <div className="flex flex-col gap-[8px]">
-                    <button
-                      disabled
-                      className="flex items-center gap-[10px] w-full px-[14px] py-[11px] rounded-[10px] text-[14px] font-medium text-[#1d1d1f] bg-[#f5f5f7] opacity-50 cursor-not-allowed"
-                    >
-                      <LogIn className="w-[15px] h-[15px]" strokeWidth={1.5} />
-                      Accedi
-                    </button>
-                    <button
-                      disabled
-                      className="flex items-center gap-[10px] w-full px-[14px] py-[11px] rounded-[10px] text-[14px] font-medium text-white bg-[#1d1d1f] opacity-50 cursor-not-allowed"
-                    >
-                      <User className="w-[15px] h-[15px]" strokeWidth={1.5} />
-                      Crea Account
-                    </button>
+                    {customer ? (
+                      <>
+                        <Link
+                          href="/account"
+                          onClick={close}
+                          className="flex items-center gap-[10px] w-full px-[14px] py-[11px] rounded-[10px] text-[14px] font-medium text-[#1d1d1f] bg-[#f5f5f7] hover:bg-[#eaeaea] transition-colors"
+                        >
+                          <User className="w-[15px] h-[15px]" strokeWidth={1.5} />
+                          {customer.first_name} {customer.last_name}
+                        </Link>
+                        <button
+                          onClick={async () => { await logout(); close() }}
+                          className="flex items-center gap-[10px] w-full px-[14px] py-[11px] rounded-[10px] text-[14px] font-medium text-white bg-[#1d1d1f] hover:bg-[#333] transition-colors"
+                        >
+                          <LogIn className="w-[15px] h-[15px] rotate-180" strokeWidth={1.5} />
+                          Esci
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <Link
+                          href="/login"
+                          onClick={close}
+                          className="flex items-center gap-[10px] w-full px-[14px] py-[11px] rounded-[10px] text-[14px] font-medium text-[#1d1d1f] bg-[#f5f5f7] hover:bg-[#eaeaea] transition-colors"
+                        >
+                          <LogIn className="w-[15px] h-[15px]" strokeWidth={1.5} />
+                          Accedi
+                        </Link>
+                        <Link
+                          href="/register"
+                          onClick={close}
+                          className="flex items-center gap-[10px] w-full px-[14px] py-[11px] rounded-[10px] text-[14px] font-medium text-white bg-[#1d1d1f] hover:bg-[#333] transition-colors"
+                        >
+                          <User className="w-[15px] h-[15px]" strokeWidth={1.5} />
+                          Crea Account
+                        </Link>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

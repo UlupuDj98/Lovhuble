@@ -16,7 +16,7 @@ interface ExclusiveProductCardProps {
 export const ExclusiveProductCard = ({ product, imageSrc, gradientColor = '#ffffff' }: ExclusiveProductCardProps) => (
   <Link
     href={`/prodotti/${product.categorySlug}/${product.subCategorySlug}/${product.slug}`}
-    className="block group"
+    className="block group h-full"
   >
     <div className="relative w-full h-[380px] lg:h-[640px] rounded-[28px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.18)] transition-shadow duration-300">
       {/* Image */}
@@ -27,15 +27,13 @@ export const ExclusiveProductCard = ({ product, imageSrc, gradientColor = '#ffff
         className="lg:object-cover transition-transform duration-500"
       />
 
-      {/* Gradient overlay: solid image bg color for bottom 60%, then transparent */}
+      {/* Gradient overlay: solid image bg color for bottom 60%, then transparent 
       <div
         className="absolute inset-0"
         style={{
           background: `linear-gradient(to top, ${gradientColor} 0%, ${gradientColor} 23%, transparent 60%)`,
         }}
       />
-
-      {/* Bottom content */}
       <div className="absolute bottom-0 left-0 right-0 flex items-end justify-between gap-3 p-4 sm:p-5 lg:p-7">
         <p className="text-[15px] sm:text-[19px] lg:text-[24px] font-bold text-black leading-[1.2] tracking-[-0.02em] max-w-[60%]">
           {product.name}
@@ -47,6 +45,7 @@ export const ExclusiveProductCard = ({ product, imageSrc, gradientColor = '#ffff
           Scopri
         </button>
       </div>
+      */}
     </div>
   </Link>
 );

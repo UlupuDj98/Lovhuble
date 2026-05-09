@@ -38,7 +38,7 @@ export const ProdottiCorrelati = ({ currentProduct }: ProdottiCorrelatiProps) =>
 
   return (
     <section className="py-[64px] bg-[#fbfbfd]">
-      <div className="max-w-[980px] mx-auto px-6 lg:px-8">
+      <div className="max-w-[1100px] mx-auto px-6 lg:px-8">
         <motion.h2
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
