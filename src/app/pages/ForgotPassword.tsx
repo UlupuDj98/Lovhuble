@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import Link from 'next/link'
-import { toast } from 'sonner'
 import { medusa } from '@/app/lib/medusa'
 
 export function ForgotPassword() {
@@ -25,9 +24,6 @@ export function ForgotPassword() {
     <div className="min-h-screen bg-[#f5f5f7] flex items-center justify-center px-4 py-20">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/">
-            <img src="/logo-1.png" alt="Lovehuble" className="h-12 mx-auto mb-6" />
-          </Link>
           <h1 className="text-2xl font-bold text-[#1a1a1a]">Password dimenticata</h1>
           <p className="text-sm text-stone-500 mt-1">Ti invieremo un link per reimpostarla</p>
         </div>
@@ -46,7 +42,7 @@ export function ForgotPassword() {
               </p>
               <button
                 onClick={() => { setSent(false); setEmail('') }}
-                className="mt-6 text-sm text-[#7A1F3D] hover:underline"
+                className="mt-6 text-sm text-[#D4A5A5] hover:underline"
               >
                 Usa un&apos;altra email
               </button>
@@ -62,14 +58,13 @@ export function ForgotPassword() {
                   required
                   placeholder="mario@esempio.it"
                   disabled={isLoading}
-                  className="w-full px-4 py-3 border border-stone-300 rounded-xl focus:outline-none focus:border-[#7A1F3D] focus:ring-1 focus:ring-[#7A1F3D]/20 transition-colors bg-white text-[#1a1a1a] disabled:opacity-60"
+                  className="w-full px-4 py-3 border border-stone-300 rounded-xl focus:outline-none focus:border-[#D4A5A5] focus:ring-1 focus:ring-[#7A1F3D]/20 transition-colors bg-white text-[#1a1a1a] disabled:opacity-60"
                 />
               </div>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3.5 rounded-xl text-white font-semibold transition-opacity disabled:opacity-60"
-                style={{ background: 'linear-gradient(to right, #7A1F3D, #5e182f)' }}
+                className="w-full py-3.5 rounded-xl text-white font-semibold transition-opacity disabled:opacity-60 bg-[#D4A5A5]"
               >
                 {isLoading ? 'Invio in corso...' : 'Invia link di reset'}
               </button>
@@ -79,7 +74,7 @@ export function ForgotPassword() {
 
         <p className="text-center text-sm text-stone-500 mt-6">
           Ricordi la password?{' '}
-          <Link href="/login" className="text-[#7A1F3D] font-medium hover:underline">
+          <Link href="/login" className="text-[#D4A5A5] font-medium hover:underline">
             Accedi
           </Link>
         </p>

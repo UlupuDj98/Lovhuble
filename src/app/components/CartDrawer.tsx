@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useCart } from '../context/CartContext';
 import { Minus, Plus, X, ShoppingBag } from 'lucide-react';
 import { useEffect, useRef } from 'react';
+import { formatPrice } from '../utils/price';
 
 export const CartDrawer = () => {
   const { items, removeItem, updateQuantity, totalPrice, isCartOpen, closeCart } = useCart();
@@ -131,7 +132,7 @@ export const CartDrawer = () => {
                           <img
                             src={item.image}
                             alt={item.name}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain"
                           />
                         </Link>
 
@@ -146,7 +147,7 @@ export const CartDrawer = () => {
                               </h3>
                             </Link>
                             <p className="text-[15px] font-normal text-[#1d1d1f]">
-                              €{item.price.toFixed(2)}
+                              {formatPrice(item.price)}
                             </p>
                           </div>
 
@@ -190,7 +191,7 @@ export const CartDrawer = () => {
                   <div className="space-y-[12px] mb-[20px]">
                     <div className="flex justify-between text-[14px] text-[#6e6e73] font-normal">
                       <span>Subtotale</span>
-                      <span>€{totalPrice.toFixed(2)}</span>
+                      <span>{formatPrice(totalPrice)}</span>
                     </div>
                     <div className="flex justify-between text-[14px] text-[#6e6e73] font-normal">
                       <span>Spedizione</span>
@@ -199,7 +200,7 @@ export const CartDrawer = () => {
                     <div className="h-[1px] bg-black/[0.08]" />
                     <div className="flex justify-between text-[17px] font-semibold text-[#1d1d1f] tracking-[-0.003em]">
                       <span>Totale</span>
-                      <span>€{totalPrice.toFixed(2)}</span>
+                      <span>{formatPrice(totalPrice)}</span>
                     </div>
                   </div>
 

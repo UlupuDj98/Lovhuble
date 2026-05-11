@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { CustomerOrder } from "@/types/customer";
 import { memo } from "react";
+import { formatPrice } from "@/app/utils/price";
 
 const PAYMENT_LABELS: Record<string, string> = {
   pending: "In attesa",
@@ -71,7 +72,7 @@ function OrderCard({ order, compact = false }: OrderCardProps) {
           </span>
         </div>
         <div className="text-right">
-          <p className="font-bold text-black">€{order.total.toFixed(2)}</p>
+          <p className="font-bold text-black">{formatPrice(order.total)}</p>
           <p className="text-xs text-stone-400">{date}</p>
         </div>
       </div>
@@ -81,7 +82,7 @@ function OrderCard({ order, compact = false }: OrderCardProps) {
         {items.map((item) => (
           <div key={item.id} className="flex items-center gap-3">
             {item.thumbnail ? (
-              <div className="w-12 h-12 rounded-lg overflow-hidden bg-stone-100 flex-shrink-0 relative">
+              <div className="w-12 h-12 lg:w-16 lg:h-16 rounded-lg overflow-hidden bg-stone-100 flex-shrink-0 relative">
                 <Image src={item.thumbnail} alt={item.title} fill className="object-contain" />
               </div>
             ) : (
@@ -98,7 +99,7 @@ function OrderCard({ order, compact = false }: OrderCardProps) {
               )}
             </div>
             <div className="text-right flex-shrink-0">
-              <p className="text-sm font-semibold text-black">€{item.total.toFixed(2)}</p>
+              <p className="text-sm font-semibold text-black">{formatPrice(item.total)}</p>
               <p className="text-xs text-stone-400">× {item.quantity}</p>
             </div>
           </div>
