@@ -245,7 +245,7 @@ export const Navigation = () => {
                     <Link
                       href="/wishlist"
                       onClick={close}
-                      className="lg:hidden flex items-center gap-[8px] px-[10px] py-[10px] rounded-[10px] text-[15px] font-medium text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors duration-150"
+                      className="flex items-center gap-[8px] px-[10px] py-[10px] rounded-[10px] text-[15px] font-medium text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors duration-150"
                     >
                       Lista dei Desideri
                       {wishlistItems.length > 0 && (
