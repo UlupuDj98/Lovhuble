@@ -68,8 +68,8 @@ export function ResetPassword() {
             </p>
             <Link
               href="/forgot-password"
-              className="inline-block px-6 py-3 rounded-xl text-white font-semibold"
-              style={{ background: 'linear-gradient(to right, #7A1F3D, #5e182f)' }}
+              className="inline-block px-6 py-3 rounded-xl text-white font-semibold bg-[#D4A5A5]"
+             
             >
               Richiedi nuovo link
             </Link>
@@ -83,9 +83,6 @@ export function ResetPassword() {
     <div className="min-h-screen bg-[#f5f5f7] flex items-center justify-center px-4 py-20">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/">
-            <img src="/logo-1.png" alt="Lovehuble" className="h-12 mx-auto mb-6" />
-          </Link>
           <h1 className="text-2xl font-bold text-[#1a1a1a]">Nuova password</h1>
           <p className="text-sm text-stone-500 mt-1">Scegli una nuova password per il tuo account</p>
         </div>
@@ -132,8 +129,8 @@ export function ResetPassword() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3.5 rounded-xl text-white font-semibold transition-opacity disabled:opacity-60"
-              style={{ background: 'linear-gradient(to right, #7A1F3D, #5e182f)' }}
+              className="w-full py-3.5 rounded-xl text-white font-semibold transition-opacity disabled:opacity-60 bg-[#D4A5A5]"
+          
             >
               {isLoading ? 'Salvataggio...' : 'Salva nuova password'}
             </button>
