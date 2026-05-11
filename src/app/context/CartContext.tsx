@@ -32,6 +32,7 @@ interface CartContextType {
   removeItem: (lineItemId: string) => Promise<void>;
   updateQuantity: (lineItemId: string, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;
+  transferCartToCustomer: () => Promise<void>;
   totalItems: number;
   totalPrice: number;
   isCartOpen: boolean;
@@ -131,6 +132,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
+  const transferCartToCustomer = async () => {
+    const id = cartId ?? (typeof window !== 'undefined' ? localStorage.getItem(CART_ID_KEY) : null)
+    if (!id) return
+    try {
+      await medusa.store.cart.transferCart(id)
+    } catch {
+      // Ignora — cart già associato o non esistente
+    }
+  }
+
   const clearCart = async () => {
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -156,6 +167,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       removeItem,
       updateQuantity,
       clearCart,
+      transferCartToCustomer,
       totalItems,
       totalPrice,
       isCartOpen,

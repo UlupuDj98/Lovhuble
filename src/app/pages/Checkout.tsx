@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -36,6 +36,26 @@ export const Checkout = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [order, setOrder] = useState<OrderResult | null>(null);
+
+  useEffect(() => {
+    if (!customer) return
+    medusa.store.customer.listAddress({ limit: 100 })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .then(({ addresses }: any) => {
+        const addr = addresses.find((a: any) => a.is_default_shipping) ?? addresses[0]
+        if (!addr) return
+        setForm(prev => ({
+          ...prev,
+          first_name: addr.first_name || prev.first_name,
+          last_name: addr.last_name || prev.last_name,
+          address_1: addr.address_1 || prev.address_1,
+          city: addr.city || prev.city,
+          postal_code: addr.postal_code || prev.postal_code,
+          phone: addr.phone || prev.phone,
+        }))
+      })
+      .catch(() => {})
+  }, [customer])
 
   const set = (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));

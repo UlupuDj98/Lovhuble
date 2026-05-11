@@ -4,17 +4,28 @@ import { useRouter } from 'next/router'
 import { Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/app/context/AuthContext'
+import { useCart } from '@/app/context/CartContext'
 
 const inputClass = "w-full px-4 py-3 border border-stone-300 rounded-xl focus:outline-none focus:border-[#d4a5a5] focus:ring-1 focus:ring-[#d4a5a5]/20 transition-colors bg-white text-[#1a1a1a] disabled:opacity-60"
 
 export function Login() {
   const router = useRouter()
   const { login } = useAuth()
+  const { transferCartToCustomer } = useCart()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [errors, setErrors] = useState({ email: '', password: '' })
+
+  const validateEmail = (v: string) => v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? 'Email non valida' : ''
+  const validatePassword = (v: string) => v && v.length < 8 ? 'Minimo 8 caratteri' : ''
+
+  const handleBlur = (field: 'email' | 'password') => {
+    if (field === 'email') setErrors(prev => ({ ...prev, email: validateEmail(email) }))
+    if (field === 'password') setErrors(prev => ({ ...prev, password: validatePassword(password) }))
+  }
 
   const from = typeof router.query.from === 'string' ? router.query.from : '/account'
 
@@ -23,6 +34,7 @@ export function Login() {
     setIsLoading(true)
     try {
       await login(email, password)
+      await transferCartToCustomer()
       router.push(from)
     } catch {
       toast.error('Email o password errati')
@@ -48,11 +60,13 @@ export function Login() {
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
+                onBlur={() => handleBlur('email')}
                 required
                 placeholder="mario@esempio.it"
                 disabled={isLoading}
-                className={inputClass}
+                className={`${inputClass} ${errors.email ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : ''}`}
               />
+              {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
             </div>
 
             <div>
@@ -67,10 +81,11 @@ export function Login() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
+                  onBlur={() => handleBlur('password')}
                   required
                   placeholder="••••••••"
                   disabled={isLoading}
-                  className={`${inputClass} pr-12`}
+                  className={`${inputClass} pr-12 ${errors.password ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : ''}`}
                 />
                 <button
                   type="button"
@@ -81,6 +96,7 @@ export function Login() {
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
+              {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password}</p>}
             </div>
 
             <button

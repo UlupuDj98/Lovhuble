@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { CustomerOrder } from "@/types/customer";
 import { memo } from "react";
 import { formatPrice } from "@/app/utils/price";
@@ -82,7 +83,7 @@ function OrderCard({ order, compact = false }: OrderCardProps) {
         {items.map((item) => (
           <div key={item.id} className="flex items-center gap-3">
             {item.thumbnail ? (
-              <div className="w-12 h-12 lg:w-16 lg:h-16 rounded-lg overflow-hidden bg-stone-100 flex-shrink-0 relative">
+              <div className="w-14 h-14 lg:w-22 lg:h-22 rounded-lg overflow-hidden bg-stone-100 flex-shrink-0 relative">
                 <Image src={item.thumbnail} alt={item.title} fill className="object-contain" />
               </div>
             ) : (
@@ -93,14 +94,14 @@ function OrderCard({ order, compact = false }: OrderCardProps) {
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-black truncate">{item.title}</p>
+              <p className="text-sm lg:text-[18px] font-medium text-black truncate">{item.title}</p>
               {item.variant?.title && item.variant.title !== "Default Title" && (
-                <p className="text-xs text-stone-500">{item.variant.title}</p>
+                <p className="text-xs text-stone-500 lg:text-[15px]">{item.variant.title}</p>
               )}
             </div>
             <div className="text-right flex-shrink-0">
-              <p className="text-sm font-semibold text-black">{formatPrice(item.total)}</p>
-              <p className="text-xs text-stone-400">× {item.quantity}</p>
+              <p className="text-sm lg:text-[18px] font-semibold text-black">{formatPrice(item.total)}</p>
+              <p className="text-xs lg:text-[13px] text-stone-400">× {item.quantity}</p>
             </div>
           </div>
         ))}
@@ -109,6 +110,16 @@ function OrderCard({ order, compact = false }: OrderCardProps) {
             +{order.items.length - 2} altri prodotti
           </p>
         )}
+      </div>
+
+      {/* Link dettaglio */}
+      <div className="px-5 pb-4 flex justify-end">
+        <Link
+          href={`/account/ordini/${order.id}`}
+          className="text-sm text-[#d4a5a5] hover:underline font-medium"
+        >
+          Vedi dettaglio →
+        </Link>
       </div>
 
       {/* Tracking */}

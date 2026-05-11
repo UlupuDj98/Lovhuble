@@ -14,8 +14,21 @@ export function Register() {
   const [form, setForm] = useState({ first_name: '', last_name: '', email: '', password: '', confirm: '' })
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [errors, setErrors] = useState({ first_name: '', last_name: '', email: '', password: '', confirm: '' })
 
   const set = (field: string, value: string) => setForm(prev => ({ ...prev, [field]: value }))
+
+  const validators: Record<string, (v: string) => string> = {
+    first_name: v => !v.trim() ? 'Campo obbligatorio' : '',
+    last_name: v => !v.trim() ? 'Campo obbligatorio' : '',
+    email: v => v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? 'Email non valida' : '',
+    password: v => v && v.length < 8 ? 'Minimo 8 caratteri' : '',
+    confirm: v => v && v !== form.password ? 'Le password non coincidono' : '',
+  }
+
+  const handleBlur = (field: string) => {
+    setErrors(prev => ({ ...prev, [field]: validators[field]?.(form[field as keyof typeof form]) ?? '' }))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -66,11 +79,13 @@ export function Register() {
                   type="text"
                   value={form.first_name}
                   onChange={e => set('first_name', e.target.value)}
+                  onBlur={() => handleBlur('first_name')}
                   required
                   placeholder="Mario"
                   disabled={isLoading}
-                  className={inputClass}
+                  className={`${inputClass} ${errors.first_name ? 'border-red-400' : ''}`}
                 />
+                {errors.first_name && <p className="mt-1 text-xs text-red-500">{errors.first_name}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-stone-700 mb-1.5">Cognome *</label>
@@ -78,11 +93,13 @@ export function Register() {
                   type="text"
                   value={form.last_name}
                   onChange={e => set('last_name', e.target.value)}
+                  onBlur={() => handleBlur('last_name')}
                   required
                   placeholder="Rossi"
                   disabled={isLoading}
-                  className={inputClass}
+                  className={`${inputClass} ${errors.last_name ? 'border-red-400' : ''}`}
                 />
+                {errors.last_name && <p className="mt-1 text-xs text-red-500">{errors.last_name}</p>}
               </div>
             </div>
 
@@ -92,11 +109,13 @@ export function Register() {
                 type="email"
                 value={form.email}
                 onChange={e => set('email', e.target.value)}
+                onBlur={() => handleBlur('email')}
                 required
                 placeholder="mario@esempio.it"
                 disabled={isLoading}
-                className={inputClass}
+                className={`${inputClass} ${errors.email ? 'border-red-400' : ''}`}
               />
+              {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
             </div>
 
             <div>
@@ -106,11 +125,12 @@ export function Register() {
                   type={showPassword ? 'text' : 'password'}
                   value={form.password}
                   onChange={e => set('password', e.target.value)}
+                  onBlur={() => handleBlur('password')}
                   required
                   minLength={8}
                   placeholder="Minimo 8 caratteri"
                   disabled={isLoading}
-                  className={`${inputClass} pr-12`}
+                  className={`${inputClass} pr-12 ${errors.password ? 'border-red-400' : ''}`}
                 />
                 <button
                   type="button"
@@ -121,6 +141,7 @@ export function Register() {
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
+              {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password}</p>}
             </div>
 
             <div>
@@ -129,11 +150,13 @@ export function Register() {
                 type={showPassword ? 'text' : 'password'}
                 value={form.confirm}
                 onChange={e => set('confirm', e.target.value)}
+                onBlur={() => handleBlur('confirm')}
                 required
                 placeholder="Ripeti la password"
                 disabled={isLoading}
-                className={inputClass}
+                className={`${inputClass} ${errors.confirm ? 'border-red-400' : ''}`}
               />
+              {errors.confirm && <p className="mt-1 text-xs text-red-500">{errors.confirm}</p>}
             </div>
 
             <button
