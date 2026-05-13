@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { MessageCircle, X, Send } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import Spline from '@splinetool/react-spline';
+///import Spline from '@splinetool/react-spline';
 import { useCart } from '../context/CartContext';
 
 function makeSplineTransparent(spline: any) {
@@ -45,11 +45,11 @@ export function LiveChat() {
             className="fixed bottom-2 md:bottom-4 right-0 md:right-4 z-50 w-34 h-38 lg:h-46 lg:w-46 cursor-pointer"
           >
             <div className="pointer-events-none w-full h-full drop-shadow-[0_4px_12px_rgba(0,0,0,0.25)]">
-              <Spline
+              {/*<Spline
                 scene="https://prod.spline.design/L6jfvIUqWgt8HXRY/scene.splinecode"
                 style={{ width: '100%', height: '100%' }}
                 onLoad={makeSplineTransparent}
-              />
+              />*/}
             </div>
           </motion.div>
         )}

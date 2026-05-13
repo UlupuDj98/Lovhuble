@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { motion } from 'motion/react';
 
 const categoryBg: Record<string, string> = {
@@ -10,6 +9,7 @@ const categoryBg: Record<string, string> = {
   'salute-benessere': '/sfondi/lubrificanti.avif',
   'giochi':           '/sfondi/giochi.avif',
   'speciali':         '/sfondi/speciali.webp',
+  'offerte':          '/sfondi/offerte.avif',
 };
 
 interface PageHeaderProps {
@@ -28,7 +28,7 @@ export const PageHeader = ({ title, subtitle, categorySlug, backHref, backLabel 
       <div className="relative h-[260px] lg:h-[340px] overflow-hidden">
         <img src={bgImage} alt={title} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/60 to-black/80" />
-        
+
         {/* Title + subtitle */}
         <div className="absolute bottom-0 left-0 right-0 z-10 max-w-[980px] mx-auto px-6 lg:px-8 pb-[40px] lg:pb-[56px]">
           <motion.h1

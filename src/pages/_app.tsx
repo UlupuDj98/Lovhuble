@@ -27,7 +27,7 @@ function AppInner({ Component, pageProps }: AppProps) {
       <Newsletter />
       <Footer />
       <CartDrawer />
-      <LiveChat />
+     
     </div>
   )
 }
