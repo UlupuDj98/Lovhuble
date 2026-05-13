@@ -25,6 +25,10 @@ const nextConfig: NextConfig = {
         hostname: 'lovehuble-backend-production.up.railway.app',
         pathname: '/static/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'cdn.sanity.io',
+      },
     ],
   },
 }

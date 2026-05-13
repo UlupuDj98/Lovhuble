@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, ShoppingCart } from 'lucide-react';
+import { Heart} from 'lucide-react';
 import { Product } from '../../data/products';
 import { ProductRating } from './ProductRating';
 
