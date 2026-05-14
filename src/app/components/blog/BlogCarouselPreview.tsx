@@ -141,13 +141,15 @@ export const BlogCarouselPreview = () => {
         </div>
        
       </div>
+      <div className="relative z-30 clear-both">
       <Link
         href="/blog"
         className="flex gap-[6px] lg:mt-[40px] text-[20px] sm:text-[20px] md:text-[22px] lg:text-[26px] text-white underline underline-offset-4 hover:text-[#86868b] transition-colors duration-200 items-center justify-center"
       >
         Visita il Blog <ArrowRight className="w-[18px] h-[18px] sm:w-[18px] sm:h-[18px] lg:w-[20px] lg:h-[20px]" />
       </Link>
-    
+      </div>
+
      
     </section>
   );
