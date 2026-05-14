@@ -2,7 +2,8 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
+import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { useWishlist } from '../../context/WishlistContext';
 import { ExclusiveProductCard } from './ExclusiveProductCard';
 import { getExclusiveProducts } from '../../lib/medusa-data';
@@ -73,6 +74,7 @@ export const Esclusive = () => {
           <span className="text-[#1d1d1f] font-semibold">Solo su Lovehuble.. </span>
           <span className="text-[#86868b] font-inter">Prodotti in esclusiva che non puoi perderti</span>
         </motion.h2>
+      
       </div>
 
       <div className="max-w-[1180px] mx-auto relative">
@@ -143,6 +145,12 @@ export const Esclusive = () => {
           ))}
           <div className="w-[80px] lg:w-[140px] flex-shrink-0" aria-hidden />
         </div>
+         <Link
+          href="/prodotti/speciali"
+          className="inline-flex items-center gap-[6px] mt-[22px] sm:mt-[35px] lg:mt-[60px] text-[16px] sm:text-[18px] md:text-[20px] lg:text-[25px] text-black underline underline-offset-4 hover:text-[#86868b] transition-colors duration-200 pl-[24px] lg:pl-[34px]"
+        >
+          Scopri i  prodotti <ArrowRight className="w-[14px] h-[14px] sm:w-[16px] sm:h-[16px] lg:w-[20px] lg:h-[20px]" />
+        </Link>
       </div>
     </section>
   );

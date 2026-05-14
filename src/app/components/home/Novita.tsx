@@ -2,7 +2,8 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
+import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import type { Product } from '../../data/products';
 import { getAllProducts } from '../../lib/medusa-data';
 import { ProductCard } from '../product/ProductCard';
@@ -143,6 +144,12 @@ export const Novita = () => {
           ))}
           <div className="w-[80px] lg:w-[140px] flex-shrink-0" aria-hidden />
         </div>
+          <Link
+          href="/prodotti/novita"
+          className="inline-flex items-center gap-[6px] mt-[20px] sm:mt-[24px] lg:mt-[40px] text-[16px] sm:text-[18px] md:text-[20px] lg:text-[25px] text-black underline underline-offset-4 hover:text-[#86868b] transition-colors duration-200 pl-[24px] lg:pl-[34px]"
+        >
+          Scopri le novità <ArrowRight className="w-[14px] h-[14px] sm:w-[16px] sm:h-[16px] lg:w-[20px] lg:h-[20px]" />
+        </Link>
       </div>
     </section>
   );
