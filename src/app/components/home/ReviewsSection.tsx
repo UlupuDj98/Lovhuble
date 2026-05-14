@@ -61,7 +61,7 @@ export const ReviewsSection = () => {
   const doubled = [...reviews, ...reviews];
 
   return (
-    <section className="py-[78px] lg:py-[110px] bg-[#f5f5f7]">
+    <section className="pt-[68px] pb-[110px] lg:pt-[110px] lg:pb-[130px] bg-[#f5f5f7]">
       <div className="max-w-[1120px] mx-auto px-6 lg:px-8 mb-[48px] lg:mb-[64px]">
         <motion.h2
           initial={{ opacity: 0, y: 24 }}

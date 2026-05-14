@@ -121,7 +121,7 @@ export const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-white/10 pt-[32px]">
+        <div className="border-t border-white/15 pt-[32px]">
           <div className="flex flex-col md:flex-row justify-between items-center gap-[16px]">
             <p className="text-[13px] text-white/50 font-normal">
               © 2024 Lovehuble. Tutti i diritti riservati.
@@ -129,22 +129,22 @@ export const Footer = () => {
             <div className="flex flex-row flex-wrap justify-center md:justify-end gap-[8px]">
               {[
                 { src: '/payments/visa.svg', alt: 'Visa', w: 54 },
-                { src: '/payments/mastercard.svg', alt: 'Mastercard', w: 27 },
-                { src: '/payments/paypal.svg', alt: 'PayPal', w: 15 },
-                { src: '/payments/applepay.svg', alt: 'Apple Pay', w: 45 },
-                { src: '/payments/googlepay.svg', alt: 'Google Pay', w: 45 },
-                { src: '/payments/klarna.svg', alt: 'Klarna', w: 48 },
+                { src: '/payments/mastercard.svg', alt: 'Mastercard', w: 54 },
+                { src: '/payments/paypal.svg', alt: 'PayPal', w: 54 },
+                { src: '/payments/applepay.svg', alt: 'Apple Pay', w: 54 },
+                { src: '/payments/googlepay.svg', alt: 'Google Pay', w: 54 },
+                { src: '/payments/klarna.svg', alt: 'Klarna', w: 54 },
               ].map((p) => (
                 <div
                   key={p.alt}
-                  className="flex justify-center items-center bg-white/10 hover:bg-white/20 rounded-md px-[8px] py-[6px] transition-colors duration-200"
+                  className="flex justify-center items-center bg-white/15 hover:bg-white/20 rounded-md px-[8px] py-[6px] transition-colors duration-200"
                 >
                   <Image
                     src={p.src}
                     alt={p.alt}
                     width={p.w}
                     height={18}
-                    className="object-contain h-[14px] w-auto opacity-80 hover:opacity-100 transition-opacity"
+                    className="object-contain h-[17px] w-[30px] lg:h-[20px] lg:w-[40px] opacity-80 hover:opacity-100 transition-opacity"
                   />
                 </div>
               ))}
