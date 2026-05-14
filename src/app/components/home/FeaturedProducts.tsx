@@ -144,7 +144,6 @@ export const FeaturedProducts = () => {
           ))}
           <div className="w-[80px] lg:w-[140px] flex-shrink-0" aria-hidden />
         </div>
-      </div>
 
       <Link
         href="/prodotti/best-seller"
@@ -152,6 +151,8 @@ export const FeaturedProducts = () => {
       >
         Scopri i prodotti <ArrowRight className="w-[18px] h-[18px] sm:w-[18px] sm:h-[18px] lg:w-[20px] lg:h-[20px]" />
       </Link>
+      </div>
+
     </section>
   );
 };
