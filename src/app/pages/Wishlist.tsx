@@ -44,17 +44,17 @@ export const Wishlist = () => {
 
   return (
     <div className="pt-[68px] lg:pt-[80px] min-h-screen bg-[#f5f5f7]">
-      <div className="max-w-[980px] mx-auto px-6 lg:px-8 py-[64px] lg:py-[88px]">
+      <div className="max-w-[1120px] mx-auto px-6 lg:px-8 py-[64px] lg:py-[88px]">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="flex items-baseline justify-between mb-[48px]"
+          className="flex flex-col sm:flex-row items-baseline justify-between mb-[48px]"
         >
           <h1 className="text-[40px] lg:text-[48px] font-semibold tracking-[-0.015em] text-[#1d1d1f] leading-[1.08]">
             I Tuoi Preferiti
           </h1>
-          <span className="text-[15px] text-[#6e6e73] font-normal">
+          <span className="text-[15px] text-[#6e6e73] font-normal mt-4 sm:mt-0">
             {items.length} {items.length === 1 ? 'prodotto' : 'prodotti'}
           </span>
         </motion.div>
@@ -64,7 +64,7 @@ export const Wishlist = () => {
             {wishlistProducts.map((product, i) => (
               <motion.div
                 key={product.id}
-                className="relative aspect-[340/515]"
+                className="relative h-[380px] lg:h-[520px]"
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
@@ -76,14 +76,6 @@ export const Wishlist = () => {
                   wishlisted={isInWishlist(product.id)}
                   onWishlist={e => { e.preventDefault(); toggleWishlist(product); }}
                 />
-                <motion.button
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => removeFromWishlist(product.id)}
-                  className="absolute top-[-10px] right-[-10px] w-[28px] h-[28px] bg-[#1d1d1f] text-white rounded-full flex items-center justify-center hover:bg-[#d4a5a5] transition-colors duration-200 z-10 shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
-                  aria-label="Rimuovi dai preferiti"
-                >
-                  <X className="w-[14px] h-[14px]" strokeWidth={2.5} />
-                </motion.button>
               </motion.div>
             ))}
           </AnimatePresence>
@@ -97,7 +89,7 @@ export const Wishlist = () => {
         >
           <Link
             href="/"
-            className="text-[14px] text-[#6e6e73] hover:text-[#1d1d1f] transition-colors font-normal"
+            className="text-[16px] text-[#6e6e73] hover:text-[#1d1d1f] transition-colors font-normal underline"
           >
             Continua a Sfogliare
           </Link>
