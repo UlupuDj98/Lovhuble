@@ -10,6 +10,8 @@ const categoryBg: Record<string, string> = {
   'giochi':           '/sfondi/giochi.avif',
   'speciali':         '/sfondi/speciali.webp',
   'offerte':          '/sfondi/offerte.avif',
+  'best-seller':      '/sfondi/best-seller.avif',
+  'novita':           '/sfondi/novita.avif',
 };
 
 interface PageHeaderProps {

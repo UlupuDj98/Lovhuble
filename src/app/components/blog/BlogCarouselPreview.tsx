@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { motion } from 'motion/react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
+import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { BlogCard } from './BlogCard';
 import { client } from '@/app/lib/sanity/client';
 import { blogPostsQuery } from '@/app/lib/sanity/queries';
@@ -73,6 +74,7 @@ export const BlogCarouselPreview = () => {
           <span className="text-white font-semibold">Blog.</span>
           <span className="text-[#86868b] font-inter"> Articoli e guide per approfondire</span>
         </motion.h2>
+        
       </div>
 
       <div className="max-w-[1180px] mx-auto relative">
@@ -134,8 +136,18 @@ export const BlogCarouselPreview = () => {
             </motion.div>
           ))}
           <div className="w-[80px] lg:w-[140px] flex-shrink-0" aria-hidden />
+          
         </div>
+        
+         <Link
+          href="/blog"
+          className="inline-flex items-center gap-[6px] mt-[2px] sm:mt-[28px] lg:mt-[40px] text-[16px] sm:text-[18px] md:text-[20px] lg:text-[25px] text-white underline underline-offset-4 hover:text-[#86868b] transition-colors duration-200 pl-[24px] lg:pl-[34px]"
+        >
+          Visita il Blog <ArrowRight className="w-[14px] h-[14px] sm:w-[16px] sm:h-[16px] lg:w-[20px] lg:h-[20px]" />
+        </Link>
+    
       </div>
+     
     </section>
   );
 };

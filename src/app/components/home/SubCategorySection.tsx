@@ -45,6 +45,7 @@ export const SubCategoriesSection = ({ mainCategorySlug }: SubCategoriesSectionP
     link: `/prodotti/${mainCategorySlug}/${s.slug}`,
   }));
 
+  console.log(subCats)
   const scrollRef = useRef<HTMLDivElement>(null);
   const dragState = useRef({ active: false, startX: 0, scrollLeft: 0, moved: false });
   const [canScrollLeft, setCanScrollLeft] = useState(false);

@@ -10,7 +10,7 @@ import { FilterBar, FilterState } from '../components/product/FilterBar';
 import { PriceRangeBar } from '../components/product/PriceRangeBar';
 import { PageHeader } from '../components/PageHeader';
 import { Breadcrumb } from '../components/productdetail/Breadcrumb';
-import { getProductsByCollection } from '../lib/medusa-data';
+import { getProductsByCategory } from '../lib/medusa-data';
 import type { Product } from '../data/products';
 
 function slugToLabel(slug: string): string {
@@ -26,6 +26,7 @@ export const Category = () => {
 
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  
 
   const [filters, setFilters] = useState<FilterState>({
     onlyInStock: false,
@@ -46,7 +47,7 @@ export const Category = () => {
   useEffect(() => {
     if (!categorySlug) return;
     setLoading(true);
-    getProductsByCollection(categorySlug)
+    getProductsByCategory(categorySlug)
       .then(setAllProducts)
       .finally(() => setLoading(false));
   }, [categorySlug]);
