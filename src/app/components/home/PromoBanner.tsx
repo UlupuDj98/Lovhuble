@@ -78,7 +78,7 @@ export default function PromoBanner() {
   }, [allProducts])
 
   return (
-    <section className="max-w-[1120px] mx-3 lg:mx-auto px-6 lg:px-8 mb-[48px] lg:mb-[64px] rounded-2xl border border-white/10 bg-gradient-to-br from-[#d8abab] to-[#c99191] p-6 md:p-10 shadow-[0_8px_24px_rgba(0,0,0,0.08)]">
+    <section className="max-w-[1120px] mx-3 lg:mx-auto px-6 lg:px-8 mb-[48px] lg:mb-[64px] rounded-2xl border border-white/10 bg-gradient-to-br from-[#d8abab] to-[#c99191] p-6 md:p-10 shadow-[0_8px_24px_rgba(0,0,0,0.08)] my-10 lg:my-12">
       <div className="grid gap-10 lg:grid-cols-2 lg:items-center py-5 md:py-10 px-3 md:px-6">
         {/* LEFT */}
         <div className="flex flex-col items-start gap-7">

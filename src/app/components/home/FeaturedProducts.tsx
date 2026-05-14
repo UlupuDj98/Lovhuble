@@ -146,9 +146,9 @@ export const FeaturedProducts = () => {
         </div>
            <Link
           href="/prodotti/best-seller"
-          className="inline-flex items-center gap-[6px] mt-[2px] sm:mt-[16px] lg:mt-[30px] text-[16px] sm:text-[18px] md:text-[20px] lg:text-[25px] text-black underline underline-offset-4 hover:text-[#86868b] transition-colors duration-200 pl-[24px] lg:pl-[34px]"
+          className="flex justify-center items-center gap-[6px] mt-[2px] sm:mt-[16px] lg:mt-[30px] text-[20px] sm:text-[20px] md:text-[22px] lg:text-[26px] text-black underline underline-offset-4 hover:text-[#86868b] transition-colors duration-200"
         >
-          Scopri i  prodotti <ArrowRight className="w-[14px] h-[14px] sm:w-[16px] sm:h-[16px] lg:w-[20px] lg:h-[20px]" />
+          Scopri i  prodotti <ArrowRight className="w-[18px] h-[18px] sm:w-[18px] sm:h-[18px] lg:w-[20px] lg:h-[20px]" />
         </Link>
       </div>
     </section>

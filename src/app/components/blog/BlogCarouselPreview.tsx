@@ -114,7 +114,7 @@ export const BlogCarouselPreview = () => {
           className="scrollbar-hide flex sm:gap-[14px] md:gap-[24px] lg:gap-[20px] overflow-x-auto snap-x snap-mandatory select-none"
           style={{
             paddingTop: '60px',
-            paddingBottom: '80px',
+            paddingBottom: '75px',
             paddingLeft: '34px',
             paddingRight: '34px',
             marginTop: '-60px',
@@ -141,9 +141,9 @@ export const BlogCarouselPreview = () => {
         
          <Link
           href="/blog"
-          className="inline-flex items-center gap-[6px] mt-[2px] sm:mt-[28px] lg:mt-[40px] text-[16px] sm:text-[18px] md:text-[20px] lg:text-[25px] text-white underline underline-offset-4 hover:text-[#86868b] transition-colors duration-200 pl-[24px] lg:pl-[34px]"
+          className="flex gap-[6px] sm:mt-[28px] lg:mt-[40px] text-[20px] sm:text-[20px] md:text-[22px] lg:text-[26px] text-white underline underline-offset-4 hover:text-[#86868b] transition-colors duration-200 items-center justify-center"
         >
-          Visita il Blog <ArrowRight className="w-[14px] h-[14px] sm:w-[16px] sm:h-[16px] lg:w-[20px] lg:h-[20px]" />
+          Visita il Blog <ArrowRight className="w-[18px] h-[18px] sm:w-[18px] sm:h-[18px] lg:w-[20px] lg:h-[20px]" />
         </Link>
     
       </div>
