@@ -17,6 +17,7 @@ export function Login() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isLocked, setIsLocked] = useState(false)
   const [errors, setErrors] = useState({ email: '', password: '' })
 
   const validateEmail = (v: string) => v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? 'Email non valida' : ''
@@ -36,8 +37,14 @@ export function Login() {
       await login(email, password)
       await transferCartToCustomer()
       router.push(from)
-    } catch {
-      toast.error('Email o password errati')
+    } catch (err: unknown) {
+      const e = err as { status?: number; message?: string }
+      if (e?.status === 429 || e?.message?.includes('bloccato')) {
+        setIsLocked(true)
+        toast.error('Account bloccato. Riprova tra 15 minuti.')
+      } else {
+        toast.error('Email o password errati')
+      }
     } finally {
       setIsLoading(false)
     }
@@ -54,6 +61,12 @@ export function Login() {
 
         <div className="bg-white rounded-2xl border border-stone-200 p-8 shadow-[0_4px_16px_rgba(0,0,0,0.06)]">
           <form onSubmit={handleSubmit} className="space-y-5">
+            {isLocked && (
+              <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 text-center">
+                Account temporaneamente bloccato per troppi tentativi.<br />
+                <span className="font-semibold">Riprova tra 15 minuti.</span>
+              </div>
+            )}
             <div>
               <label className="block text-sm font-medium text-stone-700 mb-1.5">Email</label>
               <input
@@ -101,11 +114,11 @@ export function Login() {
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || isLocked}
               className="w-full py-3.5 rounded-xl text-white font-semibold transition-opacity disabled:opacity-60"
               style={{ background: 'linear-gradient(to right, #d4a5a5, #c49494)' }}
             >
-              {isLoading ? 'Accesso in corso...' : 'Accedi'}
+              {isLoading ? 'Accesso in corso...' : isLocked ? 'Account bloccato' : 'Accedi'}
             </button>
           </form>
         </div>
