@@ -22,9 +22,10 @@ function slugToLabel(slug: string): string {
 
 interface CategoryProps {
   initialProducts?: Product[]
+  initialSubCategoryItems?: { title: string; imageSrc: string; link: string }[]
 }
 
-export const Category = ({ initialProducts }: CategoryProps) => {
+export const Category = ({ initialProducts, initialSubCategoryItems }: CategoryProps) => {
   const router = useRouter();
   const categorySlug = typeof router.query.categoria === 'string' ? router.query.categoria : '';
 
@@ -86,7 +87,7 @@ export const Category = ({ initialProducts }: CategoryProps) => {
         ]} />
       </div>
 
-      <SubCategoriesSection mainCategorySlug={categorySlug} />
+      <SubCategoriesSection mainCategorySlug={categorySlug} initialItems={initialSubCategoryItems} />
 
       <div className="max-w-[1120px] mx-auto px-6 lg:px-8 pt-[40px] pb-[8px]">
         <PriceRangeBar value={price} onChange={setPrice} max={maxPrice} />

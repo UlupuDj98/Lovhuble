@@ -8,7 +8,6 @@ import { Footer } from '@/app/components/Footer'
 import { Newsletter } from '@/app/components/Newsletter'
 import { CartDrawer } from '@/app/components/CartDrawer'
 import { Toaster } from '@/app/components/Toaster'
-import { LiveChat } from '@/app/components/LiveChat'
 import { useScrollRestoration } from '@/app/hooks/useScrollRestoration'
 import '@/styles/index.css'
 

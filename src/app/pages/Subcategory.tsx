@@ -16,9 +16,10 @@ import type { Product } from '../data/products';
 interface SubcategoryProps {
   initialProducts?: Product[]
   initialSubCategoryName?: string
+  initialSubCategoryItems?: { title: string; imageSrc: string; link: string }[]
 }
 
-export const Subcategory = ({ initialProducts, initialSubCategoryName }: SubcategoryProps) => {
+export const Subcategory = ({ initialProducts, initialSubCategoryName, initialSubCategoryItems }: SubcategoryProps) => {
   const router = useRouter();
   const categorySlug = typeof router.query.categoria === 'string' ? router.query.categoria : '';
   const subCategorySlug = typeof router.query.subcategoria === 'string' ? router.query.subcategoria : '';
@@ -86,7 +87,7 @@ export const Subcategory = ({ initialProducts, initialSubCategoryName }: Subcate
         ]} />
       </div>
 
-      <SubCategoriesSection mainCategorySlug={categorySlug} />
+      <SubCategoriesSection mainCategorySlug={categorySlug} initialItems={initialSubCategoryItems} />
 
       <div className="max-w-[1120px] mx-auto px-6 lg:px-8 pt-[40px] pb-[8px]">
         <PriceRangeBar value={price} onChange={setPrice} max={maxPrice} />

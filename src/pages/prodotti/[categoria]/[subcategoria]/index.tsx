@@ -1,22 +1,36 @@
 import { GetServerSideProps } from 'next'
 import { Subcategory } from '@/app/pages/Subcategory'
-import { getProductsByCategory, getCategoryName } from '@/app/lib/medusa-data'
+import { getProductsByCategory, getCategoryName, getSubCategories } from '@/app/lib/medusa-data'
 import type { Product } from '@/app/data/products'
 
 interface Props {
   initialProducts: Product[]
   initialSubCategoryName: string
+  initialSubCategoryItems: { title: string; imageSrc: string; link: string }[]
 }
 
-export default function SubcategoriaPage({ initialProducts, initialSubCategoryName }: Props) {
-  return <Subcategory initialProducts={initialProducts} initialSubCategoryName={initialSubCategoryName} />
+export default function SubcategoriaPage({ initialProducts, initialSubCategoryName, initialSubCategoryItems }: Props) {
+  return (
+    <Subcategory
+      initialProducts={initialProducts}
+      initialSubCategoryName={initialSubCategoryName}
+      initialSubCategoryItems={initialSubCategoryItems}
+    />
+  )
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const categoria = context.params?.categoria as string
   const subcategoria = context.params?.subcategoria as string
-  const [initialProducts, initialSubCategoryName] = await Promise.all([
+  const [initialProducts, initialSubCategoryName, subCats] = await Promise.all([
     getProductsByCategory(subcategoria).catch(() => []),
     getCategoryName(subcategoria).catch(() => ''),
+    getSubCategories(categoria).catch(() => []),
   ])
-  return { props: { initialProducts, initialSubCategoryName } }
+  const initialSubCategoryItems = subCats.map(s => ({
+    title: s.name,
+    imageSrc: s.image,
+    link: `/prodotti/${categoria}/${s.slug}`,
+  }))
+  return { props: { initialProducts, initialSubCategoryName, initialSubCategoryItems } }
 }
