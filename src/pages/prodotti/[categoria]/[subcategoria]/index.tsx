@@ -7,11 +7,13 @@ interface Props {
   initialProducts: Product[]
   initialSubCategoryName: string
   initialSubCategoryItems: { title: string; imageSrc: string; link: string }[]
+  subCategorySlug: string
 }
 
-export default function SubcategoriaPage({ initialProducts, initialSubCategoryName, initialSubCategoryItems }: Props) {
+export default function SubcategoriaPage({ initialProducts, initialSubCategoryName, initialSubCategoryItems, subCategorySlug }: Props) {
   return (
     <Subcategory
+      key={subCategorySlug}
       initialProducts={initialProducts}
       initialSubCategoryName={initialSubCategoryName}
       initialSubCategoryItems={initialSubCategoryItems}
@@ -32,5 +34,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     imageSrc: s.image,
     link: `/prodotti/${categoria}/${s.slug}`,
   }))
-  return { props: { initialProducts, initialSubCategoryName, initialSubCategoryItems } }
+  return { props: { initialProducts, initialSubCategoryName, initialSubCategoryItems, subCategorySlug: subcategoria } }
 }

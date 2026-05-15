@@ -32,7 +32,7 @@ export const PageHeader = ({ title, subtitle, categorySlug, backHref, backLabel 
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/60 to-black/80" />
 
         {/* Title + subtitle */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 max-w-[980px] mx-auto px-6 lg:px-8 pb-[40px] lg:pb-[56px]">
+        <div className="absolute bottom-0 left-0 right-0 z-10 max-w-[1120px] mx-auto px-6 lg:px-8 pb-[40px] lg:pb-[56px]">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
