@@ -11,15 +11,20 @@ import { useWishlist } from '../../context/WishlistContext';
 
 const SCROLL_AMOUNT = 380;
 
-export const FeaturedProducts = () => {
+interface FeaturedProductsProps {
+  initialProducts?: Product[];
+}
+
+export const FeaturedProducts = ({ initialProducts }: FeaturedProductsProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const dragState = useRef({ active: false, startX: 0, scrollLeft: 0, moved: false });
   const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>(initialProducts ?? []);
 
   useEffect(() => {
+    if (initialProducts) return;
     getAllProducts().then(all => setFeaturedProducts(all.slice(0, 6))).catch(console.error);
-  }, []);
+  }, [initialProducts]);
 
   const onScroll = () => {
     setCanScrollLeft((scrollRef.current?.scrollLeft ?? 0) > 0);

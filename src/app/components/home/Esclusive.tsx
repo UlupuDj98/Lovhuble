@@ -11,15 +11,20 @@ import type { Product } from '../../data/products';
 
 const SCROLL_AMOUNT = 380;
 
-export const Esclusive = () => {
+interface EsclusiveProps {
+  initialProducts?: Product[];
+}
+
+export const Esclusive = ({ initialProducts }: EsclusiveProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const dragState = useRef({ active: false, startX: 0, scrollLeft: 0, moved: false });
   const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(initialProducts ?? []);
 
   useEffect(() => {
+    if (initialProducts) return;
     getExclusiveProducts().then(setProducts).catch(console.error);
-  }, []);
+  }, [initialProducts]);
 
   const onScroll = () => {
     setCanScrollLeft((scrollRef.current?.scrollLeft ?? 0) > 0);

@@ -8,16 +8,24 @@ import { Novita } from '../components/home/Novita';
 import { Esclusive } from '../components/home/Esclusive';
 import PromoBanner from '../components/home/PromoBanner';
 import { BlogCarouselPreview } from '../components/blog/BlogCarouselPreview';
+import type { Product } from '../data/products';
 
-export const Home = () => (
+interface HomeProps {
+  initialCategories?: { title: string; imageSrc: string; link: string }[];
+  initialFeatured?: Product[];
+  initialNovita?: Product[];
+  initialEsclusive?: Product[];
+}
+
+export const Home = ({ initialCategories, initialFeatured, initialNovita, initialEsclusive }: HomeProps) => (
   <div className="pt-[68px] lg:pt-[80px] bg-[#f5f5f7]">
     <Hero />
     <MiniSocialProof />
-    <CategoriesSection />
+    <CategoriesSection initialItems={initialCategories} />
     <PromoBanner />
-    <FeaturedProducts />
-    <Esclusive />
-    <Novita />
+    <FeaturedProducts initialProducts={initialFeatured} />
+    <Esclusive initialProducts={initialEsclusive} />
+    <Novita initialProducts={initialNovita} />
     <ReviewsSection />
     <BlogCarouselPreview />
     <Faq />

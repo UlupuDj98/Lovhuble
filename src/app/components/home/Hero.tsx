@@ -19,8 +19,8 @@ export const Hero = () => (
 
     <div className="relative z-20 text-center px-6 max-w-[980px] mx-auto">
       <motion.div
-        initial={{ y: 30, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
+        initial={{ y: 30 }}
+        animate={{ y: 0 }}
         transition={{ delay: 0.2, duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
       >
         <h1 className="text-[48px] lg:text-[80px] font-semibold tracking-[-0.015em] text-white mb-[18px] leading-[1.05] lg:leading-[1.05]">
@@ -30,8 +30,8 @@ export const Hero = () => (
       </motion.div>
 
       <motion.p
-        initial={{ y: 30, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
+        initial={{ y: 30 }}
+        animate={{ y: 0 }}
         transition={{ delay: 0.4, duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
         className="text-[21px] lg:text-[28px] text-white/90 mb-[32px] font-normal leading-[1.3] tracking-[-0.003em] max-w-[640px] mx-auto"
       >
@@ -39,8 +39,8 @@ export const Hero = () => (
       </motion.p>
 
       <motion.div
-        initial={{ y: 30, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
+        initial={{ y: 30 }}
+        animate={{ y: 0 }}
         transition={{ delay: 0.6, duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
       >
         <Link href="/">
