@@ -37,6 +37,12 @@ export const Checkout = () => {
   const [error, setError] = useState('');
   const [order, setOrder] = useState<OrderResult | null>(null);
 
+  const [promoInput, setPromoInput] = useState('');
+  const [promoLoading, setPromoLoading] = useState(false);
+  const [promoError, setPromoError] = useState('');
+  const [appliedCode, setAppliedCode] = useState('');
+  const [discountTotal, setDiscountTotal] = useState(0);
+
   useEffect(() => {
     if (!customer) return
     medusa.store.customer.listAddress({ limit: 100 })
@@ -59,6 +65,43 @@ export const Checkout = () => {
 
   const set = (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+
+  const applyPromo = async () => {
+    const code = promoInput.trim().toUpperCase();
+    if (!code) return;
+    const cartId = contextCartId ?? (typeof window !== 'undefined' ? localStorage.getItem(CART_ID_KEY) : null);
+    if (!cartId) return;
+
+    setPromoLoading(true);
+    setPromoError('');
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { cart } = await (medusa.store.cart as any).addPromotions(cartId, { promo_codes: [code] });
+      const discount = (cart as any)?.discount_total ?? 0;
+      if (discount > 0) {
+        setAppliedCode(code);
+        setDiscountTotal(discount);
+        setPromoInput('');
+      } else {
+        setPromoError('Codice non valido o carrello non idoneo (minimo 50€)');
+      }
+    } catch {
+      setPromoError('Codice non valido o già utilizzato');
+    } finally {
+      setPromoLoading(false);
+    }
+  };
+
+  const removePromo = async () => {
+    const cartId = contextCartId ?? (typeof window !== 'undefined' ? localStorage.getItem(CART_ID_KEY) : null);
+    if (!cartId || !appliedCode) return;
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (medusa.store.cart as any).removePromotions(cartId, { promo_codes: [appliedCode] });
+    } catch { /* ignore */ }
+    setAppliedCode('');
+    setDiscountTotal(0);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -264,19 +307,68 @@ export const Checkout = () => {
                   ))}
                 </div>
 
+                {/* Codice sconto */}
+                <div className="border-t border-[#f0f0f5] pt-[16px]">
+                  {appliedCode ? (
+                    <div className="flex items-center justify-between bg-[#f0fdf4] rounded-[10px] px-[14px] py-[10px]">
+                      <span className="text-[13px] text-green-700 font-medium">
+                        Codice <span className="font-bold">{appliedCode}</span> applicato
+                      </span>
+                      <button
+                        type="button"
+                        onClick={removePromo}
+                        className="text-[12px] text-[#86868b] hover:text-red-500 transition-colors ml-[8px] flex-shrink-0"
+                      >
+                        Rimuovi
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-[8px]">
+                      <p className="text-[11px] text-[#86868b] tracking-[0.06em] uppercase font-medium">Hai un codice sconto?</p>
+                      <div className="flex gap-[8px]">
+                        <input
+                          type="text"
+                          value={promoInput}
+                          onChange={e => { setPromoInput(e.target.value.toUpperCase()); setPromoError(''); }}
+                          onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), applyPromo())}
+                          placeholder="WELCOME-XXXXXXXX"
+                          className="flex-1 rounded-[10px] px-[14px] py-[10px] text-[14px] text-[#1d1d1f] bg-[#f5f5f7] border border-transparent focus:outline-none focus:border-[#1d1d1f] placeholder-[#c0c0c5] uppercase"
+                        />
+                        <button
+                          type="button"
+                          onClick={applyPromo}
+                          disabled={promoLoading || !promoInput.trim()}
+                          className="px-[16px] py-[10px] bg-[#1d1d1f] text-white text-[13px] font-medium rounded-[10px] disabled:opacity-50 flex-shrink-0"
+                        >
+                          {promoLoading ? '...' : 'Applica'}
+                        </button>
+                      </div>
+                      {promoError && (
+                        <p className="text-[12px] text-red-500">{promoError}</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+
                 {/* Totali */}
                 <div className="border-t border-[#f0f0f5] pt-[16px] space-y-[10px]">
                   <div className="flex justify-between text-[14px] text-[#6e6e73]">
                     <span>Subtotale</span>
                     <span>{formatPrice(totalPrice)}</span>
                   </div>
+                  {discountTotal > 0 && (
+                    <div className="flex justify-between text-[14px] text-green-600">
+                      <span>Sconto ({appliedCode})</span>
+                      <span>-{formatPrice(discountTotal)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-[14px] text-[#6e6e73]">
                     <span>Spedizione</span>
                     <span className="text-green-600 font-medium">Gratuita</span>
                   </div>
                   <div className="flex justify-between text-[17px] font-semibold text-[#1d1d1f] pt-[10px] border-t border-[#f0f0f5]">
                     <span>Totale</span>
-                    <span>{formatPrice(totalPrice)}</span>
+                    <span>{formatPrice(Math.max(0, totalPrice - discountTotal))}</span>
                   </div>
                 </div>
               </Card>

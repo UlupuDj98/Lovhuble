@@ -4,21 +4,38 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
 
+type Status = 'idle' | 'loading' | 'success' | 'error';
+
 export const Newsletter = () => {
   const [form, setForm] = useState({ nome: '', cognome: '', email: '' });
   const [privacy, setPrivacy] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<Status>('idle');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!privacy) return;
-    setSubmitted(true);
+
+    setStatus('loading');
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_MEDUSA_URL}/store/newsletter/subscribe`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: form.email }),
+        }
+      );
+      if (!res.ok) throw new Error('Errore server');
+      setStatus('success');
+    } catch {
+      setStatus('error');
+    }
   };
 
   return (
     <section className="bg-white py-[72px] lg:py-[96px]">
       <div className="max-w-[1120px] mx-auto px-6 lg:px-8">
-        {submitted ? (
+        {status === 'success' ? (
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -26,10 +43,10 @@ export const Newsletter = () => {
             className="text-center py-[32px]"
           >
             <h3 className="text-[24px] lg:text-[36px] font-semibold tracking-[-0.015em] text-[#1d1d1f] mb-[12px]">
-              Grazie per l'iscrizione!
+              Grazie per l&apos;iscrizione!
             </h3>
             <p className="text-[16px] text-[#6e6e73]">
-              Riceverai presto il tuo codice sconto da 10€.
+              Controlla la tua email — ti abbiamo inviato il codice sconto!
             </p>
           </motion.div>
         ) : (
@@ -46,7 +63,7 @@ export const Newsletter = () => {
                 10€ di SCONTO<br className="hidden sm:block" /> per te!
               </h2>
               <p className="text-[14px] lg:text-[17px] text-[#6e6e73] leading-[1.6] font-normal">
-                Iscriviti alla nostra newsletter e godi di sconti, regali e consigli hot
+                Iscriviti alla newsletter e ricevi 10€ di sconto sul primo ordine da minimo 50€
               </p>
             </motion.div>
 
@@ -107,15 +124,22 @@ export const Newsletter = () => {
                   </span>
                 </label>
 
+                {status === 'error' && (
+                  <p className="text-[13px] text-red-500">
+                    Qualcosa è andato storto. Riprova tra qualche istante.
+                  </p>
+                )}
+
                 {/* Submit */}
                 <motion.button
                   type="submit"
+                  disabled={status === 'loading'}
                   whileHover={{ opacity: 0.82 }}
                   whileTap={{ scale: 0.99 }}
                   transition={{ duration: 0.18 }}
-                  className="w-full bg-[#1d1d1f] text-white py-[16px] rounded-[12px] text-[14px] font-semibold tracking-[0.1em] uppercase mt-[4px]"
+                  className="w-full bg-[#1d1d1f] text-white py-[16px] rounded-[12px] text-[14px] font-semibold tracking-[0.1em] uppercase mt-[4px] disabled:opacity-60"
                 >
-                  Iscriviti
+                  {status === 'loading' ? 'Iscrizione in corso…' : 'Iscriviti'}
                 </motion.button>
               </form>
             </motion.div>
