@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart} from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { Product } from '../../data/products';
 import { ProductRating } from './ProductRating';
 
@@ -12,10 +12,10 @@ interface ProductCardProps {
   onWishlist?: (e: React.MouseEvent) => void;
   wishlisted?: boolean;
   imageSrc?: string;
+  priority?: boolean;
 }
 
-export const ProductCard = ({ product, onWishlist, wishlisted, imageSrc }: ProductCardProps) => (
-   
+export const ProductCard = ({ product, onWishlist, wishlisted, imageSrc, priority = false }: ProductCardProps) => (
   <Link href={`/prodotti/${product.categorySlug}/${product.subCategorySlug}/${product.slug}`} className="block group h-full">
     <div className="bg-white rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.25)] overflow-hidden flex flex-col h-full">
       {/* Image */}
@@ -24,6 +24,8 @@ export const ProductCard = ({ product, onWishlist, wishlisted, imageSrc }: Produ
           src={imageSrc ?? product.image}
           alt={product.name}
           fill
+          priority={priority}
+          sizes="(max-width: 768px) 50vw, 33vw"
           className="object-contain p-[10px] lg:p-[20px] group-hover:scale-105 transition-transform duration-300"
         />
 
@@ -47,10 +49,9 @@ export const ProductCard = ({ product, onWishlist, wishlisted, imageSrc }: Produ
         <div className="mb-[8px] lg:mb-[12px]">
           <ProductRating />
         </div>
-        <p className="text-[10px] lg:text-[14px]  text-[#1d1d1f] mb-[4px] lg:mb-[10px] leading-[1.3] tracking-[-0.003em]">
+        <p className="text-[10px] lg:text-[14px] text-[#1d1d1f] mb-[4px] lg:mb-[10px] leading-[1.3] tracking-[-0.003em]">
           {product.subCategory}
         </p>
-
         <p className="text-[14px] lg:text-[20px] font-semibold text-[#1d1d1f] mb-[10px] lg:mb-[20px] leading-[1.3] tracking-[-0.003em]">
           {product.name}
         </p>
@@ -60,5 +61,4 @@ export const ProductCard = ({ product, onWishlist, wishlisted, imageSrc }: Produ
       </div>
     </div>
   </Link>
-  
 );

@@ -20,12 +20,16 @@ function slugToLabel(slug: string): string {
     .join(' ');
 }
 
-export const Category = () => {
+interface CategoryProps {
+  initialProducts?: Product[]
+}
+
+export const Category = ({ initialProducts }: CategoryProps) => {
   const router = useRouter();
   const categorySlug = typeof router.query.categoria === 'string' ? router.query.categoria : '';
 
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [allProducts, setAllProducts] = useState<Product[]>(initialProducts ?? []);
+  const [loading, setLoading] = useState(!initialProducts);
   
 
   const [filters, setFilters] = useState<FilterState>({
@@ -45,12 +49,13 @@ export const Category = () => {
   }, [maxPrice]);
 
   useEffect(() => {
-    if (!categorySlug) return;
+    // Skip fetch se i prodotti arrivano già dal server (SSR)
+    if (!categorySlug || initialProducts) return;
     setLoading(true);
     getProductsByCategory(categorySlug)
       .then(setAllProducts)
       .finally(() => setLoading(false));
-  }, [categorySlug]);
+  }, [categorySlug, initialProducts]);
 
   const { isInWishlist, toggleWishlist } = useWishlist();
 
@@ -114,12 +119,13 @@ export const Category = () => {
                       <motion.div
                         key={product.id}
                         className="h-[380px] lg:h-[520px]"
-                        initial={{ opacity: 0, y: 24 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.05, duration: 0.5 }}
+                        initial={{ y: 16 }}
+                        animate={{ y: 0 }}
+                        transition={{ delay: Math.min(i * 0.04, 0.3), duration: 0.4 }}
                       >
                         <ProductCard
                           product={product}
+                          priority={i < 4}
                           wishlisted={isInWishlist(product.id)}
                           onWishlist={e => { e.preventDefault(); toggleWishlist(product); }}
                         />
