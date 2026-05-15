@@ -155,6 +155,12 @@ export function AccountOrdineDettaglio() {
                         <span>{formatPrice(order.subtotal)}</span>
                       </div>
                     )}
+                    {order.discount_total > 0 && (
+                      <div className="flex justify-between text-sm text-green-600 font-semibold">
+                        <span>Sconto</span>
+                        <span>-{formatPrice(order.discount_total)}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between text-sm text-stone-500">
                       <span>Spedizione</span>
                       <span className="text-green-600 font-medium">Gratuita</span>
