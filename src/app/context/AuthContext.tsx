@@ -75,7 +75,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const login = async (email: string, password: string) => {
-    await medusa.auth.login('customer', 'emailpass', { email, password })
+    // Passa per il nostro handler che gestisce rate limit e account lockout
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      const err = new Error(data.message || 'Login fallito') as Error & { status: number }
+      err.status = res.status
+      throw err
+    }
+    const { token } = await res.json()
+    // Il SDK legge il token da questo localStorage key ad ogni richiesta
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(JWT_STORAGE_KEY, token)
+    }
     await refreshCustomer()
   }
 
