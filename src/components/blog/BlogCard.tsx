@@ -2,13 +2,14 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { BlogPost } from '@/app/lib/sanity/types';
+import { BlogPost } from '@/lib/sanity/types';
 
 interface BlogCardProps {
   post: BlogPost;
+  priority?: boolean;
 }
 
-export const BlogCard = ({ post }: BlogCardProps) => (
+export const BlogCard = ({ post, priority = false }: BlogCardProps) => (
   <Link href={`/blog/${post.id}`} className="block group h-full w-[90%] sm:w-full mx-auto">
     <div className="flex flex-col rounded-[20px] sm:rounded-[24px] lg:rounded-[28px] overflow-hidden bg-white transition-all duration-300 h-[340px] sm:h-[420px] md:h-[450px] lg:h-[620px] border border-white/10 shadow-[0_8px_24px_rgba(0,0,0,0.12)]">
       {/* IMAGE HALF */}
@@ -18,6 +19,8 @@ export const BlogCard = ({ post }: BlogCardProps) => (
             src={post.coverImage}
             alt={post.title}
             fill
+            priority={priority}
+            sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 560px"
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         )}

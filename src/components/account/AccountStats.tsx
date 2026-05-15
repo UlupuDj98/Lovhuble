@@ -1,6 +1,6 @@
 import { MedusaCustomer } from "@/types/customer";
 import { memo } from "react";
-import { formatPrice } from "@/app/utils/price";
+import { formatPrice } from "@/utils/price";
 
 interface AccountStatsProps {
   customer: MedusaCustomer;

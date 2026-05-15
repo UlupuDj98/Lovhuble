@@ -9,15 +9,17 @@ import { Esclusive } from '../components/home/Esclusive';
 import PromoBanner from '../components/home/PromoBanner';
 import { BlogCarouselPreview } from '../components/blog/BlogCarouselPreview';
 import type { Product } from '../data/products';
+import type { BlogPost } from '../lib/sanity/types';
 
 interface HomeProps {
   initialCategories?: { title: string; imageSrc: string; link: string }[];
   initialFeatured?: Product[];
   initialNovita?: Product[];
   initialEsclusive?: Product[];
+  initialBlogPosts?: BlogPost[];
 }
 
-export const Home = ({ initialCategories, initialFeatured, initialNovita, initialEsclusive }: HomeProps) => (
+export const Home = ({ initialCategories, initialFeatured, initialNovita, initialEsclusive, initialBlogPosts }: HomeProps) => (
   <div className="pt-[68px] lg:pt-[80px] bg-[#f5f5f7]">
     <Hero />
     <MiniSocialProof />
@@ -27,7 +29,7 @@ export const Home = ({ initialCategories, initialFeatured, initialNovita, initia
     <Esclusive initialProducts={initialEsclusive} />
     <Novita initialProducts={initialNovita} />
     <ReviewsSection />
-    <BlogCarouselPreview />
+    <BlogCarouselPreview initialPosts={initialBlogPosts} />
     <Faq />
   </div>
 );

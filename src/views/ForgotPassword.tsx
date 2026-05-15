@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
-import { medusa } from '@/app/lib/medusa'
+import { medusa } from '@/lib/medusa'
 
 export function ForgotPassword() {
   const [email, setEmail] = useState('')

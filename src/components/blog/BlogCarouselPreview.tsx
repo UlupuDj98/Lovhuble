@@ -5,19 +5,24 @@ import { motion } from 'motion/react';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { BlogCard } from './BlogCard';
-import { client } from '@/app/lib/sanity/client';
-import { blogPostsQuery } from '@/app/lib/sanity/queries';
-import { BlogPost } from '@/app/lib/sanity/types';
+import { client } from '@/lib/sanity/client';
+import { blogPostsQuery } from '@/lib/sanity/queries';
+import { BlogPost } from '@/lib/sanity/types';
 
 const SCROLL_AMOUNT = 380;
 
-export const BlogCarouselPreview = () => {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
+interface BlogCarouselPreviewProps {
+  initialPosts?: BlogPost[];
+}
+
+export const BlogCarouselPreview = ({ initialPosts }: BlogCarouselPreviewProps) => {
+  const [posts, setPosts] = useState<BlogPost[]>(initialPosts ?? []);
   const scrollRef = useRef<HTMLDivElement>(null);
   const dragState = useRef({ active: false, startX: 0, scrollLeft: 0, moved: false });
   const [canScrollLeft, setCanScrollLeft] = useState(false);
 
   useEffect(() => {
+    if (initialPosts && initialPosts.length > 0) return;
     client.fetch<BlogPost[]>(blogPostsQuery).then(setPosts).catch(() => {});
   }, []);
 
@@ -65,8 +70,8 @@ export const BlogCarouselPreview = () => {
     <section className="pt-[58px] pb-[58px] sm:pt-[64px] sm:pb-[84px] md:pt-[70px] md:pb-[100px] lg:py-[110px] bg-[#1a1a1a]">
       <div className="max-w-[1120px] mx-auto px-6 lg:px-8 mb-[48px] lg:mb-[64px]">
         <motion.h2
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ y: 24 }}
+          whileInView={{ y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.7 }}
           className="text-[32px] lg:text-[56px] tracking-[-0.015em] leading-[1.1]"

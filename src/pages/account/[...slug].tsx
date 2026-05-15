@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import AccountSidebar from '@/app/components/account/AccountSidebar'
-import { useRequireAuth } from '@/app/hooks/useRequireAuth'
+import AccountSidebar from '@/components/account/AccountSidebar'
+import { useRequireAuth } from '@/hooks/useRequireAuth'
 
 export default function AccountNotFound() {
   const { customer, isLoading } = useRequireAuth()

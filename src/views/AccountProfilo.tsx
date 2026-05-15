@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { useRequireAuth } from '@/app/hooks/useRequireAuth'
-import AccountSidebar from '@/app/components/account/AccountSidebar'
-import { medusa } from '@/app/lib/medusa'
+import { useRequireAuth } from '@/hooks/useRequireAuth'
+import AccountSidebar from '@/components/account/AccountSidebar'
+import { medusa } from '@/lib/medusa'
 
 export function AccountProfilo() {
   const { customer, isLoading, refreshCustomer } = useRequireAuth()

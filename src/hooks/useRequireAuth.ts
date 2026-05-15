@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { useAuth } from '@/app/context/AuthContext'
+import { useAuth } from '@/context/AuthContext'
 
 export function useRequireAuth() {
   const { customer, isLoading, refreshCustomer } = useAuth()

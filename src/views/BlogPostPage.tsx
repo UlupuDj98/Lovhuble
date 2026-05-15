@@ -1,13 +1,12 @@
-'use client';
-
 import { useState } from "react";
 import Link from "next/link";
 import Head from "next/head";
+import Image from "next/image";
 import { motion } from "motion/react";
 import { PortableText } from "@portabletext/react";
 import { BlogRecommendedCards } from "../components/blog/BlogRecommendedCards";
 import { BlogRequestForm } from "../components/blog/BlogRequestForm";
-import { BlogPost } from "@/app/lib/sanity/types";
+import { BlogPost } from "@/lib/sanity/types";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://lovehuble.vercel.app";
 
@@ -68,12 +67,19 @@ export default function BlogPostPage({ post, allPosts }: BlogPostPageProps) {
         {/* Cover image header */}
         <div className="relative h-[220px] sm:h-[280px] lg:h-[340px] overflow-hidden">
           {post.coverImage && (
-            <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover" />
+            <Image
+              src={post.coverImage}
+              alt={post.title}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
           )}
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/60 to-black/80" />
           <motion.div
-            initial={{ opacity: 0, x: -8 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ x: -8 }}
+            animate={{ x: 0 }}
             transition={{ duration: 0.4 }}
             className="absolute top-[24px] sm:top-[35px] lg:top-[50px] left-4 sm:left-6 lg:left-8 z-10"
           >

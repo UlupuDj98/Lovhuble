@@ -1,4 +1,4 @@
-import { Guide } from '@/app/pages/Guide'
+import { Guide } from '@/views/Guide'
 
 export default function GuidePage() {
   return <Guide />

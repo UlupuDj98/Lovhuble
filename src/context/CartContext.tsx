@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { toast } from 'sonner';
-import { medusa } from '@/app/lib/medusa';
+import { medusa } from '@/lib/medusa';
 
 const REGION_ID = process.env.NEXT_PUBLIC_MEDUSA_REGION_ID ?? ''
 const CART_ID_KEY = 'lovehuble-cart-id'

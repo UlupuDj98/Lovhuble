@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react'
 import { useRouter } from 'next/router'
 import { toast } from 'sonner'
-import { medusa } from '@/app/lib/medusa'
+import { medusa } from '@/lib/medusa'
 import { MedusaCustomer } from '@/types/customer'
 
 const JWT_STORAGE_KEY = 'lovehuble_auth_token'

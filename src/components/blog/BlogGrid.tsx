@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { BlogCard } from "./BlogCard";
-import { BlogPost } from "@/app/lib/sanity/types";
+import { BlogPost } from "@/lib/sanity/types";
 
 interface BlogGridProps {
   posts: BlogPost[];
@@ -16,8 +16,8 @@ export function BlogGrid({ posts }: BlogGridProps) {
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-        {displayedPosts.map((post) => (
-          <BlogCard key={post.id} post={post} />
+        {displayedPosts.map((post, index) => (
+          <BlogCard key={post.id} post={post} priority={index < 2} />
         ))}
       </div>
 

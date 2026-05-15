@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next'
-import { Subcategory } from '@/app/pages/Subcategory'
-import { getProductsByCategory, getCategoryName, getSubCategories } from '@/app/lib/medusa-data'
-import type { Product } from '@/app/data/products'
+import { Subcategory } from '@/views/Subcategory'
+import { getProductsByCategory, getCategoryName, getSubCategories } from '@/lib/medusa-data'
+import type { Product } from '@/data/products'
 
 interface Props {
   initialProducts: Product[]

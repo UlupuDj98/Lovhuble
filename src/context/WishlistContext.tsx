@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 import { toast } from 'sonner';
-import { medusa } from '@/app/lib/medusa';
+import { medusa } from '@/lib/medusa';
 import { useAuth } from './AuthContext';
 
 export interface WishlistItem {

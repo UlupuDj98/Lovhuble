@@ -1,4 +1,4 @@
-import { AccountIndirizzi } from '@/app/pages/AccountIndirizzi'
+import { AccountIndirizzi } from '@/views/AccountIndirizzi'
 
 export default function IndirizziPage() {
   return <AccountIndirizzi />

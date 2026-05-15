@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { useRequireAuth } from '@/app/hooks/useRequireAuth'
-import AccountSidebar from '@/app/components/account/AccountSidebar'
-import { medusa } from '@/app/lib/medusa'
-import { formatPrice } from '@/app/utils/price'
+import { useRequireAuth } from '@/hooks/useRequireAuth'
+import AccountSidebar from '@/components/account/AccountSidebar'
+import { medusa } from '@/lib/medusa'
+import { formatPrice } from '@/utils/price'
 
 
 const PAYMENT_LABELS: Record<string, string> = {

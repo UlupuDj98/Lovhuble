@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
-import { medusa } from '@/app/lib/medusa'
+import { medusa } from '@/lib/medusa'
 
 export function ResetPassword() {
   const router = useRouter()

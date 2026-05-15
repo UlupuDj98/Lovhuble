@@ -1,14 +1,15 @@
 import type { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
-import { AuthProvider } from '@/app/context/AuthContext'
-import { CartProvider } from '@/app/context/CartContext'
-import { WishlistProvider } from '@/app/context/WishlistContext'
-import { Navigation } from '@/app/components/Navigation'
-import { Footer } from '@/app/components/Footer'
-import { Newsletter } from '@/app/components/Newsletter'
-import { CartDrawer } from '@/app/components/CartDrawer'
-import { Toaster } from '@/app/components/Toaster'
-import { useScrollRestoration } from '@/app/hooks/useScrollRestoration'
+import { AuthProvider } from '@/context/AuthContext'
+import { CartProvider } from '@/context/CartContext'
+import { WishlistProvider } from '@/context/WishlistContext'
+import { Navigation } from '@/components/Navigation'
+import { Footer } from '@/components/Footer'
+import { Newsletter } from '@/components/Newsletter'
+import { CartDrawer } from '@/components/CartDrawer'
+import { CookieModal } from '@/components/CookieModal'
+import { Toaster } from '@/components/Toaster'
+import { useScrollRestoration } from '@/hooks/useScrollRestoration'
 import '@/styles/index.css'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' })
@@ -26,7 +27,7 @@ function AppInner({ Component, pageProps }: AppProps) {
       <Newsletter />
       <Footer />
       <CartDrawer />
-     
+      <CookieModal />
     </div>
   )
 }

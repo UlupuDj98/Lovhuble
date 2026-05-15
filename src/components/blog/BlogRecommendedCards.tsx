@@ -1,7 +1,7 @@
 "use client";
 
 import { BlogCard } from "./BlogCard";
-import { BlogPost } from "@/app/lib/sanity/types";
+import { BlogPost } from "@/lib/sanity/types";
 
 interface BlogRecommendedCardsProps {
   currentPostId: string;

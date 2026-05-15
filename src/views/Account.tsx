@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useRequireAuth } from '@/app/hooks/useRequireAuth'
-import AccountSidebar from '@/app/components/account/AccountSidebar'
-import AccountStats from '@/app/components/account/AccountStats'
-import OrderCard from '@/app/components/account/OrderCard'
-import { medusa } from '@/app/lib/medusa'
+import { useRequireAuth } from '@/hooks/useRequireAuth'
+import AccountSidebar from '@/components/account/AccountSidebar'
+import AccountStats from '@/components/account/AccountStats'
+import OrderCard from '@/components/account/OrderCard'
+import { medusa } from '@/lib/medusa'
 import { CustomerOrder } from '@/types/customer'
 
 export function Account() {

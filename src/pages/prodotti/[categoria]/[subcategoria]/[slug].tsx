@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next'
-import { ProductDetail } from '@/app/pages/ProductDetail'
-import { getProductByHandle, getProductsByCategory, getProductsByCollection } from '@/app/lib/medusa-data'
-import type { Product } from '@/app/data/products'
+import { ProductDetail } from '@/views/ProductDetail'
+import { getProductByHandle, getProductsByCategory, getProductsByCollection } from '@/lib/medusa-data'
+import type { Product } from '@/data/products'
 
 interface Props {
   initialProduct: Product | null

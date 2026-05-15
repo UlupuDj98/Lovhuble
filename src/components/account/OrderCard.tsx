@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { CustomerOrder } from "@/types/customer";
 import { memo } from "react";
-import { formatPrice } from "@/app/utils/price";
+import { formatPrice } from "@/utils/price";
 
 const PAYMENT_LABELS: Record<string, string> = {
   pending: "In attesa",

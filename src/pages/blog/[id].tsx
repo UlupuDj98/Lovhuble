@@ -1,8 +1,8 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
-import BlogPostPage from '@/app/pages/BlogPostPage';
-import { client } from '@/app/lib/sanity/client';
-import { blogPostsQuery, blogPostBySlugQuery } from '@/app/lib/sanity/queries';
-import { BlogPost } from '@/app/lib/sanity/types';
+import BlogPostPage from '@/views/BlogPostPage';
+import { client } from '@/lib/sanity/client';
+import { blogPostsQuery, blogPostBySlugQuery } from '@/lib/sanity/queries';
+import { BlogPost } from '@/lib/sanity/types';
 
 interface Props {
   post: BlogPost;
