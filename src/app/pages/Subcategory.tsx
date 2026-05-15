@@ -13,14 +13,19 @@ import { Breadcrumb } from '../components/productdetail/Breadcrumb';
 import { getProductsByCategory, getCategoryName } from '../lib/medusa-data';
 import type { Product } from '../data/products';
 
-export const Subcategory = () => {
+interface SubcategoryProps {
+  initialProducts?: Product[]
+  initialSubCategoryName?: string
+}
+
+export const Subcategory = ({ initialProducts, initialSubCategoryName }: SubcategoryProps) => {
   const router = useRouter();
   const categorySlug = typeof router.query.categoria === 'string' ? router.query.categoria : '';
   const subCategorySlug = typeof router.query.subcategoria === 'string' ? router.query.subcategoria : '';
 
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [subCategoryName, setSubCategoryName] = useState('');
+  const [allProducts, setAllProducts] = useState<Product[]>(initialProducts ?? []);
+  const [loading, setLoading] = useState(!initialProducts);
+  const [subCategoryName, setSubCategoryName] = useState(initialSubCategoryName ?? '');
 
   const [filters, setFilters] = useState<FilterState>({
     onlyInStock: false,
@@ -39,7 +44,7 @@ export const Subcategory = () => {
   }, [maxPrice]);
 
   useEffect(() => {
-    if (!subCategorySlug) return;
+    if (!subCategorySlug || initialProducts) return;
     setLoading(true);
     Promise.all([
       getProductsByCategory(subCategorySlug),
@@ -48,7 +53,7 @@ export const Subcategory = () => {
       setAllProducts(prods);
       setSubCategoryName(name);
     }).finally(() => setLoading(false));
-  }, [subCategorySlug]);
+  }, [subCategorySlug, initialProducts]);
 
   const { isInWishlist, toggleWishlist } = useWishlist();
 
@@ -114,12 +119,13 @@ export const Subcategory = () => {
                       <motion.div
                         key={product.id}
                         className="h-[380px] lg:h-[520px]"
-                        initial={{ opacity: 0, y: 24 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.05, duration: 0.5 }}
+                        initial={{ y: 16 }}
+                        animate={{ y: 0 }}
+                        transition={{ delay: Math.min(i * 0.04, 0.3), duration: 0.4 }}
                       >
                         <ProductCard
                           product={product}
+                          priority={i < 4}
                           wishlisted={isInWishlist(product.id)}
                           onWishlist={e => { e.preventDefault(); toggleWishlist(product); }}
                         />
