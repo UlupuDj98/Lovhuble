@@ -17,14 +17,16 @@ export const Newsletter = () => {
 
     setStatus('loading');
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_MEDUSA_URL}/store/newsletter/subscribe`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: form.email }),
-        }
-      );
+      const baseUrl = process.env.NEXT_PUBLIC_MEDUSA_URL ?? 'http://localhost:9000'
+      const key = process.env.NEXT_PUBLIC_MEDUSA_KEY ?? ''
+      const res = await fetch(`${baseUrl}/store/newsletter/subscribe`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-publishable-api-key': key,
+        },
+        body: JSON.stringify({ email: form.email }),
+      });
       if (!res.ok) throw new Error('Errore server');
       setStatus('success');
     } catch {
