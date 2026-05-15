@@ -9,13 +9,15 @@ import { useWishlist } from '../../context/WishlistContext';
 
 interface ProdottiCorrelatiProps {
   currentProduct: Product;
+  initialRelated?: Product[];
 }
 
-export const ProdottiCorrelati = ({ currentProduct }: ProdottiCorrelatiProps) => {
+export const ProdottiCorrelati = ({ currentProduct, initialRelated }: ProdottiCorrelatiProps) => {
   const { isInWishlist, toggleWishlist } = useWishlist();
-  const [related, setRelated] = useState<Product[]>([]);
+  const [related, setRelated] = useState<Product[]>(initialRelated ?? []);
 
   useEffect(() => {
+    if (initialRelated) return;
     async function load() {
       const sameCat = await getProductsByCategory(currentProduct.subCategorySlug);
       const filtered = sameCat.filter(p => p.id !== currentProduct.id);
@@ -32,7 +34,7 @@ export const ProdottiCorrelati = ({ currentProduct }: ProdottiCorrelatiProps) =>
       setRelated([...filtered, ...extra].slice(0, 6));
     }
     load().catch(console.error);
-  }, [currentProduct.id, currentProduct.subCategorySlug, currentProduct.categorySlug]);
+  }, [currentProduct.id, currentProduct.subCategorySlug, currentProduct.categorySlug, initialRelated]);
 
   if (related.length === 0) return null;
 

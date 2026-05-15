@@ -11,6 +11,11 @@ import { ProdottiCorrelati } from '../components/productdetail/ProdottiCorrelati
 import { getProductByHandle } from '../lib/medusa-data';
 import type { Product, ProductVariant } from '../data/products';
 
+interface ProductDetailProps {
+  initialProduct?: Product | null;
+  initialRelated?: Product[];
+}
+
 const COLOR_MAP: Record<string, string> = {
   Rosa: '#F472B6', Viola: '#8B5CF6', Bordeaux: '#7C1D2E',
   Nero: '#1d1d1f', Bianco: '#F8F8F8', Rosso: '#EF4444',
@@ -41,13 +46,13 @@ function getDeliveryDate(): string {
   return `${days[d.getDay()]} ${d.getDate()}`
 }
 
-export const ProductDetail = () => {
+export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailProps) => {
   const router = useRouter();
   const { addItem, openCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const [added, setAdded] = useState(false);
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState<Product | null>(initialProduct ?? null);
+  const [loading, setLoading] = useState(!initialProduct);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
   const [activeVariant, setActiveVariant] = useState<ProductVariant | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -55,7 +60,7 @@ export const ProductDetail = () => {
   const { slug } = router.query as Record<string, string>;
 
   useEffect(() => {
-    if (!slug || !router.isReady) return;
+    if (initialProduct || !slug || !router.isReady) return;
     setLoading(true);
     setSelectedOptions({});
     setActiveVariant(null);
@@ -63,7 +68,7 @@ export const ProductDetail = () => {
     getProductByHandle(slug)
       .then(setProduct)
       .finally(() => setLoading(false));
-  }, [slug, router.isReady]);
+  }, [slug, router.isReady, initialProduct]);
 
   useEffect(() => {
     if (!product?.variants?.length) return;
@@ -151,8 +156,8 @@ export const ProductDetail = () => {
 
             {/* Galleria */}
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ x: -30 }}
+              animate={{ x: 0 }}
               transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
             >
               <ImageGallery images={product.images} alt={product.name} />
@@ -160,8 +165,8 @@ export const ProductDetail = () => {
 
             {/* Info prodotto */}
             <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ x: 30 }}
+              animate={{ x: 0 }}
               transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
               className="flex flex-col justify-center  space-y-[28px] lg:space-y-[20px]"
             >
@@ -488,7 +493,7 @@ export const ProductDetail = () => {
         </div>
       </section>
 
-      <ProdottiCorrelati currentProduct={product} />
+      <ProdottiCorrelati currentProduct={product} initialRelated={initialRelated} />
     </div>
   );
 };
