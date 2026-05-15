@@ -4,7 +4,7 @@ import { ArrowLeft, Heart } from 'lucide-react';
 
 export const 
 NotFound = () => (
-  <div className="bg-[#f5f5f7] mt-[90px] py-[100px] lg:py-[130px] flex flex-col items-center justify-center px-6 text-center">
+  <div className="bg-[#f5f5f7] mt-[90px] pt-[90px] pb-[50px] lg:py-[130px] flex flex-col items-center justify-center px-6 text-center">
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
