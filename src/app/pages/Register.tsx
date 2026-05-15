@@ -18,11 +18,22 @@ export function Register() {
 
   const set = (field: string, value: string) => setForm(prev => ({ ...prev, [field]: value }))
 
+  const passwordRules = [
+    { label: 'Almeno 8 caratteri', test: (v: string) => v.length >= 8 },
+    { label: 'Almeno una maiuscola', test: (v: string) => /[A-Z]/.test(v) },
+    { label: 'Almeno un numero', test: (v: string) => /[0-9]/.test(v) },
+  ]
+
+  const validatePassword = (v: string) => {
+    const failing = passwordRules.filter(r => !r.test(v))
+    return failing.length > 0 ? failing.map(r => r.label).join(', ') : ''
+  }
+
   const validators: Record<string, (v: string) => string> = {
     first_name: v => !v.trim() ? 'Campo obbligatorio' : '',
     last_name: v => !v.trim() ? 'Campo obbligatorio' : '',
     email: v => v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? 'Email non valida' : '',
-    password: v => v && v.length < 8 ? 'Minimo 8 caratteri' : '',
+    password: validatePassword,
     confirm: v => v && v !== form.password ? 'Le password non coincidono' : '',
   }
 
@@ -36,8 +47,9 @@ export function Register() {
       toast.error('Le password non coincidono')
       return
     }
-    if (form.password.length < 8) {
-      toast.error('La password deve essere di almeno 8 caratteri')
+    const pwdError = validatePassword(form.password)
+    if (pwdError) {
+      toast.error(`Password non valida: ${pwdError}`)
       return
     }
     setIsLoading(true)
@@ -53,6 +65,8 @@ export function Register() {
       const msg = (err as { message?: string })?.message ?? ''
       if (msg.includes('409') || msg.toLowerCase().includes('exist')) {
         toast.error('Email già registrata. Prova ad accedere.')
+      } else if (msg.toLowerCase().includes('password')) {
+        toast.error(msg)
       } else {
         toast.error('Errore durante la registrazione')
       }
@@ -141,7 +155,16 @@ export function Register() {
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-              {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password}</p>}
+              {form.password.length > 0 && (
+                <ul className="mt-2 space-y-0.5">
+                  {passwordRules.map(rule => (
+                    <li key={rule.label} className={`text-xs flex items-center gap-1.5 ${rule.test(form.password) ? 'text-green-600' : 'text-stone-400'}`}>
+                      <span>{rule.test(form.password) ? '✓' : '○'}</span>
+                      {rule.label}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
 
             <div>

@@ -1,7 +1,9 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react'
 import { toast } from 'sonner'
 import { medusa } from '@/app/lib/medusa'
 import { MedusaCustomer } from '@/types/customer'
+
+const JWT_STORAGE_KEY = 'lovehuble_auth_token'
 
 interface AuthContextType {
   customer: MedusaCustomer | null
@@ -24,6 +26,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [customer, setCustomer] = useState<MedusaCustomer | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const isRedirectingRef = useRef(false)
 
   const refreshCustomer = useCallback(async () => {
     try {
@@ -38,6 +41,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     refreshCustomer().finally(() => setIsLoading(false))
   }, [refreshCustomer])
+
+  // Intercetta 401 da rotte autenticate: token scaduto → logout + redirect
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const savedFetch = window.fetch
+
+    window.fetch = async (...args: Parameters<typeof fetch>) => {
+      const response = await savedFetch(...args)
+      const url = typeof args[0] === 'string' ? args[0] : (args[0] as Request).url
+
+      if (
+        response.status === 401 &&
+        url.includes('/api/medusa/') &&
+        !url.includes('/api/medusa/auth/') &&
+        localStorage.getItem(JWT_STORAGE_KEY) &&
+        !isRedirectingRef.current
+      ) {
+        isRedirectingRef.current = true
+        localStorage.removeItem(JWT_STORAGE_KEY)
+        setCustomer(null)
+        toast.error('Sessione scaduta. Effettua di nuovo il login.')
+        window.location.href = '/login'
+      }
+
+      return response
+    }
+
+    return () => {
+      window.fetch = savedFetch
+    }
+  }, [])
 
   const login = async (email: string, password: string) => {
     await medusa.auth.login('customer', 'emailpass', { email, password })

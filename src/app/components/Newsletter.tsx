@@ -7,7 +7,7 @@ import Link from 'next/link';
 type Status = 'idle' | 'loading' | 'success' | 'error';
 
 export const Newsletter = () => {
-  const [form, setForm] = useState({ nome: '', cognome: '', email: '' });
+  const [form, setForm] = useState({ nome: '', cognome: '', email: '', website: '' });
   const [privacy, setPrivacy] = useState(false);
   const [status, setStatus] = useState<Status>('idle');
 
@@ -25,7 +25,7 @@ export const Newsletter = () => {
           'Content-Type': 'application/json',
           'x-publishable-api-key': key,
         },
-        body: JSON.stringify({ email: form.email }),
+        body: JSON.stringify({ email: form.email, website: form.website }),
       });
       if (!res.ok) throw new Error('Errore server');
       setStatus('success');
@@ -78,6 +78,17 @@ export const Newsletter = () => {
               className="flex-1"
             >
               <form onSubmit={handleSubmit} className="flex flex-col gap-[14px]">
+                {/* Honeypot anti-bot: nascosto visivamente, non con display:none */}
+                <div style={{ position: 'absolute', left: '-9999px', top: '-9999px', opacity: 0, pointerEvents: 'none' }} aria-hidden="true">
+                  <input
+                    type="text"
+                    name="website"
+                    value={form.website}
+                    onChange={e => setForm(f => ({ ...f, website: e.target.value }))}
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
+                </div>
                 {/* Name + Surname */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-[14px]">
                   <input
