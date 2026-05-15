@@ -17,7 +17,7 @@ export function AccountOrdini() {
       setError(null)
       const { orders: raw } = await medusa.store.order.list({
         limit: 50,
-        fields: '+items.*,+items.variant.*,+fulfillments.*,+payment_collections.*',
+        fields: '+items.*,+items.variant.*,+fulfillments.*,+payment_collections.*,+subtotal,+discount_total',
       })
       console.log('[orders] raw:', raw)
       setOrders(raw as unknown as CustomerOrder[])

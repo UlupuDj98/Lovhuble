@@ -51,6 +51,8 @@ export interface CustomerOrder {
   fulfillment_status: "not_fulfilled" | "fulfilled" | "partially_fulfilled" | "returned" | "canceled"
   created_at: string
   total: number
+  subtotal: number
+  discount_total: number
   items: OrderLineItem[]
   fulfillments?: OrderFulfillment[]
 }

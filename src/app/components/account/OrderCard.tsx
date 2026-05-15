@@ -112,6 +112,20 @@ function OrderCard({ order, compact = false }: OrderCardProps) {
         )}
       </div>
 
+      {/* Sconto */}
+      {order.discount_total > 0 && (
+        <div className="px-5 pb-3 border-t border-stone-100 pt-3 space-y-1">
+          <div className="flex justify-between text-xs text-stone-400">
+            <span>Subtotale</span>
+            <span>{formatPrice(order.subtotal)}</span>
+          </div>
+          <div className="flex justify-between text-xs text-green-600 font-semibold">
+            <span>Sconto</span>
+            <span>-{formatPrice(order.discount_total)}</span>
+          </div>
+        </div>
+      )}
+
       {/* Link dettaglio */}
       <div className="px-5 pb-4 flex justify-end">
         <Link
