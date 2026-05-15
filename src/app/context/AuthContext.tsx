@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react'
+import { useRouter } from 'next/router'
 import { toast } from 'sonner'
 import { medusa } from '@/app/lib/medusa'
 import { MedusaCustomer } from '@/types/customer'
@@ -24,9 +25,13 @@ interface RegisterData {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const router = useRouter()
   const [customer, setCustomer] = useState<MedusaCustomer | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const isRedirectingRef = useRef(false)
+  // Ref per leggere il customer corrente dentro callback senza stale closure
+  const customerRef = useRef<MedusaCustomer | null>(null)
+  useEffect(() => { customerRef.current = customer }, [customer])
 
   const refreshCustomer = useCallback(async () => {
     try {
@@ -42,7 +47,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     refreshCustomer().finally(() => setIsLoading(false))
   }, [refreshCustomer])
 
-  // Intercetta 401 da rotte autenticate: token scaduto → logout + redirect
+  // Intercetta 401 da rotte autenticate: token scaduto → logout + redirect.
+  // Usa customerRef invece di localStorage: gestisce sia token corrotto che token eliminato.
   useEffect(() => {
     if (typeof window === 'undefined') return
 
@@ -56,7 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         response.status === 401 &&
         url.includes('/api/medusa/') &&
         !url.includes('/api/medusa/auth/') &&
-        localStorage.getItem(JWT_STORAGE_KEY) &&
+        customerRef.current !== null &&
         !isRedirectingRef.current
       ) {
         isRedirectingRef.current = true
@@ -73,6 +79,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       window.fetch = savedFetch
     }
   }, [])
+
+  // Controlla ad ogni navigazione se il token è stato eliminato da localStorage.
+  // Se customer è in memoria ma il token non c'è più → svuota lo stato.
+  useEffect(() => {
+    const handleRouteChange = () => {
+      if (customerRef.current !== null && !localStorage.getItem(JWT_STORAGE_KEY)) {
+        setCustomer(null)
+      }
+    }
+    router.events.on('routeChangeComplete', handleRouteChange)
+    return () => router.events.off('routeChangeComplete', handleRouteChange)
+  }, [router.events])
 
   const login = async (email: string, password: string) => {
     // Passa per il nostro handler che gestisce rate limit e account lockout
