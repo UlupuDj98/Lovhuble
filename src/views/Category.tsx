@@ -24,9 +24,10 @@ interface CategoryProps {
   initialProducts?: Product[]
   initialSubCategoryItems?: { title: string; imageSrc: string; link: string }[]
   categorySlug?: string
+  initialCategoryName?: string
 }
 
-export const Category = ({ initialProducts, initialSubCategoryItems, categorySlug: slugProp }: CategoryProps) => {
+export const Category = ({ initialProducts, initialSubCategoryItems, categorySlug: slugProp, initialCategoryName }: CategoryProps) => {
   const router = useRouter();
   const categorySlug = slugProp ?? (typeof router.query.categoria === 'string' ? router.query.categoria : '');
 
@@ -67,7 +68,7 @@ export const Category = ({ initialProducts, initialSubCategoryItems, categorySlu
     return list;
   }, [allProducts, price, filters.onlyInStock]);
 
-  const categoryLabel = allProducts[0]?.category ?? slugToLabel(categorySlug);
+  const categoryLabel = initialCategoryName || allProducts[0]?.category || slugToLabel(categorySlug);
 
   return (
     <div className="min-h-screen bg-[#f5f5f7]">
