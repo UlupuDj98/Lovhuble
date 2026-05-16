@@ -17,12 +17,14 @@ interface SubcategoryProps {
   initialProducts?: Product[]
   initialSubCategoryName?: string
   initialSubCategoryItems?: { title: string; imageSrc: string; link: string }[]
+  categorySlug?: string
+  subCategorySlug?: string
 }
 
-export const Subcategory = ({ initialProducts, initialSubCategoryName, initialSubCategoryItems }: SubcategoryProps) => {
+export const Subcategory = ({ initialProducts, initialSubCategoryName, initialSubCategoryItems, categorySlug: categorySlugProp, subCategorySlug: subCategorySlugProp }: SubcategoryProps) => {
   const router = useRouter();
-  const categorySlug = typeof router.query.categoria === 'string' ? router.query.categoria : '';
-  const subCategorySlug = typeof router.query.subcategoria === 'string' ? router.query.subcategoria : '';
+  const categorySlug = categorySlugProp ?? (typeof router.query.categoria === 'string' ? router.query.categoria : '');
+  const subCategorySlug = subCategorySlugProp ?? (typeof router.query.subcategoria === 'string' ? router.query.subcategoria : '');
 
   const [allProducts, setAllProducts] = useState<Product[]>(initialProducts ?? []);
   const [loading, setLoading] = useState(!initialProducts);
@@ -64,8 +66,6 @@ export const Subcategory = ({ initialProducts, initialSubCategoryName, initialSu
     return list;
   }, [allProducts, price, filters.onlyInStock]);
 
-  if (!router.isReady) return null;
-
   const subCategoryLabel = subCategoryName || allProducts[0]?.subCategory || subCategorySlug;
   const categoryLabel = allProducts[0]?.category ?? categorySlug;
 
@@ -75,8 +75,6 @@ export const Subcategory = ({ initialProducts, initialSubCategoryName, initialSu
         title={subCategoryLabel}
         subtitle={`Esplora la nostra selezione di ${subCategoryLabel.toLowerCase()}`}
         categorySlug={categorySlug}
-        backHref={`/prodotti/${categorySlug}`}
-        backLabel={categoryLabel}
       />
 
       <div className="relative z-10 max-w-[1120px] mx-auto px-6 lg:px-8 pt-[20px]">

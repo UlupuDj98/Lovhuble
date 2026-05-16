@@ -173,6 +173,32 @@ export async function getAllProducts(): Promise<Product[]> {
   return _allProducts!
 }
 
+// ── Path helpers per getStaticPaths ──────────────────────────────────────
+
+export async function getTopLevelCategoryHandles(): Promise<string[]> {
+  const collections = await fetchCollections()
+  return collections.map((c: any) => c.handle)
+}
+
+export async function getAllSubcategoryPaths(): Promise<{ categoria: string; subcategoria: string }[]> {
+  const categories = await fetchCategories()
+  const paths: { categoria: string; subcategoria: string }[] = []
+  for (const cat of categories) {
+    if (cat.parent_category_id) {
+      const parent = categories.find((c: any) => c.id === cat.parent_category_id)
+      if (parent) paths.push({ categoria: parent.handle, subcategoria: cat.handle })
+    }
+  }
+  return paths
+}
+
+export async function getAllProductPaths(): Promise<{ categoria: string; subcategoria: string; slug: string }[]> {
+  const products = await getAllProducts()
+  return products
+    .filter(p => p.slug && p.categorySlug && p.subCategorySlug)
+    .map(p => ({ categoria: p.categorySlug, subcategoria: p.subCategorySlug, slug: p.slug }))
+}
+
 // ── Nome categoria per handle ─────────────────────────────────────────────
 
 export async function getCategoryName(handle: string): Promise<string> {

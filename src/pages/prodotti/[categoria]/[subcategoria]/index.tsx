@@ -1,6 +1,6 @@
-import { GetServerSideProps } from 'next'
+import { GetStaticPaths, GetStaticProps } from 'next'
 import { Subcategory } from '@/views/Subcategory'
-import { getProductsByCategory, getCategoryName, getSubCategories } from '@/lib/medusa-data'
+import { getProductsByCategory, getCategoryName, getSubCategories, getAllSubcategoryPaths } from '@/lib/medusa-data'
 import type { Product } from '@/data/products'
 
 interface Props {
@@ -8,22 +8,33 @@ interface Props {
   initialSubCategoryName: string
   initialSubCategoryItems: { title: string; imageSrc: string; link: string }[]
   subCategorySlug: string
+  categorySlug: string
 }
 
-export default function SubcategoriaPage({ initialProducts, initialSubCategoryName, initialSubCategoryItems, subCategorySlug }: Props) {
+export default function SubcategoriaPage({ initialProducts, initialSubCategoryName, initialSubCategoryItems, subCategorySlug, categorySlug }: Props) {
   return (
     <Subcategory
       key={subCategorySlug}
       initialProducts={initialProducts}
       initialSubCategoryName={initialSubCategoryName}
       initialSubCategoryItems={initialSubCategoryItems}
+      categorySlug={categorySlug}
+      subCategorySlug={subCategorySlug}
     />
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const categoria = context.params?.categoria as string
-  const subcategoria = context.params?.subcategoria as string
+export const getStaticPaths: GetStaticPaths = async () => {
+  const paths = await getAllSubcategoryPaths().catch(() => [])
+  return {
+    paths: paths.map(p => ({ params: { categoria: p.categoria, subcategoria: p.subcategoria } })),
+    fallback: 'blocking',
+  }
+}
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const categoria = params?.categoria as string
+  const subcategoria = params?.subcategoria as string
   const [initialProducts, initialSubCategoryName, subCats] = await Promise.all([
     getProductsByCategory(subcategoria).catch(() => []),
     getCategoryName(subcategoria).catch(() => ''),
@@ -34,5 +45,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     imageSrc: s.image,
     link: `/prodotti/${categoria}/${s.slug}`,
   }))
-  return { props: { initialProducts, initialSubCategoryName, initialSubCategoryItems, subCategorySlug: subcategoria } }
+  return { props: { initialProducts, initialSubCategoryName, initialSubCategoryItems, subCategorySlug: subcategoria, categorySlug: categoria }, revalidate: 60 }
 }

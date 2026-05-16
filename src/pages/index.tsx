@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next'
+import { GetStaticProps } from 'next'
 import { Home } from '@/views/Home'
 import { getCollections, getAllProducts, getExclusiveProducts } from '@/lib/medusa-data'
 import { client } from '@/lib/sanity/client'
@@ -26,7 +26,7 @@ export default function HomePage({ initialCategories, initialFeatured, initialNo
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const [collections, allProducts, exclusiveProducts, blogPosts] = await Promise.all([
     getCollections().catch(() => []),
     getAllProducts().catch(() => []),
@@ -48,5 +48,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
       initialEsclusive: exclusiveProducts,
       initialBlogPosts: blogPosts,
     },
+    revalidate: 60,
   }
 }

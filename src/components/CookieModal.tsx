@@ -54,6 +54,13 @@ export const CookieModal = () => {
     if (!stored) setVisible(true);
   }, []);
 
+  useEffect(() => {
+    if (!visible) return;
+    if (!window.matchMedia('(max-width: 767px)').matches) return;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, [visible]);
+
   const save = (overrides?: Partial<CookiePreferences>) => {
     const final = { ...prefs, necessary: true as const, ...overrides };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(final));
@@ -88,12 +95,12 @@ export const CookieModal = () => {
     <AnimatePresence>
       {visible && (
         <>
-          {/* Backdrop sfumato */}
+          {/* Backdrop — solo mobile */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/20 z-[90] pointer-events-none"
+            className="fixed inset-0 bg-black/20 z-[90] md:hidden"
           />
 
           {/* Card */}
