@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function CategoriaPage({ initialProducts, initialSubCategoryItems, categorySlug }: Props) {
-  return <Category initialProducts={initialProducts} initialSubCategoryItems={initialSubCategoryItems} categorySlug={categorySlug} />
+  return <Category key={categorySlug} initialProducts={initialProducts} initialSubCategoryItems={initialSubCategoryItems} categorySlug={categorySlug} />
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
