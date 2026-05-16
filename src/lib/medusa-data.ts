@@ -133,6 +133,14 @@ export async function getProductsByCategory(categoryHandle: string): Promise<Pro
   return (products ?? []).map(mapProduct)
 }
 
+// ── Prodotti per sottocategoria (con fallback su metadata) ───────────────
+export async function getProductsBySubCategory(subHandle: string, parentHandle: string): Promise<Product[]> {
+  const direct = await getProductsByCategory(subHandle)
+  if (direct.length > 0) return direct
+  const parentProducts = await getProductsByCategory(parentHandle)
+  return parentProducts.filter(p => p.subCategorySlug === subHandle)
+}
+
 // ── Singolo prodotto per handle ───────────────────────────────────────────
 
 export async function getProductByHandle(handle: string): Promise<Product | null> {

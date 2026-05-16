@@ -10,7 +10,7 @@ import { FilterBar, FilterState } from '../components/product/FilterBar';
 import { PriceRangeBar } from '../components/product/PriceRangeBar';
 import { PageHeader } from '../components/PageHeader';
 import { Breadcrumb } from '../components/productdetail/Breadcrumb';
-import { getProductsByCategory, getCategoryName } from '../lib/medusa-data';
+import { getProductsBySubCategory, getCategoryName } from '../lib/medusa-data';
 import type { Product } from '../data/products';
 
 interface SubcategoryProps {
@@ -50,7 +50,7 @@ export const Subcategory = ({ initialProducts, initialSubCategoryName, initialSu
     if (!subCategorySlug || initialProducts) return;
     setLoading(true);
     Promise.all([
-      getProductsByCategory(subCategorySlug),
+      getProductsBySubCategory(subCategorySlug, categorySlug),
       getCategoryName(subCategorySlug),
     ]).then(([prods, name]) => {
       setAllProducts(prods);
