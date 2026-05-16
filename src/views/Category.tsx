@@ -23,11 +23,12 @@ function slugToLabel(slug: string): string {
 interface CategoryProps {
   initialProducts?: Product[]
   initialSubCategoryItems?: { title: string; imageSrc: string; link: string }[]
+  categorySlug?: string
 }
 
-export const Category = ({ initialProducts, initialSubCategoryItems }: CategoryProps) => {
+export const Category = ({ initialProducts, initialSubCategoryItems, categorySlug: slugProp }: CategoryProps) => {
   const router = useRouter();
-  const categorySlug = typeof router.query.categoria === 'string' ? router.query.categoria : '';
+  const categorySlug = slugProp ?? (typeof router.query.categoria === 'string' ? router.query.categoria : '');
 
   const [allProducts, setAllProducts] = useState<Product[]>(initialProducts ?? []);
   const [loading, setLoading] = useState(!initialProducts);
@@ -68,16 +69,12 @@ export const Category = ({ initialProducts, initialSubCategoryItems }: CategoryP
 
   const categoryLabel = allProducts[0]?.category ?? slugToLabel(categorySlug);
 
-  if (!router.isReady) return null;
-
   return (
     <div className="min-h-screen bg-[#f5f5f7]">
       <PageHeader
         title={categoryLabel}
         subtitle={`Esplora la nostra selezione di ${categoryLabel.toLowerCase()}`}
         categorySlug={categorySlug}
-        backHref="/"
-        backLabel="Home"
       />
 
       <div className="relative z-10 max-w-[1120px] mx-auto px-6 lg:px-8 pt-[20px]">

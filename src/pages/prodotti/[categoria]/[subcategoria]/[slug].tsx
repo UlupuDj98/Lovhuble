@@ -1,6 +1,6 @@
-import { GetServerSideProps } from 'next'
+import { GetStaticPaths, GetStaticProps } from 'next'
 import { ProductDetail } from '@/views/ProductDetail'
-import { getProductByHandle, getProductsByCategory, getProductsByCollection } from '@/lib/medusa-data'
+import { getProductByHandle, getProductsByCategory, getProductsByCollection, getAllProductPaths } from '@/lib/medusa-data'
 import type { Product } from '@/data/products'
 
 interface Props {
@@ -12,8 +12,16 @@ export default function ProdottoPage({ initialProduct, initialRelated }: Props) 
   return <ProductDetail initialProduct={initialProduct} initialRelated={initialRelated} />
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const slug = context.params?.slug as string
+export const getStaticPaths: GetStaticPaths = async () => {
+  const paths = await getAllProductPaths().catch(() => [])
+  return {
+    paths: paths.map(p => ({ params: { categoria: p.categoria, subcategoria: p.subcategoria, slug: p.slug } })),
+    fallback: 'blocking',
+  }
+}
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const slug = params?.slug as string
 
   const initialProduct = await getProductByHandle(slug).catch(() => null)
 
@@ -32,5 +40,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
   }
 
-  return { props: { initialProduct, initialRelated } }
+  return { props: { initialProduct, initialRelated }, revalidate: 60 }
 }

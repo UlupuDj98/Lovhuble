@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { motion } from 'motion/react';
 
 const categoryBg: Record<string, string> = {
@@ -18,20 +19,26 @@ interface PageHeaderProps {
   title: string;
   subtitle: string;
   categorySlug: string;
-  backHref: string;
-  backLabel: string;
 }
 
-export const PageHeader = ({ title, subtitle, categorySlug, backHref, backLabel }: PageHeaderProps) => {
+export const PageHeader = ({ title, subtitle, categorySlug }: PageHeaderProps) => {
   const bgImage = categoryBg[categorySlug];
 
   return (
     <section className="relative pt-[68px] lg:pt-[80px]">
       <div className="relative h-[260px] lg:h-[340px] overflow-hidden">
-        <img src={bgImage} alt={title} className="w-full h-full object-cover" />
+        {bgImage && (
+          <Image
+            src={bgImage}
+            alt={title}
+            fill
+            priority
+            className="object-cover"
+            sizes="100vw"
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/60 to-black/80" />
 
-        {/* Title + subtitle */}
         <div className="absolute bottom-0 left-0 right-0 z-10 max-w-[1120px] mx-auto px-6 lg:px-8 pb-[40px] lg:pb-[56px]">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
