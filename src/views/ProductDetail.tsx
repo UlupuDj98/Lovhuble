@@ -57,8 +57,19 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
   const [activeVariant, setActiveVariant] = useState<ProductVariant | null>(null);
   const [quantity, setQuantity] = useState(1);
 
-  const { slug } = router.query as Record<string, string>;
+  const { slug, categoria, subcategoria } = router.query as Record<string, string>;
 
+  // Sincronizza il prodotto quando initialProduct cambia (navigazione client-side tra prodotti)
+  useEffect(() => {
+    if (!initialProduct) return;
+    setProduct(initialProduct);
+    setSelectedOptions({});
+    setActiveVariant(null);
+    setQuantity(1);
+    setLoading(false);
+  }, [initialProduct?.id]);
+
+  // Fetch prodotto quando lo slug non è ancora pre-renderizzato (fallback)
   useEffect(() => {
     if (initialProduct || !slug || !router.isReady) return;
     setLoading(true);
@@ -123,7 +134,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
         : product.name,
       price: displayPrice,
       image: product.images[0] ?? product.image,
-      productUrl: `/prodotti/${product.categorySlug}/${product.subCategorySlug}/${product.slug}`,
+      productUrl: `/prodotti/${catSlug}/${subCatSlug}/${product.slug}`,
       quantity,
     });
     setAdded(true);
@@ -133,10 +144,15 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
     }, 800);
   };
 
+  const catSlug = product.categorySlug || categoria || ''
+  const catLabel = product.category || categoria || ''
+  const subCatSlug = product.subCategorySlug || subcategoria || ''
+  const subCatLabel = product.subCategory || subcategoria || ''
+
   const breadcrumbItems = [
     { label: 'Home', href: '/' },
-    { label: product.category.trim(), href: `/prodotti/${product.categorySlug}` },
-    { label: product.subCategory, href: `/prodotti/${product.categorySlug}/${product.subCategorySlug}` },
+    { label: catLabel, href: `/prodotti/${catSlug}` },
+    { label: subCatLabel, href: `/prodotti/${catSlug}/${subCatSlug}` },
     { label: product.name },
   ];
 
@@ -159,6 +175,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
               initial={{ x: -30 }}
               animate={{ x: 0 }}
               transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
+              key={product.id}
             >
               <ImageGallery images={product.images} alt={product.name} />
             </motion.div>

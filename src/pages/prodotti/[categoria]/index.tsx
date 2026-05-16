@@ -1,6 +1,6 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { Category } from '@/views/Category'
-import { getProductsByCategory, getSubCategories, getTopLevelCategoryHandles, getCategoryName } from '@/lib/medusa-data'
+import { getProductsByParentCategory, getSubCategories, getTopLevelCategoryHandles, getCategoryName } from '@/lib/medusa-data'
 import type { Product } from '@/data/products'
 
 interface Props {
@@ -25,7 +25,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const categoria = params?.categoria as string
   const [initialProducts, subCats, initialCategoryName] = await Promise.all([
-    getProductsByCategory(categoria).catch(() => []),
+    getProductsByParentCategory(categoria).catch(() => []),
     getSubCategories(categoria).catch(() => []),
     getCategoryName(categoria).catch(() => ''),
   ])

@@ -5,7 +5,7 @@ import { motion } from 'motion/react';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import type { Product } from '../../data/products';
-import { getAllProducts } from '../../lib/medusa-data';
+import { getProductsByCategory } from '../../lib/medusa-data';
 import { ProductCard } from '../product/ProductCard';
 import { useWishlist } from '../../context/WishlistContext';
 
@@ -23,7 +23,7 @@ export const Novita = ({ initialProducts }: NovitaProps) => {
 
   useEffect(() => {
     if (initialProducts) return;
-    getAllProducts().then(all => setFeaturedProducts(all.slice(6, 12))).catch(console.error);
+    getProductsByCategory('novita').then(all => setFeaturedProducts(all.slice(0, 6))).catch(console.error);
   }, [initialProducts]);
 
   const onScroll = () => {

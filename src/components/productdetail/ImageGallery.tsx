@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -14,6 +14,11 @@ export const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
   const [selected, setSelected] = useState(0);
   const [direction, setDirection] = useState(0);
   const touchStart = useRef<number>(0);
+
+  useEffect(() => {
+    setSelected(0);
+    setDirection(0);
+  }, [images[0]]);
 
   const navigate = (next: number) => {
     setDirection(next > selected ? 1 : -1);

@@ -9,7 +9,7 @@ import { useWishlist } from '../context/WishlistContext';
 import { useAuth } from '../context/AuthContext';
 import ComponenteScorrevole from './banda-scorrevole/Componente-Scorrevole';
 import { SearchModal } from './SearchModal';
-import { getCollections, getSubCategories } from '../lib/medusa-data';
+import { getMainCategories, getSubCategories } from '../lib/medusa-data';
 import type { Category, SubCategory } from '../data/products';
 import Image from 'next/image';
 
@@ -24,7 +24,7 @@ export const Navigation = () => {
   const { customer, logout } = useAuth();
 
   useEffect(() => {
-    getCollections().then(cols => {
+    getMainCategories().then(cols => {
       setCategories(cols);
       Promise.all(cols.map(c => getSubCategories(c.slug)))
         .then(results => setSubCategories(results.flat()));

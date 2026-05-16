@@ -6,7 +6,7 @@ import { Search, X, TrendingUp, Clock, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { getCollections, searchProducts } from '../lib/medusa-data';
+import { getMainCategories, searchProducts } from '../lib/medusa-data';
 import type { Product } from '../data/products';
 
 const TRENDING_FALLBACK = ['Sex Toys', 'Lingerie', 'BDSM', 'Lubrificanti', 'Giochi', 'Speciali'];
@@ -36,7 +36,7 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
   }, [isOpen, onClose]);
 
   useEffect(() => {
-    getCollections().then(cols => setTrending(cols.map(c => c.name))).catch(() => {});
+    getMainCategories().then(cols => setTrending(cols.map(c => c.name))).catch(() => {});
   }, []);
 
   useEffect(() => {

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import type { Product } from '../../data/products';
-import { getProductsByCategory, getProductsByCollection } from '../../lib/medusa-data';
+import { getProductsByCategory, getProductsByParentCategory } from '../../lib/medusa-data';
 import { ProductCard } from '../product/ProductCard';
 import { useWishlist } from '../../context/WishlistContext';
 
@@ -17,7 +17,14 @@ export const ProdottiCorrelati = ({ currentProduct, initialRelated }: ProdottiCo
   const [related, setRelated] = useState<Product[]>(initialRelated ?? []);
 
   useEffect(() => {
-    if (initialRelated) return;
+    // Se initialRelated è popolato (es. navigazione a prodotto pre-renderizzato), usalo direttamente
+    if (initialRelated?.length) {
+      setRelated(initialRelated);
+      return;
+    }
+
+    // Altrimenti fetch client-side
+    setRelated([]);
     async function load() {
       const sameCat = await getProductsByCategory(currentProduct.subCategorySlug);
       const filtered = sameCat.filter(p => p.id !== currentProduct.id);
@@ -27,14 +34,14 @@ export const ProdottiCorrelati = ({ currentProduct, initialRelated }: ProdottiCo
         return;
       }
 
-      const sameCollection = await getProductsByCollection(currentProduct.categorySlug);
-      const extra = sameCollection.filter(
+      const sameParent = await getProductsByParentCategory(currentProduct.categorySlug);
+      const extra = sameParent.filter(
         p => p.id !== currentProduct.id && !filtered.some(f => f.id === p.id)
       );
       setRelated([...filtered, ...extra].slice(0, 6));
     }
     load().catch(console.error);
-  }, [currentProduct.id, currentProduct.subCategorySlug, currentProduct.categorySlug, initialRelated]);
+  }, [currentProduct.id, initialRelated]);
 
   if (related.length === 0) return null;
 

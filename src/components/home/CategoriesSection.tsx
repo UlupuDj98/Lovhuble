@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'motion/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { getCollections } from '../../lib/medusa-data';
+import { getMainCategories } from '../../lib/medusa-data';
 
 type CategoryCard = { title: string; imageSrc: string; link: string };
 
@@ -40,7 +40,7 @@ export const CategoriesSection = ({ initialItems }: CategoriesSectionProps) => {
 
   useEffect(() => {
     if (initialItems) return;
-    getCollections().then(cols =>
+    getMainCategories().then(cols =>
       setCategories(cols.map(c => ({ title: c.name, imageSrc: c.image, link: `/prodotti/${c.slug}` })))
     );
   }, [initialItems]);

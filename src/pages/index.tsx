@@ -1,6 +1,6 @@
 import { GetStaticProps } from 'next'
 import { Home } from '@/views/Home'
-import { getCollections, getAllProducts, getExclusiveProducts } from '@/lib/medusa-data'
+import { getMainCategories, getProductsByCategory, getExclusiveProducts } from '@/lib/medusa-data'
 import { client } from '@/lib/sanity/client'
 import { blogPostsQuery } from '@/lib/sanity/queries'
 import type { Product } from '@/data/products'
@@ -27,14 +27,15 @@ export default function HomePage({ initialCategories, initialFeatured, initialNo
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const [collections, allProducts, exclusiveProducts, blogPosts] = await Promise.all([
-    getCollections().catch(() => []),
-    getAllProducts().catch(() => []),
+  const [mainCategories, featuredProducts, novitaProducts, exclusiveProducts, blogPosts] = await Promise.all([
+    getMainCategories().catch(() => []),
+    getProductsByCategory('best-seller').catch(() => []),
+    getProductsByCategory('novita').catch(() => []),
     getExclusiveProducts().catch(() => []),
     client.fetch<BlogPost[]>(blogPostsQuery).catch(() => []),
   ])
 
-  const initialCategories = collections.map(c => ({
+  const initialCategories = mainCategories.map(c => ({
     title: c.name,
     imageSrc: c.image,
     link: `/prodotti/${c.slug}`,
@@ -43,8 +44,8 @@ export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {
       initialCategories,
-      initialFeatured: allProducts.slice(0, 6),
-      initialNovita: allProducts.slice(6, 12),
+      initialFeatured: featuredProducts.slice(0, 6),
+      initialNovita: novitaProducts.slice(0, 6),
       initialEsclusive: exclusiveProducts,
       initialBlogPosts: blogPosts,
     },

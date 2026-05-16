@@ -10,7 +10,7 @@ import { FilterBar, FilterState } from '../components/product/FilterBar';
 import { PriceRangeBar } from '../components/product/PriceRangeBar';
 import { PageHeader } from '../components/PageHeader';
 import { Breadcrumb } from '../components/productdetail/Breadcrumb';
-import { getProductsByCategory } from '../lib/medusa-data';
+import { getProductsByParentCategory } from '../lib/medusa-data';
 import type { Product } from '../data/products';
 
 function slugToLabel(slug: string): string {
@@ -55,7 +55,7 @@ export const Category = ({ initialProducts, initialSubCategoryItems, categorySlu
     // Skip fetch se i prodotti arrivano già dal server (SSR)
     if (!categorySlug || initialProducts) return;
     setLoading(true);
-    getProductsByCategory(categorySlug)
+    getProductsByParentCategory(categorySlug)
       .then(setAllProducts)
       .finally(() => setLoading(false));
   }, [categorySlug, initialProducts]);

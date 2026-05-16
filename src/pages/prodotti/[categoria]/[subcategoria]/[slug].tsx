@@ -1,6 +1,6 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { ProductDetail } from '@/views/ProductDetail'
-import { getProductByHandle, getProductsByCategory, getProductsByCollection, getAllProductPaths } from '@/lib/medusa-data'
+import { getProductByHandleWithCategory, getProductsByCategory, getProductsByParentCategory, getAllProductPaths } from '@/lib/medusa-data'
 import type { Product } from '@/data/products'
 
 interface Props {
@@ -22,18 +22,21 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string
+  const categoria = params?.categoria as string
+  const subcategoria = params?.subcategoria as string
 
-  const initialProduct = await getProductByHandle(slug).catch(() => null)
+  // Usa categoria e subcategoria dall'URL per iniettarle direttamente nel prodotto
+  const initialProduct = await getProductByHandleWithCategory(slug, subcategoria, categoria).catch(() => null)
 
   let initialRelated: Product[] = []
   if (initialProduct) {
-    const sameCat = await getProductsByCategory(initialProduct.subCategorySlug).catch(() => [])
+    const sameCat = await getProductsByCategory(subcategoria).catch(() => [])
     const filtered = sameCat.filter((p: Product) => p.id !== initialProduct.id)
     if (filtered.length >= 6) {
       initialRelated = filtered.slice(0, 6)
     } else {
-      const sameCollection = await getProductsByCollection(initialProduct.categorySlug).catch(() => [])
-      const extra = sameCollection.filter(
+      const sameParent = await getProductsByParentCategory(categoria).catch(() => [])
+      const extra = sameParent.filter(
         (p: Product) => p.id !== initialProduct.id && !filtered.some((f: Product) => f.id === p.id)
       )
       initialRelated = [...filtered, ...extra].slice(0, 6)

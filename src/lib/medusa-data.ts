@@ -6,18 +6,24 @@ const BASE = typeof window !== 'undefined'
 const PUB_KEY = process.env.NEXT_PUBLIC_MEDUSA_KEY ?? ''
 const REGION_ID = process.env.NEXT_PUBLIC_MEDUSA_REGION_ID ?? ''
 
-// Costruisce URL preservando i '+' nei fields (non li URL-encoda)
-function buildUrl(path: string, params: Record<string, string> = {}): string {
-  const parts = Object.entries(params).map(([k, v]) => {
-    if (k === 'fields') return `fields=${v.replace(/\+/g, '%2B').replace(/%2B/g, '+')}`
-    return `${encodeURIComponent(k)}=${encodeURIComponent(v)}`
-  })
+function buildUrl(path: string, params: Record<string, string | string[]> = {}): string {
+  const parts: string[] = []
+  for (const [k, v] of Object.entries(params)) {
+    if (k === 'fields') {
+      parts.push(`fields=${v as string}`)
+    } else if (Array.isArray(v)) {
+      for (const item of v) {
+        parts.push(`${k}=${encodeURIComponent(item)}`)
+      }
+    } else {
+      parts.push(`${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+    }
+  }
   return `${BASE}${path}${parts.length ? '?' + parts.join('&') : ''}`
 }
 
-async function storeGet<T>(path: string, params: Record<string, string> = {}): Promise<T> {
-  // region_id solo per /store/products
-  const allParams = path.includes('/store/products') && REGION_ID
+async function storeGet<T>(path: string, params: Record<string, string | string[]> = {}): Promise<T> {
+  const allParams: Record<string, string | string[]> = path.includes('/store/products') && REGION_ID
     ? { limit: '100', region_id: REGION_ID, ...params }
     : { limit: '100', ...params }
 
@@ -32,15 +38,19 @@ async function storeGet<T>(path: string, params: Record<string, string> = {}): P
   return res.json()
 }
 
-const FIELDS = '+collection,+material,+weight,+height,+width,+length,+options,+options.values,+variants,+variants.calculated_price,+variants.options,+metadata'
+const FIELDS = '+categories,+images,+material,+weight,+height,+width,+length,+options,+options.values,+variants,+variants.calculated_price,+variants.options,+metadata'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function mapProduct(p: any): Product {
+function mapProduct(
+  p: any,
+  allCategories: any[],
+  knownSubCat?: any,
+  knownParentCat?: any,
+): Product {
   const firstVariant = p.variants?.[0]
   const priceAmount = firstVariant?.calculated_price?.calculated_amount
     ?? firstVariant?.prices?.[0]?.amount
     ?? 0
-  const collection = p.collection ?? {}
   const meta = p.metadata ?? {}
 
   const options: ProductOption[] = (p.options ?? []).map((opt: any) => ({
@@ -58,15 +68,47 @@ function mapProduct(p: any): Product {
     return { id: v.id, title: v.title, options: variantOptions, price: amount / 100 }
   })
 
+  // Categoria iniettata direttamente (approccio affidabile) oppure fallback su p.categories
+  let subCategoryHandle: string
+  let subCategoryName: string
+  let categoryHandle: string
+  let categoryName: string
+
+  if (knownSubCat) {
+    subCategoryHandle = knownSubCat.handle ?? ''
+    subCategoryName = knownSubCat.name ?? ''
+    categoryHandle = knownParentCat?.handle ?? ''
+    categoryName = knownParentCat?.name ?? ''
+  } else {
+    // Fallback: cerca la sottocategoria in p.categories e la verifica in allCategories
+    const productCategories: any[] = p.categories ?? []
+    let fullSubCat: any = null
+    for (const pc of productCategories) {
+      const full = allCategories.find((c: any) => c.id === pc.id || c.handle === pc.handle)
+      if (full?.parent_category_id) { fullSubCat = full; break }
+    }
+    if (!fullSubCat && productCategories.length > 0) {
+      const pc = productCategories[0]
+      fullSubCat = allCategories.find((c: any) => c.id === pc.id || c.handle === pc.handle) ?? null
+    }
+    subCategoryHandle = fullSubCat?.handle ?? ''
+    subCategoryName = fullSubCat?.name ?? ''
+    const parentCat = fullSubCat?.parent_category_id
+      ? allCategories.find((c: any) => c.id === fullSubCat.parent_category_id)
+      : null
+    categoryHandle = parentCat?.handle ?? ''
+    categoryName = parentCat?.name ?? ''
+  }
+
   return {
     id: p.id,
     name: p.title,
     slug: p.handle,
-    subtitle:p.subtitle ?? '',
-    category: collection.title ?? '',
-    categorySlug: collection.handle ?? '',
-    subCategory: meta.subCategory ?? '',
-    subCategorySlug: meta.subCategorySlug ?? '',
+    subtitle: p.subtitle ?? '',
+    category: categoryName,
+    categorySlug: categoryHandle,
+    subCategory: subCategoryName,
+    subCategorySlug: subCategoryHandle,
     price: priceAmount / 100,
     image: p.thumbnail ?? p.images?.[0]?.url ?? '',
     images: p.images?.map((img: any) => img.url).filter(Boolean) ?? (p.thumbnail ? [p.thumbnail] : []),
@@ -85,16 +127,32 @@ function mapProduct(p: any): Product {
   }
 }
 
-// Cache in-memory per collezioni e categorie (evita chiamate ripetute)
-let _collections: any[] | null = null
+// Cache in-memory per categorie
 let _categories: any[] | null = null
 
-async function fetchCollections(): Promise<any[]> {
-  if (!_collections) {
-    const { collections } = await storeGet<any>('/store/collections')
-    _collections = collections ?? []
+// Map productId → { subCat, parentCat } costruita da tutte le subcategorie reali
+let _productCatMap: Map<string, { subCat: any; parentCat: any }> | null = null
+
+async function buildProductCatMap(): Promise<Map<string, { subCat: any; parentCat: any }>> {
+  if (_productCatMap) return _productCatMap
+  const all = await fetchCategories()
+  const subCats = all.filter((c: any) => c.parent_category_id)
+  const map = new Map<string, { subCat: any; parentCat: any }>()
+  for (const subCat of subCats) {
+    const parentCat = all.find((c: any) => c.id === subCat.parent_category_id)
+    if (!parentCat) continue
+    try {
+      const { products } = await storeGet<any>('/store/products', {
+        'category_id[]': subCat.id,
+        fields: 'id',
+      })
+      for (const p of (products ?? [])) {
+        if (p.id && !map.has(p.id)) map.set(p.id, { subCat, parentCat })
+      }
+    } catch { /* ignora errori per singola categoria */ }
   }
-  return _collections!
+  _productCatMap = map
+  return map
 }
 
 async function fetchCategories(): Promise<any[]> {
@@ -105,21 +163,8 @@ async function fetchCategories(): Promise<any[]> {
   return _categories!
 }
 
-// ── Prodotti per collezione ───────────────────────────────────────────────
-
-export async function getProductsByCollection(collectionHandle: string): Promise<Product[]> {
-  const collections = await fetchCollections()
-  const collection = collections.find((c: any) => c.handle === collectionHandle)
-  if (!collection) return []
-
-  const { products } = await storeGet<any>('/store/products', {
-    'collection_id[]': collection.id,
-    fields: FIELDS,
-  })
-  return (products ?? []).map(mapProduct)
-}
-
-// ── Prodotti per categoria ────────────────────────────────────────────────
+// ── Prodotti per categoria (singola) ─────────────────────────────────────
+// Inietta la categoria nota direttamente per evitare dipendenza da p.categories
 
 export async function getProductsByCategory(categoryHandle: string): Promise<Product[]> {
   const categories = await fetchCategories()
@@ -130,53 +175,110 @@ export async function getProductsByCategory(categoryHandle: string): Promise<Pro
     'category_id[]': category.id,
     fields: FIELDS,
   })
-  return (products ?? []).map(mapProduct)
+
+  // Categoria reale (ha un parent): inietta direttamente
+  if (category.parent_category_id) {
+    const parentCat = categories.find((c: any) => c.id === category.parent_category_id)
+    return (products ?? []).map((p: any) => mapProduct(p, categories, category, parentCat))
+  }
+
+  // Categoria curation/top-level: usa il map per trovare la subcategoria reale di ogni prodotto
+  const catMap = await buildProductCatMap()
+  return (products ?? []).map((p: any) => {
+    const info = catMap.get(p.id)
+    return mapProduct(p, categories, info?.subCat, info?.parentCat)
+  })
 }
 
-// ── Prodotti per sottocategoria (con fallback su metadata) ───────────────
+// ── Prodotti per categoria principale (aggrega tutte le subcategorie) ────
+
+export async function getProductsByParentCategory(parentHandle: string): Promise<Product[]> {
+  const all = await fetchCategories()
+  const parent = all.find((c: any) => c.handle === parentHandle)
+  if (!parent) return []
+
+  const subCats = all.filter((c: any) => c.parent_category_id === parent.id)
+  if (subCats.length === 0) return getProductsByCategory(parentHandle)
+
+  // Chiama getProductsByCategory per ogni subcategoria in parallelo:
+  // garantisce l'iniezione corretta di subCat/parentCat senza dipendere da p.categories
+  const results = await Promise.all(
+    subCats.map((s: any) => getProductsByCategory(s.handle).catch(() => [] as Product[]))
+  )
+  return results.flat()
+}
+
+// ── Prodotti per sottocategoria ───────────────────────────────────────────
+
 export async function getProductsBySubCategory(subHandle: string, parentHandle: string): Promise<Product[]> {
   const direct = await getProductsByCategory(subHandle)
   if (direct.length > 0) return direct
-  const parentProducts = await getProductsByCategory(parentHandle)
+  const parentProducts = await getProductsByParentCategory(parentHandle)
   return parentProducts.filter(p => p.subCategorySlug === subHandle)
 }
 
 // ── Singolo prodotto per handle ───────────────────────────────────────────
 
 export async function getProductByHandle(handle: string): Promise<Product | null> {
+  const categories = await fetchCategories()
   const { products } = await storeGet<any>('/store/products', {
     handle,
     fields: FIELDS,
   })
   const p = products?.[0]
-  return p ? mapProduct(p) : null
+  if (!p) return null
+  // Senza categoria iniettata: usa il fallback su p.categories + allCategories
+  return mapProduct(p, categories)
 }
 
-// ── Collezioni ────────────────────────────────────────────────────────────
+// ── Singolo prodotto con categoria nota (usato dalla pagina [slug].tsx) ──
 
-export async function getCollections(): Promise<Category[]> {
-  const collections = await fetchCollections()
-  return collections.map((c: any) => ({
-    name: c.title,
-    slug: c.handle,
-    image: `/categorie/${c.handle}.png`,
-  }))
+export async function getProductByHandleWithCategory(
+  handle: string,
+  subCatHandle: string,
+  parentCatHandle: string,
+): Promise<Product | null> {
+  const categories = await fetchCategories()
+  const { products } = await storeGet<any>('/store/products', {
+    handle,
+    fields: FIELDS,
+  })
+  const p = products?.[0]
+  if (!p) return null
+
+  const subCat = categories.find((c: any) => c.handle === subCatHandle)
+  const parentCat = categories.find((c: any) => c.handle === parentCatHandle)
+  return mapProduct(p, categories, subCat, parentCat)
+}
+
+// ── Categorie principali (senza parent) ──────────────────────────────────
+
+export async function getMainCategories(): Promise<Category[]> {
+  const all = await fetchCategories()
+  return all
+    .filter((c: any) => !c.parent_category_id)
+    .map((c: any) => ({
+      name: c.name,
+      slug: c.handle,
+      image: `/categorie/${c.handle}.png`,
+    }))
 }
 
 // ── Prodotti esclusivi ────────────────────────────────────────────────────
 
 export async function getExclusiveProducts(): Promise<Product[]> {
-  return getProductsByCollection('speciali')
+  return getProductsByParentCategory('speciali')
 }
 
-// ── Tutti i prodotti (con cache leggera) ──────────────────────────────────
+// ── Tutti i prodotti ──────────────────────────────────────────────────────
 
 let _allProducts: Product[] | null = null
 
 export async function getAllProducts(): Promise<Product[]> {
   if (!_allProducts) {
+    const categories = await fetchCategories()
     const { products } = await storeGet<any>('/store/products', { fields: FIELDS })
-    _allProducts = (products ?? []).map(mapProduct)
+    _allProducts = (products ?? []).map((p: any) => mapProduct(p, categories))
   }
   return _allProducts!
 }
@@ -184,8 +286,8 @@ export async function getAllProducts(): Promise<Product[]> {
 // ── Path helpers per getStaticPaths ──────────────────────────────────────
 
 export async function getTopLevelCategoryHandles(): Promise<string[]> {
-  const collections = await fetchCollections()
-  return collections.map((c: any) => c.handle)
+  const all = await fetchCategories()
+  return all.filter((c: any) => !c.parent_category_id).map((c: any) => c.handle)
 }
 
 export async function getAllSubcategoryPaths(): Promise<{ categoria: string; subcategoria: string }[]> {
@@ -201,10 +303,19 @@ export async function getAllSubcategoryPaths(): Promise<{ categoria: string; sub
 }
 
 export async function getAllProductPaths(): Promise<{ categoria: string; subcategoria: string; slug: string }[]> {
-  const products = await getAllProducts()
-  return products
-    .filter(p => p.slug && p.categorySlug && p.subCategorySlug)
-    .map(p => ({ categoria: p.categorySlug, subcategoria: p.subCategorySlug, slug: p.slug }))
+  const all = await fetchCategories()
+  const subCats = all.filter((c: any) => c.parent_category_id)
+  const paths: { categoria: string; subcategoria: string; slug: string }[] = []
+
+  for (const subCat of subCats) {
+    const parent = all.find((c: any) => c.id === subCat.parent_category_id)
+    if (!parent) continue
+    const products = await getProductsByCategory(subCat.handle)
+    for (const p of products) {
+      if (p.slug) paths.push({ categoria: parent.handle, subcategoria: subCat.handle, slug: p.slug })
+    }
+  }
+  return paths
 }
 
 // ── Nome categoria per handle ─────────────────────────────────────────────
@@ -219,8 +330,9 @@ export async function getCategoryName(handle: string): Promise<string> {
 
 export async function searchProducts(q: string): Promise<Product[]> {
   if (!q.trim()) return []
+  const categories = await fetchCategories()
   const { products } = await storeGet<any>('/store/products', { q, fields: FIELDS })
-  return (products ?? []).map(mapProduct)
+  return (products ?? []).map((p: any) => mapProduct(p, categories))
 }
 
 // ── Sottocategorie per categoria principale ───────────────────────────────
