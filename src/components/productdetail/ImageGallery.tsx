@@ -41,7 +41,7 @@ export const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
     <div className="flex flex-col gap-[16px]">
       {/* Main image */}
       <div
-        className="relative lg:w-[480px] h-[500px] sm:h-[650px] lg:h-[650px] rounded-[24px] overflow-hidden bg-white shadow-[0_8px_40px_rgba(0,0,0,0.08)]"
+        className="relative lg:w-[480px] h-[330px] sm:h-[650px] lg:h-[650px] rounded-[24px] overflow-hidden bg-white shadow-[0_8px_40px_rgba(0,0,0,0.08)]"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
@@ -58,7 +58,7 @@ export const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
               src={images[selected]}
               alt={`${alt} — foto ${selected + 1}`}
               fill
-              className="object-contain p-[28px]"
+              className="object-contain p-[20px] sm:p-[28px]"
               priority={selected === 0}
             />
           </motion.div>

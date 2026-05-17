@@ -6,8 +6,10 @@ import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useState, useEffect } from 'react';
 import { Breadcrumb } from '../components/productdetail/Breadcrumb';
+import { ColorVariantSelector } from '../components/productdetail/ColorVariantSelector';
 import { ImageGallery } from '../components/productdetail/ImageGallery';
 import { ProdottiCorrelati } from '../components/productdetail/ProdottiCorrelati';
+import { SizeVariantSelector } from '../components/productdetail/SizeVariantSelector';
 import { getProductByHandle } from '../lib/medusa-data';
 import type { Product, ProductVariant } from '../data/products';
 
@@ -15,14 +17,6 @@ interface ProductDetailProps {
   initialProduct?: Product | null;
   initialRelated?: Product[];
 }
-
-const COLOR_MAP: Record<string, string> = {
-  Rosa: '#F472B6', Viola: '#8B5CF6', Bordeaux: '#7C1D2E',
-  Nero: '#1d1d1f', Bianco: '#F8F8F8', Rosso: '#EF4444',
-  Verde: '#22C55E', Marrone: '#92400E', Lilla: '#A78BFA',
-}
-
-const POPULAR_VALUES = new Set(['M', 'S/M', '100ml'])
 
 function formatPrice(n: number): string {
   const rounded = Math.round(n * 100) / 100
@@ -158,17 +152,33 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
 
   const hasDimensions = product.height != null || product.width != null || product.length != null;
   const hasSpecs = !!(product.material || product.weight != null || hasDimensions);
+  const colorOption = product.options?.find(o => o.title === 'Colore');
+  const sizeOptions = product.options?.filter(o => o.title !== 'Colore') ?? [];
+  const handleOptionSelect = (title: string, value: string) =>
+    setSelectedOptions(prev => ({ ...prev, [title]: value }));
 
   return (
     <div className="pt-[68px] lg:pt-[130px] min-h-screen bg-[#f5f5f7]">
       <div className="max-w-[1100px] mx-auto px-6 lg:px-8 pb-[28px] pt-[46px] lg:pt-[36px]">
         <Breadcrumb items={breadcrumbItems} />
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="sm:hidden space-y-[8px] mt-[20px]"
+          key={product.id}
+        >
+          <h1 className="text-[24px] font-bold tracking-[-0.02em] text-[#1d1d1f] leading-[1.1]">
+            {product.name}
+          </h1>
+        
+        </motion.div>
       </div>
 
       {/* ── Sezione principale ─────────────────────────────────────────── */}
       <section className="pb-[72px]">
         <div className="max-w-[1100px] mx-auto px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-[48px] lg:gap-[80px]">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-[16px] sm:gap-[48px] lg:gap-[80px]">
 
             {/* Galleria */}
             <motion.div
@@ -185,10 +195,10 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
               initial={{ x: 30 }}
               animate={{ x: 0 }}
               transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-              className="flex flex-col justify-center  space-y-[28px] lg:space-y-[20px]"
+              className="flex flex-col justify-center  space-y-[20px] sm:space-y-[26px] lg:space-y-[20px]"
             >
-              {/* Badge + categoria + titolo */}
-              <div className="space-y-[8px] ">
+              {/* Badge + categoria + titolo (desktop) */}
+              <div className="hidden sm:block space-y-[8px]">
                 <div className='rounded-3xl bg-[#D4A5A5] py-1 px-3 w-fit'>
                 <p className="text-[13px] text-black tracking-[0.1em] uppercase font-semibold">
                   {product.category}
@@ -201,20 +211,108 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
 
 
               {/* Descrizione */}
-              <p className="text-[15px] md:text-[16px]  text-[#6e6e73] leading-[1.65]">
+              <p className="hidden sm:block text-[15px] md:text-[16px]  text-[#6e6e73] leading-[1.65]">
                 {product.subtitle}
               </p>
 
-              {/* Prezzo */}
-              <motion.p
-                key={displayPrice}
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2 }}
-                className="text-[32px] lg:text-[40px] font-bold text-[#1d1d1f] tracking-[-0.01em]"
-              >
-                €{formatPrice(displayPrice)}
-              </motion.p>
+              {/* Prezzo (+ colore affiancato solo <640px) */}
+              <div className="flex items-center justify-between gap-3 sm:block mx-1">
+                <motion.p
+                  key={displayPrice}
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="text-[30px] sm:text-[32px] lg:text-[40px] font-bold text-[#1d1d1f] tracking-[-0.01em] shrink-0"
+                >
+                  €{formatPrice(displayPrice)}
+                </motion.p>
+                {colorOption && (
+                  <div className="sm:hidden shrink-0">
+                    <ColorVariantSelector
+                      option={colorOption}
+                      selectedOptions={selectedOptions}
+                      onSelect={handleOptionSelect}
+                      compact
+                      showLabel={false}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Taglie sotto prezzo (<640px) */}
+              {sizeOptions.length > 0 && (
+                <div className="sm:hidden space-y-[16px] mx-1 mt-[4px]">
+                  {sizeOptions.map(opt => (
+                    <SizeVariantSelector
+                      key={opt.title}
+                      option={opt}
+                      selectedOptions={selectedOptions}
+                      onSelect={handleOptionSelect}
+                    />
+                  ))}
+                </div>
+              )}
+
+               {/* Quantità + disponibilità <640px */}
+               <div className="flex items-center gap-21 md:gap-46 sm:hidden">
+                <div className="flex items-center border-2 border-[#d0d0d5] rounded-[12px] overflow-hidden">
+                  <button
+                    onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                    className="w-[32px] h-[32px] flex items-center justify-center text-[20px] font-light text-[#1d1d1f] hover:bg-[#f0f0f5] transition-colors"
+                  >
+                    −
+                  </button>
+                  <span className="w-[42px] text-center text-[15px] font-semibold text-[#1d1d1f]">
+                    {quantity}
+                  </span>
+                  <button
+                    onClick={() => setQuantity(q => q + 1)}
+                    className="w-[42px] h-[42px] flex items-center justify-center text-[20px] font-light text-[#1d1d1f] hover:bg-[#f0f0f5] transition-colors"
+                  >
+                    +
+                  </button>
+                </div>
+                <div className="flex items-center gap-[7px]">
+                  <div className="w-[8px] h-[8px] rounded-full bg-green-500" />
+                  <span className="text-[13px] font-medium text-green-600">Disponibile</span>
+                </div>
+              </div>
+
+                  {/* CTA */}
+                  <div className="flex gap-[10px] sm:hidden">
+                <motion.button
+                  onClick={handleAddToCart}
+                  whileHover={{ scale: 1.01, boxShadow: '0 8px 30px rgba(29, 29, 31, 0.2)' }}
+                  whileTap={{ scale: 0.99 }}
+                  transition={{ duration: 0.2 }}
+                  className={`flex-1 flex items-center justify-center gap-[8px] py-[15px] rounded-[14px] text-[15px] font-semibold transition-all duration-300 ${
+                    added
+                      ? 'bg-green-600 text-white'
+                      : 'bg-[#1d1d1f] text-white hover:bg-[#424245]'
+                  }`}
+                >
+                  <ShoppingCart className="w-[16px] h-[16px]" strokeWidth={2.5} />
+                  {added ? 'Aggiunto ✓' : 'Aggiungi al Carrello'}
+                </motion.button>
+
+                <motion.button
+                  onClick={() => toggleWishlist(product)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className={`w-[52px] h-[52px] flex items-center justify-center rounded-[14px] border-2 transition-all duration-300 ${
+                    isInWishlist(product.id)
+                      ? 'bg-[#d4a5a5] border-[#d4a5a5] text-white'
+                      : 'bg-white border-[#d0d0d5] text-[#1d1d1f] hover:border-[#1d1d1f]'
+                  }`}
+                >
+                  <Heart
+                    className="w-[18px] h-[18px]"
+                    strokeWidth={2}
+                    fill={isInWishlist(product.id) ? 'currentColor' : 'none'}
+                  />
+                </motion.button>
+              </div>
 
 
               {/* Segnali urgenza */}
@@ -238,65 +336,24 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
                 <div className="space-y-[20px]">
                   {[...product.options!].sort((a, b) => a.title === 'Colore' ? -1 : b.title === 'Colore' ? 1 : 0).map(opt => {
                     const isColor = opt.title === 'Colore'
+                    if (isColor) {
+                      return (
+                        <div key={opt.title} className="hidden sm:block">
+                          <ColorVariantSelector
+                            option={opt}
+                            selectedOptions={selectedOptions}
+                            onSelect={handleOptionSelect}
+                          />
+                        </div>
+                      )
+                    }
                     return (
-                      <div key={opt.title}>
-                        <p className="text-[14px] font-semibold text-[#1d1d1f] mb-[12px]">
-                          {opt.title}:
-                        </p>
-                        {isColor ? (
-                          <div className="flex flex-wrap gap-[18px]">
-                            {opt.values.map(value => {
-                              const isSelected = selectedOptions[opt.title] === value
-                              const bg = COLOR_MAP[value] ?? '#888'
-                              const needsBorder = value === 'Bianco'
-                              return (
-                                <button
-                                  key={value}
-                                  onClick={() => setSelectedOptions(prev => ({ ...prev, [opt.title]: value }))}
-                                  className="flex flex-col items-center gap-[6px] group"
-                                >
-                                  <div
-                                    className={`w-[34px] h-[34px] rounded-full transition-all duration-200 ${
-                                      isSelected
-                                        ? 'ring-2 ring-offset-2 ring-[#1d1d1f] scale-110'
-                                        : 'ring-1 ring-[#d0d0d5] hover:scale-105'
-                                    } ${needsBorder ? 'border border-[#d0d0d5]' : ''}`}
-                                    style={{ backgroundColor: bg }}
-                                  />
-                                  <span className={`text-[11px] transition-colors ${isSelected ? 'text-[#1d1d1f] font-medium' : 'text-[#6e6e73]'}`}>
-                                    {value}
-                                  </span>
-                                </button>
-                              )
-                            })}
-                          </div>
-                        ) : (
-                          <div className="flex flex-wrap gap-[8px]">
-                            {opt.values.map(value => {
-                              const isSelected = selectedOptions[opt.title] === value
-                              const isPopular = POPULAR_VALUES.has(value)
-                              return (
-                                <div key={value} className="relative">
-                                  {isPopular && (
-                                    <span className="absolute -top-[9px] left-1/2 -translate-x-1/2 text-[9px] font-bold text-white bg-[#FF6B35] px-[6px] py-[1px] rounded-full whitespace-nowrap z-10">
-                                      popular
-                                    </span>
-                                  )}
-                                  <button
-                                    onClick={() => setSelectedOptions(prev => ({ ...prev, [opt.title]: value }))}
-                                    className={`px-[14px] h-[44px] min-w-[52px] rounded-[10px] text-[13px] font-semibold border-2 transition-all duration-200 ${
-                                      isSelected
-                                        ? 'bg-[#1d1d1f] text-white border-[#1d1d1f]'
-                                        : 'bg-white text-[#1d1d1f] border-[#d0d0d5] hover:border-[#1d1d1f]'
-                                    }`}
-                                  >
-                                    {value}
-                                  </button>
-                                </div>
-                              )
-                            })}
-                          </div>
-                        )}
+                      <div key={opt.title} className="hidden sm:block">
+                        <SizeVariantSelector
+                          option={opt}
+                          selectedOptions={selectedOptions}
+                          onSelect={handleOptionSelect}
+                        />
                       </div>
                     )
                   })}
@@ -304,7 +361,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
               )}
 
               {/* Quantità + disponibilità */}
-              <div className="flex items-center gap-21 md:gap-46">
+              <div className="items-center gap-21 md:gap-46 hidden sm:flex">
                 <div className="flex items-center border-2 border-[#d0d0d5] rounded-[12px] overflow-hidden">
                   <button
                     onClick={() => setQuantity(q => Math.max(1, q - 1))}
@@ -328,8 +385,8 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
                 </div>
               </div>
 
-              {/* CTA */}
-              <div className="flex gap-[10px]">
+              {/* CTA (desktop ≥640px) */}
+              <div className="hidden sm:flex gap-[10px]">
                 <motion.button
                   onClick={handleAddToCart}
                   whileHover={{ scale: 1.01, boxShadow: '0 8px 30px rgba(29, 29, 31, 0.2)' }}
@@ -365,7 +422,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
               </div>
 
                    {/** Trust Badges */}
-                   <div className="space-y-[11px] pt-[2px] mt-4">
+                   <div className="space-y-[11px] pt-[2px] mt-0 sm:mt-4">
                     <div className='flex items-center gap-[10px]'>
                       <Package className="w-[20px] h-[20px] text-[#6e6e73] flex-shrink-0" strokeWidth={1.8} />
                       <span className="text-[14px] text-[#6e6e73]">
@@ -404,40 +461,40 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
                 <div className="md:hidden space-y-[9px] pt-[2px]">
                   {product.material && (
                     <div className="flex items-center gap-[10px]">
-                      <span className="text-[22px] w-[22px] text-center flex-shrink-0">🧪</span>
-                      <span className="text-[16px] text-[#6e6e73]">
+                      <span className="text-[20px] w-[20px] sm:w-[22px] sm:text-[22px] text-center flex-shrink-0">🧪</span>
+                      <span className="text-[14px] sm:text-[16px] text-[#6e6e73]">
                         <span className="text-[#1d1d1f] font-medium">Materiale</span> · {product.material}
                       </span>
                     </div>
                   )}
                   {product.weight != null && (
                     <div className="flex items-center gap-[10px]">
-                      <span className="text-[22px] w-[22px] text-center flex-shrink-0">⚖️</span>
-                      <span className="text-[16px] text-[#6e6e73]">
+                      <span className="text-[20px] w-[20px] sm:w-[22px] sm:text-[22px] text-center flex-shrink-0">⚖️</span>
+                      <span className="text-[14px] sm:text-[16px] text-[#6e6e73]">
                         <span className="text-[#1d1d1f] font-medium">Peso</span> · {formatWeight(product.weight)}
                       </span>
                     </div>
                   )}
                   {product.height != null && (
                     <div className="flex items-center gap-[10px]">
-                      <span className="text-[22px] w-[22px] text-center flex-shrink-0">📏</span>
-                      <span className="text-[16px] text-[#6e6e73]">
+                      <span className="text-[20px] w-[20px] sm:w-[22px] sm:text-[22px] text-center flex-shrink-0">📏</span>
+                      <span className="text-[14px] sm:text-[16px] text-[#6e6e73]">
                         <span className="text-[#1d1d1f] font-medium">Altezza</span> · {product.height} cm
                       </span>
                     </div>
                   )}
                   {product.width != null && (
                     <div className="flex items-center gap-[10px]">
-                      <span className="text-[22px] w-[22px] text-center flex-shrink-0">↔️</span>
-                      <span className="text-[16px] text-[#6e6e73]">
+                      <span className="text-[20px] w-[20px] sm:w-[22px] sm:text-[22px] text-center flex-shrink-0">↔️</span>
+                      <span className="text-[14px] sm:text-[16px] text-[#6e6e73]">
                         <span className="text-[#1d1d1f] font-medium">Larghezza</span> · {product.width} cm
                       </span>
                     </div>
                   )}
                   {product.length != null && (
                     <div className="flex items-center gap-[10px]">
-                      <span className="text-[22px] w-[22px] text-center flex-shrink-0">📦</span>
-                      <span className="text-[16px] text-[#6e6e73]">
+                      <span className="text-[20px] w-[20px] sm:w-[22px] sm:text-[22px] text-center flex-shrink-0">📦</span>
+                      <span className="text-[14px] sm:text-[16px] text-[#6e6e73]">
                         <span className="text-[#1d1d1f] font-medium">Profondità</span> · {product.length} cm
                       </span>
                     </div>
@@ -445,9 +502,6 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
                 </div>
               )}
             </motion.div>
-
-        
-
            
           </div>
 
