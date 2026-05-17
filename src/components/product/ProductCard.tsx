@@ -32,12 +32,12 @@ export const ProductCard = ({ product, onWishlist, wishlisted, imageSrc, priorit
         <button
           aria-label="Aggiungi ai preferiti"
           onClick={onWishlist ?? (e => e.preventDefault())}
-          className={`absolute top-[14px] right-[14px] w-[30px] h-[30px] lg:w-[50px] lg:h-[50px] rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.12)] flex items-center justify-center hover:scale-110 transition-transform duration-200 z-10 ${
+          className={`absolute top-[14px] right-[14px] w-[34px] h-[34px] lg:w-[50px] lg:h-[50px] rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.12)] flex items-center justify-center hover:scale-110 transition-transform duration-200 z-10 ${
             wishlisted ? 'bg-[#d4a5a5]' : 'bg-black'
           }`}
         >
           <Heart
-            className={`w-[15px] h-[15px] lg:w-[22px] lg:h-[22px] ${wishlisted ? 'text-white' : 'text-white'}`}
+            className={`w-[16px] h-[16px] lg:w-[22px] lg:h-[22px] ${wishlisted ? 'text-white' : 'text-white'}`}
             fill={wishlisted ? 'currentColor' : 'none'}
             strokeWidth={1.5}
           />

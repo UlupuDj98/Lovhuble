@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { ImageLightbox } from './ImageLightbox';
 
 interface ImageGalleryProps {
   images: string[];
@@ -13,6 +14,7 @@ interface ImageGalleryProps {
 export const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
   const [selected, setSelected] = useState(0);
   const [direction, setDirection] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const touchStart = useRef<number>(0);
 
   useEffect(() => {
@@ -41,9 +43,10 @@ export const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
     <div className="flex flex-col gap-[16px]">
       {/* Main image */}
       <div
-        className="relative lg:w-[480px] h-[330px] sm:h-[650px] lg:h-[650px] rounded-[24px] overflow-hidden bg-white shadow-[0_8px_40px_rgba(0,0,0,0.08)]"
+        className="relative lg:w-[480px] h-[340px] sm:h-[650px] lg:h-[650px] rounded-[24px] overflow-hidden bg-white shadow-[0_8px_40px_rgba(0,0,0,0.08)] cursor-zoom-in"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
+        onClick={() => setLightboxOpen(true)}
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
@@ -68,14 +71,14 @@ export const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
         {images.length > 1 && (
           <>
             <button
-              onClick={prev}
+              onClick={e => { e.stopPropagation(); prev(); }}
               aria-label="Foto precedente"
               className="hidden lg:flex absolute left-[12px] top-1/2 -translate-y-1/2 w-[38px] h-[38px] bg-white/85 backdrop-blur-sm rounded-full items-center justify-center shadow-[0_2px_12px_rgba(0,0,0,0.12)] hover:bg-white transition-all duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.16)]"
             >
               <ChevronLeft className="w-[16px] h-[16px] text-[#1d1d1f]" strokeWidth={2} />
             </button>
             <button
-              onClick={next}
+              onClick={e => { e.stopPropagation(); next(); }}
               aria-label="Foto successiva"
               className="hidden lg:flex absolute right-[12px] top-1/2 -translate-y-1/2 w-[38px] h-[38px] bg-white/85 backdrop-blur-sm rounded-full items-center justify-center shadow-[0_2px_12px_rgba(0,0,0,0.12)] hover:bg-white transition-all duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.16)]"
             >
@@ -125,6 +128,19 @@ export const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
           ))}
         </div>
       )}
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {lightboxOpen && (
+          <ImageLightbox
+            images={images}
+            alt={alt}
+            selected={selected}
+            onClose={() => setLightboxOpen(false)}
+            onNavigate={navigate}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

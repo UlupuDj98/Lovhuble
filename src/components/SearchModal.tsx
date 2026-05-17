@@ -2,14 +2,12 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, X, TrendingUp, Clock, ArrowRight } from 'lucide-react';
+import { Search, X, Clock, ArrowRight, TrendingUp } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { getMainCategories, searchProducts } from '../lib/medusa-data';
+import { searchProducts } from '../lib/medusa-data';
 import type { Product } from '../data/products';
-
-const TRENDING_FALLBACK = ['Sex Toys', 'Lingerie', 'BDSM', 'Lubrificanti', 'Giochi', 'Speciali'];
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -20,7 +18,6 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
   const [query, setQuery] = useState('');
   const [recent, setRecent] = useState<string[]>([]);
   const [results, setResults] = useState<Product[]>([]);
-  const [trending, setTrending] = useState<string[]>(TRENDING_FALLBACK);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -34,10 +31,6 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
     window.addEventListener('keydown', handle);
     return () => window.removeEventListener('keydown', handle);
   }, [isOpen, onClose]);
-
-  useEffect(() => {
-    getMainCategories().then(cols => setTrending(cols.map(c => c.name))).catch(() => {});
-  }, []);
 
   useEffect(() => {
     if (!query.trim()) { setResults([]); return; }
@@ -159,26 +152,30 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
                   </div>
                 ) : (
                   <div className="p-4 flex flex-col gap-[22px]">
-                    {/* Trending */}
+                    {/* Categorie popolari */}
                     <div>
                       <div className="flex items-center gap-[6px] mb-[10px]">
                         <TrendingUp className="w-[13px] h-[13px] text-[#d4a5a5]" strokeWidth={2} />
-                        <p className="text-[10px] font-bold tracking-[0.1em] text-[#86868b] uppercase">Ricerche popolari</p>
+                        <p className="text-[10px] font-bold tracking-[0.1em] text-[#86868b] uppercase">Categorie popolari</p>
                       </div>
                       <div className="flex flex-wrap gap-[8px]">
-                        {trending.map(term => (
+                        {[
+                          { label: 'Best Seller', href: '/prodotti/best-seller' },
+                          { label: 'Offerte', href: '/prodotti/offerte' },
+                          { label: 'Novità', href: '/prodotti/novita' },
+                        ].map(({ label, href }) => (
                           <button
-                            key={term}
-                            onClick={() => setQuery(term)}
+                            key={href}
+                            onClick={() => navigate(href)}
                             className="px-[14px] py-[7px] rounded-full bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[13px] font-medium text-[#1d1d1f] transition-colors"
                           >
-                            {term}
+                            {label}
                           </button>
                         ))}
                       </div>
                     </div>
 
-                    {/* Recent */}
+                    {/* Ricerche recenti */}
                     {recent.length > 0 && (
                       <div>
                         <div className="flex items-center justify-between mb-[10px]">

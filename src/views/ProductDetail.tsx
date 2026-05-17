@@ -226,7 +226,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
                 >
                   €{formatPrice(displayPrice)}
                 </motion.p>
-                {colorOption && (
+                {colorOption ? (
                   <div className="sm:hidden shrink-0">
                     <ColorVariantSelector
                       option={colorOption}
@@ -236,11 +236,22 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
                       showLabel={false}
                     />
                   </div>
+                ) : sizeOptions.length > 0 && (
+                  <div className="sm:hidden shrink-0">
+                    {sizeOptions.map(opt => (
+                      <SizeVariantSelector
+                        key={opt.title}
+                        option={opt}
+                        selectedOptions={selectedOptions}
+                        onSelect={handleOptionSelect}
+                      />
+                    ))}
+                  </div>
                 )}
               </div>
 
-              {/* Taglie sotto prezzo (<640px) */}
-              {sizeOptions.length > 0 && (
+              {/* Taglie sotto prezzo (<640px) — solo se esiste anche il colore */}
+              {colorOption && sizeOptions.length > 0 && (
                 <div className="sm:hidden space-y-[16px] mx-1 mt-[4px]">
                   {sizeOptions.map(opt => (
                     <SizeVariantSelector
@@ -316,7 +327,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
 
 
               {/* Segnali urgenza */}
-              <div className="space-y-[8px]">
+              <div className="space-y-[8px] my-6 sm:my-0">
                 <div className="flex items-center gap-[8px]">
                   <span className="w-[18px] h-[18px] flex items-center justify-center rounded-full bg-green-500 text-white text-[10px] font-bold flex-shrink-0">✓</span>
                   <span className="text-[14px] md:text-[16px] text-[#1d1d1f]">
@@ -333,7 +344,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
 
               {/* Selettore varianti */}
               {hasRealVariants && (
-                <div className="space-y-[20px]">
+                <div className="space-y-[20px] mt-4">
                   {[...product.options!].sort((a, b) => a.title === 'Colore' ? -1 : b.title === 'Colore' ? 1 : 0).map(opt => {
                     const isColor = opt.title === 'Colore'
                     if (isColor) {
@@ -422,7 +433,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
               </div>
 
                    {/** Trust Badges */}
-                   <div className="space-y-[11px] pt-[2px] mt-0 sm:mt-4">
+                   <div className="space-y-[11px] pt-[2px] mt-0 mb-6 sm:mt-4 sm:mb-0">
                     <div className='flex items-center gap-[10px]'>
                       <Package className="w-[20px] h-[20px] text-[#6e6e73] flex-shrink-0" strokeWidth={1.8} />
                       <span className="text-[14px] text-[#6e6e73]">

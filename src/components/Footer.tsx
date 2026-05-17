@@ -6,7 +6,7 @@ export const Footer = () => {
   const footerLinks = {
     informazioni: [
       { name: 'Chi Siamo', href: '/about' },
-      { name: 'Contatti', href: '/contact' },
+      { name: 'Blog', href: '/blog' },
       { name: 'Guida', href: '/guide' },
     ],
     servizi: [
@@ -42,11 +42,11 @@ export const Footer = () => {
             </div>
             <div className="space-y-[12px]">
               <a
-                href="mailto:info@sense.com"
+                href="mailto:info@lovehuble.com"
                 className="flex items-center space-x-[8px] text-[14px] text-white/70 hover:text-white transition-colors duration-200"
               >
                 <Mail className="w-[16px] h-[16px]" strokeWidth={1.5} />
-                <span>info@sense.com</span>
+                <span>info@lovehuble.com</span>
               </a>
               <a
                 href="tel:+390123456789"

@@ -44,7 +44,7 @@ const ReviewCard = ({ review }: { review: typeof reviews[0] }) => (
   <div className="bg-white rounded-[16px] p-[24px] lg:px-[28px] lg:py-[40px] flex flex-col gap-[14px] h-full shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
     <div className="flex gap-[3px]">
       {[...Array(review.rating)].map((_, i) => (
-        <Star key={i} className="w-[14px] h-[14px] lg:w-[20px] lg:h-[20px] fill-[#d4a5a5] text-[#d4a5a5]" strokeWidth={0} />
+        <Star key={i} className="w-[16px] h-[16px] lg:w-[20px] lg:h-[20px] fill-[#d4a5a5] text-[#d4a5a5]" strokeWidth={0} />
       ))}
     </div>
     <p className="text-[15px] lg:text-[17px] text-[#1d1d1f] leading-[1.6] font-normal flex-1">

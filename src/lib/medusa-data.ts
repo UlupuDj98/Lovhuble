@@ -332,7 +332,12 @@ export async function searchProducts(q: string): Promise<Product[]> {
   if (!q.trim()) return []
   const categories = await fetchCategories()
   const { products } = await storeGet<any>('/store/products', { q, fields: FIELDS })
-  return (products ?? []).map((p: any) => mapProduct(p, categories))
+  if (!products?.length) return []
+  const catMap = await buildProductCatMap()
+  return products.map((p: any) => {
+    const info = catMap.get(p.id)
+    return mapProduct(p, categories, info?.subCat, info?.parentCat)
+  })
 }
 
 // ── Sottocategorie per categoria principale ───────────────────────────────
