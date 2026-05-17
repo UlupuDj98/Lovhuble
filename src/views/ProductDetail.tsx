@@ -195,7 +195,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
               initial={{ x: 30 }}
               animate={{ x: 0 }}
               transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-              className="flex flex-col justify-center  space-y-[20px] sm:space-y-[26px] lg:space-y-[20px]"
+              className="flex flex-col justify-center  space-y-[20px] sm:space-y-[26px] lg:space-y-[20px] lg:mb-40"
             >
               {/* Badge + categoria + titolo (desktop) */}
               <div className="hidden sm:block space-y-[8px]">
@@ -433,7 +433,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
               </div>
 
                    {/** Trust Badges */}
-                   <div className="space-y-[11px] pt-[2px] mt-0 mb-6 sm:mt-4 sm:mb-0">
+                   <div className="space-y-[11px] pt-[2px] mt-0 mb-6 sm:mt-4 sm:mb-6">
                     <div className='flex items-center gap-[10px]'>
                       <Package className="w-[20px] h-[20px] text-[#6e6e73] flex-shrink-0" strokeWidth={1.8} />
                       <span className="text-[14px] text-[#6e6e73]">
