@@ -168,7 +168,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
           className="sm:hidden space-y-[8px] mt-[20px]"
           key={product.id}
         >
-          <h1 className="text-[24px] font-bold tracking-[-0.02em] text-[#1d1d1f] leading-[1.1]">
+          <h1 className="text-[26px] font-bold tracking-[-0.02em] text-[#1d1d1f] leading-[1.1]">
             {product.name}
           </h1>
         

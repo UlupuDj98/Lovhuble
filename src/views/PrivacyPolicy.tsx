@@ -1,5 +1,7 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'motion/react';
+import heroSrc from '../../public/hero.png';
 
 const sections = [
   {
@@ -50,7 +52,7 @@ export const PrivacyPolicy = () => {
       {/* Hero */}
       <section className="relative h-[300px] lg:h-[400px] flex items-end overflow-hidden">
         <div className="absolute inset-0">
-          <img src="/hero.png" alt="Privacy Policy" className="w-full h-full object-cover" />
+          <Image src={heroSrc} alt="Privacy Policy" fill priority placeholder="blur" className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70" />
         </div>
 
@@ -72,16 +74,16 @@ export const PrivacyPolicy = () => {
 
         <div className="relative z-10 w-full max-w-[980px] mx-auto px-6 lg:px-8 pb-[48px] lg:pb-[64px]">
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
             className="text-[40px] lg:text-[64px] font-semibold tracking-[-0.015em] text-white mb-[10px] leading-[1.07]"
           >
             Privacy Policy
           </motion.h1>
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ delay: 0.1, duration: 0.6 }}
             className="text-[17px] lg:text-[21px] text-white/85 font-normal leading-[1.4] tracking-[-0.003em] max-w-[560px]"
           >

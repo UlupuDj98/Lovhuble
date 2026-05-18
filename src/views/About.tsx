@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'motion/react';
 import { Heart, Shield, Sparkles, Target, Users, Award } from 'lucide-react';
+import heroSrc from '../../public/hero.png';
 
 export const About = () => {
   const values = [
@@ -73,17 +75,13 @@ export const About = () => {
           className="absolute inset-0 z-0"
         >
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-[#fbfbfd] z-10" />
-          <img
-            src="hero.png"
-            alt="Chi siamo"
-            className="w-full h-full object-cover"
-          />
+          <Image src={heroSrc} alt="Chi siamo" fill priority placeholder="blur" className="object-cover" />
         </motion.div>
 
         <div className="relative z-20 text-center px-6 max-w-[980px] mx-auto">
           <motion.div
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
           >
             <h1 className="text-[48px] lg:text-[80px] font-semibold tracking-[-0.015em] text-white mb-[18px] leading-[1.05]">
@@ -91,8 +89,8 @@ export const About = () => {
             </h1>
           </motion.div>
           <motion.p
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ delay: 0.6, duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
             className="text-[21px] lg:text-[28px] text-white/90 font-normal leading-[1.3] tracking-[-0.003em] max-w-[740px] mx-auto"
           >

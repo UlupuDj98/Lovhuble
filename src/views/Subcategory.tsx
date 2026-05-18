@@ -11,6 +11,7 @@ import { PriceRangeBar } from '../components/product/PriceRangeBar';
 import { PageHeader } from '../components/PageHeader';
 import { Breadcrumb } from '../components/productdetail/Breadcrumb';
 import { getProductsBySubCategory, getCategoryName } from '../lib/medusa-data';
+import { applyFilters } from '../utils/product-filters';
 import type { Product } from '../data/products';
 
 interface SubcategoryProps {
@@ -60,11 +61,10 @@ export const Subcategory = ({ initialProducts, initialSubCategoryName, initialSu
 
   const { isInWishlist, toggleWishlist } = useWishlist();
 
-  const filteredProducts = useMemo(() => {
-    let list = allProducts.filter(p => p.price >= price[0] && p.price <= price[1]);
-    if (filters.onlyInStock) list = list.filter(p => p.inStock);
-    return list;
-  }, [allProducts, price, filters.onlyInStock]);
+  const filteredProducts = useMemo(
+    () => applyFilters(allProducts, price, filters),
+    [allProducts, price, filters],
+  );
 
   const subCategoryLabel = subCategoryName || allProducts[0]?.subCategory || subCategorySlug;
   const categoryLabel = allProducts[0]?.category ?? categorySlug;
@@ -85,7 +85,7 @@ export const Subcategory = ({ initialProducts, initialSubCategoryName, initialSu
         ]} />
       </div>
 
-      <SubCategoriesSection mainCategorySlug={categorySlug} initialItems={initialSubCategoryItems} />
+      <SubCategoriesSection mainCategorySlug={categorySlug} initialItems={initialSubCategoryItems} disableItemAnimations />
 
       <div className="max-w-[1120px] mx-auto px-6 lg:px-8 pt-[40px] pb-[8px]">
         <PriceRangeBar value={price} onChange={setPrice} max={maxPrice} />

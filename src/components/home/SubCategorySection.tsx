@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'motion/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useRouter } from 'next/router';
 import { getSubCategories } from '../../lib/medusa-data';
 
 const SCROLL_AMOUNT = 380;
@@ -12,6 +13,7 @@ const SCROLL_AMOUNT = 380;
 interface SubCategoriesSectionProps {
   mainCategorySlug: string;
   initialItems?: { title: string; imageSrc: string; link: string }[];
+  disableItemAnimations?: boolean;
 }
 
 const CategoryCard = ({ title, imageSrc, link }: { title: string; imageSrc: string; link: string }) => (
@@ -31,8 +33,9 @@ const CategoryCard = ({ title, imageSrc, link }: { title: string; imageSrc: stri
   </Link>
 );
 
-export const SubCategoriesSection = ({ mainCategorySlug, initialItems }: SubCategoriesSectionProps) => {
+export const SubCategoriesSection = ({ mainCategorySlug, initialItems, disableItemAnimations }: SubCategoriesSectionProps) => {
   const [items, setItems] = useState(initialItems ?? []);
+  const router = useRouter();
 
   useEffect(() => {
     if (initialItems || !mainCategorySlug) return;
@@ -47,6 +50,28 @@ export const SubCategoriesSection = ({ mainCategorySlug, initialItems }: SubCate
   const scrollRef = useRef<HTMLDivElement>(null);
   const dragState = useRef({ active: false, startX: 0, scrollLeft: 0, moved: false });
   const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const storageKey = `subcategory-scroll-${mainCategorySlug}`;
+
+  // Ripristina la posizione scroll salvata
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const saved = sessionStorage.getItem(storageKey);
+    if (saved) {
+      requestAnimationFrame(() => { el.scrollLeft = Number(saved); });
+    }
+  }, [storageKey, items]);
+
+  // Salva la posizione scroll prima di navigare
+  useEffect(() => {
+    const handleRouteChange = () => {
+      if (scrollRef.current) {
+        sessionStorage.setItem(storageKey, String(scrollRef.current.scrollLeft));
+      }
+    };
+    router.events.on('routeChangeStart', handleRouteChange);
+    return () => router.events.off('routeChangeStart', handleRouteChange);
+  }, [router.events, storageKey]);
 
   const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     const el = scrollRef.current;
@@ -139,16 +164,22 @@ export const SubCategoriesSection = ({ mainCategorySlug, initialItems }: SubCate
           } as React.CSSProperties}
         >
           {items.map((item, i) => (
-            <motion.div
-              key={i}
-              className="flex-shrink-0 snap-start"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ delay: i * 0.07, duration: 0.5 }}
-            >
-              <CategoryCard {...item} />
-            </motion.div>
+            disableItemAnimations ? (
+              <div key={i} className="flex-shrink-0 snap-start">
+                <CategoryCard {...item} />
+              </div>
+            ) : (
+              <motion.div
+                key={i}
+                className="flex-shrink-0 snap-start"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ delay: i * 0.07, duration: 0.5 }}
+              >
+                <CategoryCard {...item} />
+              </motion.div>
+            )
           ))}
           {showDesktopControls && <div className="w-[80px] lg:w-[140px] flex-shrink-0" aria-hidden />}
         </div>

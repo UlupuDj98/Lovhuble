@@ -11,6 +11,7 @@ import { PriceRangeBar } from '../components/product/PriceRangeBar';
 import { PageHeader } from '../components/PageHeader';
 import { Breadcrumb } from '../components/productdetail/Breadcrumb';
 import { getProductsByParentCategory } from '../lib/medusa-data';
+import { applyFilters } from '../utils/product-filters';
 import type { Product } from '../data/products';
 
 function slugToLabel(slug: string): string {
@@ -62,11 +63,10 @@ export const Category = ({ initialProducts, initialSubCategoryItems, categorySlu
 
   const { isInWishlist, toggleWishlist } = useWishlist();
 
-  const categoryProducts = useMemo(() => {
-    let list = allProducts.filter(p => p.price >= price[0] && p.price <= price[1]);
-    if (filters.onlyInStock) list = list.filter(p => p.inStock);
-    return list;
-  }, [allProducts, price, filters.onlyInStock]);
+  const categoryProducts = useMemo(
+    () => applyFilters(allProducts, price, filters),
+    [allProducts, price, filters],
+  );
 
   const categoryLabel = initialCategoryName || allProducts[0]?.category || slugToLabel(categorySlug);
 
