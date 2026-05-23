@@ -71,7 +71,7 @@ export const ImageGallery = ({ images, alt, productCategory }: ImageGalleryProps
             />
           </div>
         ) : (
-          <AnimatePresence mode="wait" initial={false}>
+          <AnimatePresence mode="sync" initial={false}>
             <motion.div
               key={selected}
               initial={{ opacity: 0, x: direction * 40 }}
