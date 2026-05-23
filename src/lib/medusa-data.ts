@@ -117,13 +117,13 @@ function mapProduct(
     inStock: firstVariant?.manage_inventory ? (firstVariant.inventory_quantity ?? 0) > 0 : true,
     exclusive: meta.exclusive === true,
     variantId: firstVariant?.id ?? '',
-    material: p.material ?? undefined,
-    height: p.height ?? undefined,
-    width: p.width ?? undefined,
-    length: p.length ?? undefined,
-    weight: p.weight ?? undefined,
-    options: options.length > 0 ? options : undefined,
-    variants: variants.length > 0 ? variants : undefined,
+    material: p.material ?? null,
+    height: p.height ?? null,
+    width: p.width ?? null,
+    length: p.length ?? null,
+    weight: p.weight ?? null,
+    options: options.length > 0 ? options : null,
+    variants: variants.length > 0 ? variants : null,
   }
 }
 

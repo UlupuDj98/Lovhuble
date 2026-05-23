@@ -12,9 +12,10 @@ interface ImageLightboxProps {
   selected: number;
   onClose: () => void;
   onNavigate: (index: number) => void;
+  productCategory: string;
 }
 
-export const ImageLightbox = ({ images, alt, selected, onClose, onNavigate }: ImageLightboxProps) => {
+export const ImageLightbox = ({ images, alt, selected, onClose, onNavigate, productCategory }: ImageLightboxProps) => {
   const touchStart = useRef<number>(0);
 
   const prev = () => onNavigate((selected - 1 + images.length) % images.length);
@@ -77,7 +78,7 @@ export const ImageLightbox = ({ images, alt, selected, onClose, onNavigate }: Im
               src={images[selected]}
               alt={`${alt} — foto ${selected + 1}`}
               fill
-              className="object-contain p-[32px]"
+              className={`${productCategory === 'bambole' ? 'object-cover' : 'object-contain p-[32px]'}`}
               priority
             />
           </motion.div>

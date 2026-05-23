@@ -187,7 +187,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
               transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
               key={product.id}
             >
-              <ImageGallery images={product.images} alt={product.name} />
+              <ImageGallery images={product.images} alt={product.name} productCategory={product.subCategorySlug} />
             </motion.div>
 
             {/* Info prodotto */}
@@ -234,6 +234,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
                       onSelect={handleOptionSelect}
                       compact
                       showLabel={false}
+                      subCategorySlug={product.subCategorySlug}
                     />
                   </div>
                 ) : sizeOptions.length > 0 && (
@@ -244,6 +245,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
                         option={opt}
                         selectedOptions={selectedOptions}
                         onSelect={handleOptionSelect}
+                        subCategorySlug={product.subCategorySlug}
                       />
                     ))}
                   </div>
@@ -259,6 +261,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
                       option={opt}
                       selectedOptions={selectedOptions}
                       onSelect={handleOptionSelect}
+                      subCategorySlug={product.subCategorySlug}
                     />
                   ))}
                 </div>
@@ -354,6 +357,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
                             option={opt}
                             selectedOptions={selectedOptions}
                             onSelect={handleOptionSelect}
+                            subCategorySlug={product.subCategorySlug}
                           />
                         </div>
                       )
@@ -364,6 +368,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
                           option={opt}
                           selectedOptions={selectedOptions}
                           onSelect={handleOptionSelect}
+                          subCategorySlug={product.subCategorySlug}
                         />
                       </div>
                     )

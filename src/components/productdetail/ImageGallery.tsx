@@ -9,22 +9,34 @@ import { ImageLightbox } from './ImageLightbox';
 interface ImageGalleryProps {
   images: string[];
   alt: string;
+  productCategory: string;
 }
 
-export const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
+const THUMB_WINDOW = 3;
+
+export const ImageGallery = ({ images, alt, productCategory }: ImageGalleryProps) => {
   const [selected, setSelected] = useState(0);
   const [direction, setDirection] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [thumbOffset, setThumbOffset] = useState(0);
   const touchStart = useRef<number>(0);
 
   useEffect(() => {
     setSelected(0);
     setDirection(0);
+    setThumbOffset(0);
   }, [images[0]]);
 
   const navigate = (next: number) => {
     setDirection(next > selected ? 1 : -1);
     setSelected(next);
+    if (images.length > THUMB_WINDOW) {
+      setThumbOffset(prev => {
+        if (next < prev) return next;
+        if (next >= prev + THUMB_WINDOW) return next - THUMB_WINDOW + 1;
+        return prev;
+      });
+    }
   };
 
   const prev = () => navigate((selected - 1 + images.length) % images.length);
@@ -48,24 +60,36 @@ export const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
         onTouchEnd={onTouchEnd}
         onClick={() => setLightboxOpen(true)}
       >
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={selected}
-            initial={{ opacity: 0, x: direction * 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: direction * -40 }}
-            transition={{ duration: 0.28, ease: [0.25, 0.1, 0.25, 1] }}
-            className="absolute inset-0"
-          >
+        {productCategory === 'bambole' ? (
+          <div key={selected} className="absolute inset-0">
             <Image
               src={images[selected]}
               alt={`${alt} — foto ${selected + 1}`}
               fill
-              className="object-contain p-[20px] sm:p-[28px]"
+              className="object-cover"
               priority={selected === 0}
             />
-          </motion.div>
-        </AnimatePresence>
+          </div>
+        ) : (
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={selected}
+              initial={{ opacity: 0, x: direction * 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: direction * -40 }}
+              transition={{ duration: 0.28, ease: [0.25, 0.1, 0.25, 1] }}
+              className="absolute inset-0"
+            >
+              <Image
+                src={images[selected]}
+                alt={`${alt} — foto ${selected + 1}`}
+                fill
+                className="object-contain p-[20px] sm:p-[28px]"
+                priority={selected === 0}
+              />
+            </motion.div>
+          </AnimatePresence>
+        )}
 
         {/* Desktop nav arrows */}
         {images.length > 1 && (
@@ -95,21 +119,49 @@ export const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
 
       {/* Thumbnails — desktop */}
       {images.length > 1 && (
-        <div className="hidden lg:flex gap-[20px] justify-center items-center">
-          {images.map((img, i) => (
+        <div className="hidden lg:flex gap-[12px] justify-center items-center">
+          {images.length > THUMB_WINDOW && (
             <button
-              key={i}
-              onClick={() => navigate(i)}
-              aria-label={`Vai alla foto ${i + 1}`}
-              className={`relative w-[155px] h-[140px] rounded-[14px] overflow-hidden bg-white border-2 transition-all duration-200 ${
-                selected === i
-                  ? 'border-[#1d1d1f] shadow-[0_2px_10px_rgba(0,0,0,0.15)]'
-                  : 'border-transparent opacity-55 hover:opacity-90 hover:border-[#acacac]'
-              }`}
+              onClick={() => setThumbOffset(o => Math.max(0, o - 1))}
+              disabled={thumbOffset === 0}
+              aria-label="Thumbnail precedenti"
+              className="flex-shrink-0 w-[32px] h-[32px] rounded-full bg-white border border-[#e0e0e0] flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:bg-[#f5f5f5] transition-all duration-200 disabled:opacity-25 disabled:cursor-not-allowed"
             >
-              <Image src={img} alt={`${alt} miniatura ${i + 1}`} fill className="object-contain p-[6px]" />
+              <ChevronLeft className="w-[15px] h-[15px] text-[#1d1d1f]" strokeWidth={2} />
             </button>
-          ))}
+          )}
+
+          {(images.length > THUMB_WINDOW
+            ? images.slice(thumbOffset, thumbOffset + THUMB_WINDOW)
+            : images
+          ).map((img, idx) => {
+            const i = images.length > THUMB_WINDOW ? thumbOffset + idx : idx;
+            return (
+              <button
+                key={i}
+                onClick={() => navigate(i)}
+                aria-label={`Vai alla foto ${i + 1}`}
+                className={`relative w-[155px] h-[140px] rounded-[14px] overflow-hidden bg-white border-2 transition-all duration-200 ${
+                  selected === i
+                    ? 'border-[#1d1d1f] shadow-[0_2px_10px_rgba(0,0,0,0.15)]'
+                    : 'border-transparent opacity-55 hover:opacity-90 hover:border-[#acacac]'
+                }`}
+              >
+                <Image src={img} alt={`${alt} miniatura ${i + 1}`} fill className={`${productCategory === 'bambole' ? 'object-cover ' : 'object-contain p-[6px]'}`} />
+              </button>
+            );
+          })}
+
+          {images.length > THUMB_WINDOW && (
+            <button
+              onClick={() => setThumbOffset(o => Math.min(images.length - THUMB_WINDOW, o + 1))}
+              disabled={thumbOffset >= images.length - THUMB_WINDOW}
+              aria-label="Thumbnail successive"
+              className="flex-shrink-0 w-[32px] h-[32px] rounded-full bg-white border border-[#e0e0e0] flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:bg-[#f5f5f5] transition-all duration-200 disabled:opacity-25 disabled:cursor-not-allowed"
+            >
+              <ChevronRight className="w-[15px] h-[15px] text-[#1d1d1f]" strokeWidth={2} />
+            </button>
+          )}
         </div>
       )}
 
@@ -138,6 +190,7 @@ export const ImageGallery = ({ images, alt }: ImageGalleryProps) => {
             selected={selected}
             onClose={() => setLightboxOpen(false)}
             onNavigate={navigate}
+            productCategory={productCategory}
           />
         )}
       </AnimatePresence>

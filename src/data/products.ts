@@ -40,11 +40,11 @@ export interface Product {
   inStock: boolean;
   exclusive?: boolean;
   variantId?: string;
-  material?: string;
-  height?: number;
-  width?: number;
-  length?: number;
-  weight?: number;
-  options?: ProductOption[];
-  variants?: ProductVariant[];
+  material?: string | null;
+  height?: number | null;
+  width?: number | null;
+  length?: number | null;
+  weight?: number | null;
+  options?: ProductOption[] | null;
+  variants?: ProductVariant[] | null;
 }

@@ -26,7 +26,7 @@ export const ProductCard = ({ product, onWishlist, wishlisted, imageSrc, priorit
           fill
           priority={priority}
           sizes="(max-width: 768px) 50vw, 33vw"
-          className="object-contain p-[10px] lg:p-[20px] group-hover:scale-105 transition-transform duration-300"
+          className={`${product.subCategorySlug === 'bambole' ? 'object-fill' : 'object-contain p-[10px] lg:p-[20px] group-hover:scale-105'}  transition-transform duration-300`}
         />
 
         <button
@@ -45,7 +45,7 @@ export const ProductCard = ({ product, onWishlist, wishlisted, imageSrc, priorit
       </div>
 
       {/* Info */}
-      <div className="flex-shrink-0 px-[14px] pb-[24px] pt-[4px] lg:px-[20px] lg:pb-[20px] text-center">
+      <div className="flex-shrink-0 px-[14px] pb-[24px] pt-[8px] lg:px-[20px] lg:pb-[20px] text-center">
         <div className="mb-[8px] lg:mb-[12px]">
           <ProductRating />
         </div>
