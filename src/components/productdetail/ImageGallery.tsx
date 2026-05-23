@@ -55,7 +55,7 @@ export const ImageGallery = ({ images, alt, productCategory }: ImageGalleryProps
     <div className="flex flex-col gap-[16px]">
       {/* Main image */}
       <div
-        className="relative lg:w-[480px] h-[340px] sm:h-[650px] lg:h-[650px] rounded-[24px] overflow-hidden bg-white shadow-[0_8px_40px_rgba(0,0,0,0.08)] cursor-zoom-in"
+        className="relative w-full aspect-[3/4] sm:aspect-auto sm:h-[650px] lg:w-[480px] lg:h-[650px] rounded-[24px] overflow-hidden bg-white shadow-[0_8px_40px_rgba(0,0,0,0.08)] cursor-zoom-in"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
         onClick={() => setLightboxOpen(true)}

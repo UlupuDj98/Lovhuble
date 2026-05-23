@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { Heart, ShoppingCart, Package, RotateCcw, ShieldCheck, Lock } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Breadcrumb } from '../components/productdetail/Breadcrumb';
 import { ColorVariantSelector } from '../components/productdetail/ColorVariantSelector';
 import { ImageGallery } from '../components/productdetail/ImageGallery';
@@ -16,6 +16,10 @@ import type { Product, ProductVariant } from '../data/products';
 interface ProductDetailProps {
   initialProduct?: Product | null;
   initialRelated?: Product[];
+}
+
+function slugifyDesign(str: string): string {
+  return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
 function formatPrice(n: number): string {
@@ -92,6 +96,23 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
     if (found) setActiveVariant(found);
   }, [selectedOptions, product]);
 
+  const activeDesign = useMemo(() => {
+    const designOpt = product?.options?.find(o => o.title === 'Design');
+    if (!designOpt || (designOpt.values?.length ?? 0) <= 1) return null;
+    return selectedOptions['Design'] ?? null;
+  }, [product?.options, selectedOptions]);
+
+  const galleryImages = useMemo(() => {
+    const all = product?.images ?? [];
+    if (!activeDesign) return all;
+    const slug = slugifyDesign(activeDesign);
+    const filtered = all.filter(url => {
+      const filename = url.split('/').pop() ?? '';
+      return filename.startsWith(slug + '-');
+    });
+    return filtered.length > 0 ? filtered : all;
+  }, [product?.images, activeDesign]);
+
   if (!router.isReady || loading) {
     return (
       <div className="pt-16 lg:pt-20 min-h-screen flex items-center justify-center bg-[#f5f5f7]">
@@ -150,8 +171,13 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
     { label: product.name },
   ];
 
-  const hasDimensions = product.height != null || product.width != null || product.length != null;
-  const hasSpecs = !!(product.material || product.weight != null || hasDimensions);
+  const specWeight = activeVariant?.weight ?? product.weight;
+  const specHeight = activeVariant?.height ?? product.height;
+  const specWidth  = activeVariant?.width  ?? product.width;
+  const specLength = activeVariant?.length ?? product.length;
+
+  const hasDimensions = specHeight != null || specWidth != null || specLength != null;
+  const hasSpecs = !!(product.material || specWeight != null || hasDimensions);
   const colorOption = product.options?.find(o => o.title === 'Colore');
   const sizeOptions = product.options?.filter(o => o.title !== 'Colore') ?? [];
   const handleOptionSelect = (title: string, value: string) =>
@@ -187,7 +213,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
               transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
               key={product.id}
             >
-              <ImageGallery images={product.images} alt={product.name} productCategory={product.subCategorySlug} />
+              <ImageGallery images={galleryImages} alt={product.name} productCategory={product.subCategorySlug} />
             </motion.div>
 
             {/* Info prodotto */}
@@ -483,35 +509,35 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
                       </span>
                     </div>
                   )}
-                  {product.weight != null && (
+                  {specWeight != null && (
                     <div className="flex items-center gap-[10px]">
                       <span className="text-[20px] w-[20px] sm:w-[22px] sm:text-[22px] text-center flex-shrink-0">⚖️</span>
                       <span className="text-[14px] sm:text-[16px] text-[#6e6e73]">
-                        <span className="text-[#1d1d1f] font-medium">Peso</span> · {formatWeight(product.weight)}
+                        <span className="text-[#1d1d1f] font-medium">Peso</span> · {formatWeight(specWeight)}
                       </span>
                     </div>
                   )}
-                  {product.height != null && (
+                  {specHeight != null && (
                     <div className="flex items-center gap-[10px]">
                       <span className="text-[20px] w-[20px] sm:w-[22px] sm:text-[22px] text-center flex-shrink-0">📏</span>
                       <span className="text-[14px] sm:text-[16px] text-[#6e6e73]">
-                        <span className="text-[#1d1d1f] font-medium">Altezza</span> · {product.height} cm
+                        <span className="text-[#1d1d1f] font-medium">Altezza</span> · {specHeight} cm
                       </span>
                     </div>
                   )}
-                  {product.width != null && (
+                  {specWidth != null && (
                     <div className="flex items-center gap-[10px]">
                       <span className="text-[20px] w-[20px] sm:w-[22px] sm:text-[22px] text-center flex-shrink-0">↔️</span>
                       <span className="text-[14px] sm:text-[16px] text-[#6e6e73]">
-                        <span className="text-[#1d1d1f] font-medium">Larghezza</span> · {product.width} cm
+                        <span className="text-[#1d1d1f] font-medium">Larghezza</span> · {specWidth} cm
                       </span>
                     </div>
                   )}
-                  {product.length != null && (
+                  {specLength != null && (
                     <div className="flex items-center gap-[10px]">
                       <span className="text-[20px] w-[20px] sm:w-[22px] sm:text-[22px] text-center flex-shrink-0">📦</span>
                       <span className="text-[14px] sm:text-[16px] text-[#6e6e73]">
-                        <span className="text-[#1d1d1f] font-medium">Profondità</span> · {product.length} cm
+                        <span className="text-[#1d1d1f] font-medium">Profondità</span> · {specLength} cm
                       </span>
                     </div>
                   )}
@@ -532,35 +558,35 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
                       </span>
                     </div>
                   )}
-                  {product.weight != null && (
+                  {specWeight != null && (
                     <div className="flex items-center gap-[7px]">
                       <span className="text-[16px] w-[16px] text-center flex-shrink-0">⚖️</span>
                       <span className="text-[16px] text-[#6e6e73]">
-                        <span className="text-[#1d1d1f] font-medium">Peso</span> · {formatWeight(product.weight)}
+                        <span className="text-[#1d1d1f] font-medium">Peso</span> · {formatWeight(specWeight)}
                       </span>
                     </div>
                   )}
-                  {product.height != null && (
+                  {specHeight != null && (
                     <div className="flex items-center gap-[10px]">
                       <span className="text-[16px] w-[16px] text-center flex-shrink-0">📏</span>
                       <span className="text-[16px] text-[#6e6e73]">
-                        <span className="text-[#1d1d1f] font-medium">Altezza</span> · {product.height} cm
+                        <span className="text-[#1d1d1f] font-medium">Altezza</span> · {specHeight} cm
                       </span>
                     </div>
                   )}
-                  {product.width != null && (
+                  {specWidth != null && (
                     <div className="flex items-center gap-[10px]">
                       <span className="text-[16px] w-[16px] text-center flex-shrink-0">↔️</span>
                       <span className="text-[16px] text-[#6e6e73]">
-                        <span className="text-[#1d1d1f] font-medium">Larghezza</span> · {product.width} cm
+                        <span className="text-[#1d1d1f] font-medium">Larghezza</span> · {specWidth} cm
                       </span>
                     </div>
                   )}
-                  {product.length != null && (
+                  {specLength != null && (
                     <div className="flex items-center gap-[10px]">
                       <span className="text-[16px] w-[16px] text-center flex-shrink-0">📦</span>
                       <span className="text-[16px] text-[#6e6e73]">
-                        <span className="text-[#1d1d1f] font-medium">Profondità</span> · {product.length} cm
+                        <span className="text-[#1d1d1f] font-medium">Profondità</span> · {specLength} cm
                       </span>
                     </div>
                   )}

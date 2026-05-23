@@ -88,7 +88,7 @@ export const ImageLightbox = ({ images, alt, selected, onClose, onNavigate, prod
         <button
           onClick={onClose}
           aria-label="Chiudi"
-          className="absolute top-[14px] right-[14px] w-[36px] h-[36px] flex items-center justify-center rounded-full bg-[#1d1d1f]/8 hover:bg-[#1d1d1f]/15 transition-colors duration-200 z-10"
+          className={`absolute top-[14px] right-[14px] w-[36px] h-[36px] flex items-center justify-center rounded-full transition-colors duration-200 z-10 ${productCategory === 'bambole' ? 'bg-white hover:bg-white/85 shadow-[0_2px_12px_rgba(0,0,0,0.12)]' : 'bg-[#1d1d1f]/8 hover:bg-[#1d1d1f]/15'}`}
         >
           <X className="w-[18px] h-[18px] text-[#1d1d1f]" strokeWidth={2} />
         </button>
@@ -99,14 +99,14 @@ export const ImageLightbox = ({ images, alt, selected, onClose, onNavigate, prod
             <button
               onClick={prev}
               aria-label="Foto precedente"
-              className="absolute left-[14px] top-1/2 -translate-y-1/2 w-[40px] h-[40px] flex items-center justify-center rounded-full bg-[#1d1d1f]/8 hover:bg-[#1d1d1f]/15 transition-colors duration-200"
+              className={`absolute left-[14px] top-1/2 -translate-y-1/2 w-[40px] h-[40px] flex items-center justify-center rounded-full transition-colors duration-200 ${productCategory === 'bambole' ? 'bg-white hover:bg-white/85 shadow-[0_2px_12px_rgba(0,0,0,0.12)]' : 'bg-[#1d1d1f]/8 hover:bg-[#1d1d1f]/15'}`}
             >
               <ChevronLeft className="w-[18px] h-[18px] text-[#1d1d1f]" strokeWidth={2} />
             </button>
             <button
               onClick={next}
               aria-label="Foto successiva"
-              className="absolute right-[14px] top-1/2 -translate-y-1/2 w-[40px] h-[40px] flex items-center justify-center rounded-full bg-[#1d1d1f]/8 hover:bg-[#1d1d1f]/15 transition-colors duration-200"
+              className={`absolute right-[14px] top-1/2 -translate-y-1/2 w-[40px] h-[40px] flex items-center justify-center rounded-full transition-colors duration-200 ${productCategory === 'bambole' ? 'bg-white hover:bg-white/85 shadow-[0_2px_12px_rgba(0,0,0,0.12)]' : 'bg-[#1d1d1f]/8 hover:bg-[#1d1d1f]/15'}`}
             >
               <ChevronRight className="w-[18px] h-[18px] text-[#1d1d1f]" strokeWidth={2} />
             </button>

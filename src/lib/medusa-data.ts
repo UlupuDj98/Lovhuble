@@ -65,7 +65,16 @@ function mapProduct(
       const opt = (p.options ?? []).find((o: any) => o.id === optVal.option_id)
       if (opt) variantOptions[opt.title] = optVal.value
     }
-    return { id: v.id, title: v.title, options: variantOptions, price: amount / 100 }
+    return {
+      id: v.id,
+      title: v.title,
+      options: variantOptions,
+      price: amount / 100,
+      weight: v.weight ?? null,
+      height: v.height ?? null,
+      width: v.width ?? null,
+      length: v.length ?? null,
+    }
   })
 
   // Categoria iniettata direttamente (approccio affidabile) oppure fallback su p.categories

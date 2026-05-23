@@ -21,6 +21,10 @@ export interface ProductVariant {
   title: string;
   options: Record<string, string>;
   price: number;
+  weight?: number | null;
+  height?: number | null;
+  width?: number | null;
+  length?: number | null;
 }
 
 export interface Product {
