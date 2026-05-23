@@ -22,9 +22,9 @@ const CategoryCard = ({ title, imageSrc, link }: { title: string; imageSrc: stri
       <Image
         src={imageSrc}
         alt={title}
-        width={148}
-        height={148}
-        className="object-contain w-[118px] h-[118px] lg:w-[148px] lg:h-[148px] group-hover:scale-105 transition-transform duration-300"
+        width={160}
+        height={160}
+        className="object-contain w-[160px] h-[160px] lg:w-[180px] lg:h-[200px] group-hover:scale-105 transition-transform duration-300"
       />
     </div>
     <span className="text-[18px] lg:text-[26px] text-[#1d1d1f] font-semibold text-center leading-[1.4] capitalize">
