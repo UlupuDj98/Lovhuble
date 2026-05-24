@@ -26,7 +26,7 @@ export const ProductCard = ({ product, onWishlist, wishlisted, imageSrc, priorit
           fill
           priority={priority}
           sizes="(max-width: 768px) 50vw, 33vw"
-          className={`${product.subCategorySlug === 'bambole' ? 'object-cover scale-95 rounded-2xl' : 'object-contain p-[10px] lg:p-[20px] group-hover:scale-105'}  transition-transform duration-300`}
+          className={`${product.subCategorySlug === 'bambole' ? 'object-contain p-[10px]' : 'object-contain p-[10px] lg:p-[20px] group-hover:scale-105'}  transition-transform duration-300`}
         />
 
         <button
