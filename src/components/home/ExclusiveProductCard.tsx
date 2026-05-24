@@ -24,7 +24,7 @@ export const ExclusiveProductCard = ({ product, imageSrc, gradientColor = '#ffff
         src={imageSrc ?? product.image}
         alt={product.name}
         fill
-        className="lg:object-cover transition-transform duration-500"
+        className="object-contain transition-transform duration-500"
       />
 
       {/* Gradient overlay: solid image bg color for bottom 60%, then transparent 
