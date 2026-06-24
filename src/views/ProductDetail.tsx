@@ -167,7 +167,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
   const breadcrumbItems = [
     { label: 'Home', href: '/' },
     { label: catLabel, href: `/prodotti/${catSlug}` },
-    { label: subCatLabel, href: `/prodotti/${catSlug}/${subCatSlug}` },
+    ...(subCatSlug && subCatSlug !== catSlug ? [{ label: subCatLabel, href: `/prodotti/${catSlug}/${subCatSlug}` }] : []),
     { label: product.name },
   ];
 

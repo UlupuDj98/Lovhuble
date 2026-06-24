@@ -26,7 +26,10 @@ export const ProdottiCorrelati = ({ currentProduct, initialRelated }: ProdottiCo
     // Altrimenti fetch client-side
     setRelated([]);
     async function load() {
-      const sameCat = await getProductsByCategory(currentProduct.subCategorySlug);
+      // Per categorie top-level (es. bambole) subCategorySlug è vuoto: salta diritto al parent
+      const sameCat = currentProduct.subCategorySlug
+        ? await getProductsByCategory(currentProduct.subCategorySlug)
+        : [];
       const filtered = sameCat.filter(p => p.id !== currentProduct.id);
 
       if (filtered.length >= 6) {

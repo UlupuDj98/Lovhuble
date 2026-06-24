@@ -116,7 +116,7 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
                               transition={{ delay: i * 0.04 }}
                             >
                               <Link
-                                href={`/prodotti/${product.categorySlug}/${product.subCategorySlug}/${product.slug}`}
+                                href={product.subCategorySlug ? `/prodotti/${product.categorySlug}/${product.subCategorySlug}/${product.slug}` : `/prodotti/${product.categorySlug}/${product.slug}`}
                                 onClick={() => { addRecent(query.trim()); onClose(); }}
                                 className="group flex items-center gap-3 p-3 rounded-[12px] hover:bg-[#f5f5f7] transition-colors"
                               >

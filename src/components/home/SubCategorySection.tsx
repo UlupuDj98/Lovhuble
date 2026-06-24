@@ -110,7 +110,7 @@ export const SubCategoriesSection = ({ mainCategorySlug, initialItems, disableIt
   if (items.length === 0) return null;
 
   return (
-    <section className="py-[40px] lg:py-[90px] bg-[#f5f5f7]">
+    <section className="pt-[10px] pb-[40px] lg:pt-[20px] lg:pb-[90px] bg-[#f5f5f7]">
       <div className="max-w-[1120px] mx-auto relative">
         {showDesktopControls && (
           <div

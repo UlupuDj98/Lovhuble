@@ -9,9 +9,9 @@ import { SubCategoriesSection } from '../components/home/SubCategorySection';
 import { FilterBar, FilterState } from '../components/product/FilterBar';
 import { PriceRangeBar } from '../components/product/PriceRangeBar';
 import { PageHeader } from '../components/PageHeader';
-import { Breadcrumb } from '../components/productdetail/Breadcrumb';
 import { getProductsBySubCategory, getCategoryName } from '../lib/medusa-data';
 import { applyFilters } from '../utils/product-filters';
+import { getPageDescription } from '../data/page-descriptions';
 import type { Product } from '../data/products';
 
 interface SubcategoryProps {
@@ -74,16 +74,13 @@ export const Subcategory = ({ initialProducts, initialSubCategoryName, initialSu
       <PageHeader
         title={subCategoryLabel}
         subtitle={`Esplora la nostra selezione di ${subCategoryLabel.toLowerCase()}`}
-        categorySlug={categorySlug}
-      />
-
-      <div className="relative z-10 max-w-[1120px] mx-auto px-6 lg:px-8 pt-[20px]">
-        <Breadcrumb items={[
+        description={getPageDescription(subCategorySlug) ?? getPageDescription(categorySlug)}
+        breadcrumbItems={[
           { label: 'Home', href: '/' },
           { label: categoryLabel, href: `/prodotti/${categorySlug}` },
           { label: subCategoryLabel },
-        ]} />
-      </div>
+        ]}
+      />
 
       <SubCategoriesSection mainCategorySlug={categorySlug} initialItems={initialSubCategoryItems} disableItemAnimations />
 

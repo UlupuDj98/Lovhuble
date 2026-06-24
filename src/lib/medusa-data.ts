@@ -38,7 +38,7 @@ async function storeGet<T>(path: string, params: Record<string, string | string[
   return res.json()
 }
 
-const FIELDS = '+categories,+images,+material,+weight,+height,+width,+length,+options,+options.values,+variants,+variants.calculated_price,+variants.options,+metadata'
+const FIELDS = '*categories,+images,+material,+weight,+height,+width,+length,+options,+options.values,+variants,+variants.calculated_price,+variants.options,+metadata'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapProduct(
@@ -100,13 +100,22 @@ function mapProduct(
       const pc = productCategories[0]
       fullSubCat = allCategories.find((c: any) => c.id === pc.id || c.handle === pc.handle) ?? null
     }
-    subCategoryHandle = fullSubCat?.handle ?? ''
-    subCategoryName = fullSubCat?.name ?? ''
     const parentCat = fullSubCat?.parent_category_id
       ? allCategories.find((c: any) => c.id === fullSubCat.parent_category_id)
       : null
-    categoryHandle = parentCat?.handle ?? ''
-    categoryName = parentCat?.name ?? ''
+    if (parentCat) {
+      // Prodotto in sottocategoria: categorySlug = parent, subCategorySlug = subCat
+      subCategoryHandle = fullSubCat?.handle ?? ''
+      subCategoryName = fullSubCat?.name ?? ''
+      categoryHandle = parentCat.handle
+      categoryName = parentCat.name
+    } else {
+      // Prodotto in categoria top-level (es. bambole): categorySlug = categoria, subCategorySlug = ''
+      categoryHandle = fullSubCat?.handle ?? ''
+      categoryName = fullSubCat?.name ?? ''
+      subCategoryHandle = ''
+      subCategoryName = ''
+    }
   }
 
   return {

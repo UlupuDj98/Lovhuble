@@ -9,9 +9,9 @@ import { SubCategoriesSection } from '../components/home/SubCategorySection';
 import { FilterBar, FilterState } from '../components/product/FilterBar';
 import { PriceRangeBar } from '../components/product/PriceRangeBar';
 import { PageHeader } from '../components/PageHeader';
-import { Breadcrumb } from '../components/productdetail/Breadcrumb';
 import { getProductsByParentCategory } from '../lib/medusa-data';
 import { applyFilters } from '../utils/product-filters';
+import { getPageDescription } from '../data/page-descriptions';
 import type { Product } from '../data/products';
 
 function slugToLabel(slug: string): string {
@@ -75,19 +75,16 @@ export const Category = ({ initialProducts, initialSubCategoryItems, categorySlu
       <PageHeader
         title={categoryLabel}
         subtitle={`Esplora la nostra selezione di ${categoryLabel.toLowerCase()}`}
-        categorySlug={categorySlug}
-      />
-
-      <div className="relative z-10 max-w-[1120px] mx-auto px-6 lg:px-8 pt-[20px]">
-        <Breadcrumb items={[
+        description={getPageDescription(categorySlug)}
+        breadcrumbItems={[
           { label: 'Home', href: '/' },
           { label: categoryLabel },
-        ]} />
-      </div>
+        ]}
+      />
 
       <SubCategoriesSection mainCategorySlug={categorySlug} initialItems={initialSubCategoryItems} />
 
-      <div className="max-w-[1120px] mx-auto px-6 lg:px-8 pt-[40px] pb-[8px]">
+      <div className={`max-w-[1120px] mx-auto px-6 lg:px-8 ${(initialSubCategoryItems?.length ?? 0) > 0 ? 'pt-[20px]' : 'pt-0'} pb-[8px]`}>
         <PriceRangeBar value={price} onChange={setPrice} max={maxPrice} />
       </div>
 

@@ -16,7 +16,7 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product, onWishlist, wishlisted, imageSrc, priority = false }: ProductCardProps) => (
-  <Link href={`/prodotti/${product.categorySlug}/${product.subCategorySlug}/${product.slug}`} className="block group h-full">
+  <Link href={product.subCategorySlug ? `/prodotti/${product.categorySlug}/${product.subCategorySlug}/${product.slug}` : `/prodotti/${product.categorySlug}/${product.slug}`} className="block group h-full">
     <div className="bg-white rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.25)] overflow-hidden flex flex-col h-full">
       {/* Image */}
       <div className="relative flex-1 min-h-0">

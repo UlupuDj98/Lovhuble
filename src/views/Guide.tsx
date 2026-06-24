@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'motion/react';
 import { Heart, Shield, Package, HelpCircle, BookOpen, Sparkles } from 'lucide-react';
-import guideSrc from '../../public/sfondi/lubrificanti.avif';
+import guideSrc from '../../public/guide.avif';
 
 export const Guide = () => {
   const sections = [

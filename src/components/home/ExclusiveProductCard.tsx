@@ -15,7 +15,7 @@ interface ExclusiveProductCardProps {
 
 export const ExclusiveProductCard = ({ product, imageSrc, gradientColor = '#ffffff' }: ExclusiveProductCardProps) => (
   <Link
-    href={`/prodotti/${product.categorySlug}/${product.subCategorySlug}/${product.slug}`}
+    href={`/prodotti/bambole/${product.slug}`}
     className="block group h-full"
   >
     <div className="relative w-full h-[430px] lg:h-[640px] rounded-[28px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.18)] transition-shadow duration-300">
@@ -24,7 +24,7 @@ export const ExclusiveProductCard = ({ product, imageSrc, gradientColor = '#ffff
         src={imageSrc ?? product.image}
         alt={product.name}
         fill
-        className="object-contain transition-transform duration-500"
+        className="object-cover transition-transform duration-500"
       />
 
       {/* Gradient overlay: solid image bg color for bottom 60%, then transparent 
