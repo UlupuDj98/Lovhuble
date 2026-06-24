@@ -23,7 +23,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'lovehuble-backend-production.up.railway.app',
+        hostname: 'api.lovehuble.com',
         pathname: '/static/**',
       },
       {

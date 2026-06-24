@@ -276,7 +276,7 @@ export async function getMainCategories(): Promise<Category[]> {
 // ── Prodotti esclusivi ────────────────────────────────────────────────────
 
 export async function getExclusiveProducts(): Promise<Product[]> {
-  return getProductsByParentCategory('speciali')
+  return getProductsByParentCategory('bambole')
 }
 
 // ── Tutti i prodotti ──────────────────────────────────────────────────────

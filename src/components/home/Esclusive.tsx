@@ -77,7 +77,7 @@ export const Esclusive = ({ initialProducts }: EsclusiveProps) => {
           className="text-[32px] lg:text-[56px] tracking-[-0.015em] leading-[1.1]"
         >
           <span className="text-[#1d1d1f] font-semibold">Solo su Lovehuble.. </span>
-          <span className="text-[#86868b] font-inter">Prodotti in esclusiva che non puoi perderti</span>
+          <span className="text-[#86868b] font-inter">Una collezione di bambole realistiche</span>
         </motion.h2>
       
       </div>
