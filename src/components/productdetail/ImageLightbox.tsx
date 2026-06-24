@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { createPortal } from 'react-dom';
 
 interface ImageLightboxProps {
@@ -59,30 +59,21 @@ export const ImageLightbox = ({ images, alt, selected, onClose, onNavigate, prod
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.92, opacity: 0 }}
         transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
-        className="relative w-[90vw] h-[80vh] max-w-[860px] bg-white rounded-[20px] shadow-[0_32px_80px_rgba(0,0,0,0.35)] overflow-hidden"
+        className="relative w-[90vw] h-[90vh] lg:w-[80vh] lg:h-[90vh] max-w-[860px] bg-white rounded-[20px] shadow-[0_32px_80px_rgba(0,0,0,0.35)] overflow-hidden"
         onClick={e => e.stopPropagation()}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
         {/* Immagine */}
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={selected}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="absolute inset-0"
-          >
-            <Image
-              src={images[selected]}
-              alt={`${alt} — foto ${selected + 1}`}
-              fill
-              className={`${productCategory === 'bambole' ? 'object-cover' : 'object-contain p-[32px]'}`}
-              priority
-            />
-          </motion.div>
-        </AnimatePresence>
+        <div className="absolute inset-0">
+          <Image
+            src={images[selected]}
+            alt={`${alt} — foto ${selected + 1}`}
+            fill
+            className={`${productCategory === 'bambole' ? 'object-cover' : 'object-contain p-[32px]'}`}
+            priority
+          />
+        </div>
 
         {/* Tasto chiudi */}
         <button

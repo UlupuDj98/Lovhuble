@@ -38,6 +38,7 @@ export interface Product {
   subCategorySlug: string;
   price: number;
   image: string;
+  imageNoBg?: string | null;
   images: string[];
   description: string;
   features: string[];

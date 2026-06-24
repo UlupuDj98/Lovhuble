@@ -129,6 +129,7 @@ function mapProduct(
     subCategorySlug: subCategoryHandle,
     price: priceAmount / 100,
     image: p.thumbnail ?? p.images?.[0]?.url ?? '',
+    imageNoBg: (meta.thumbnail_nobg as string) ?? null,
     images: p.images?.map((img: any) => img.url).filter(Boolean) ?? (p.thumbnail ? [p.thumbnail] : []),
     description: p.description ?? '',
     features: (meta.features as string[]) ?? [],

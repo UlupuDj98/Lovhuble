@@ -21,7 +21,7 @@ export const ProductCard = ({ product, onWishlist, wishlisted, imageSrc, priorit
       {/* Image */}
       <div className="relative flex-1 min-h-0">
         <Image
-          src={imageSrc ?? product.image}
+          src={imageSrc ?? product.imageNoBg ?? product.image}
           alt={product.name}
           fill
           priority={priority}

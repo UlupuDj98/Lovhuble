@@ -213,7 +213,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
               transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
               key={product.id}
             >
-              <ImageGallery images={galleryImages} alt={product.name} productCategory={product.subCategorySlug} />
+              <ImageGallery images={galleryImages} alt={product.name} productCategory={product.categorySlug} />
             </motion.div>
 
             {/* Info prodotto */}
