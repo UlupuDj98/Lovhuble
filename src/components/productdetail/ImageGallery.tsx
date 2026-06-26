@@ -5,12 +5,14 @@ import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { AnimatePresence } from 'motion/react';
 import { ImageLightbox } from './ImageLightbox';
+import { useDelayedLoader, LoaderOverlay } from './LoaderOverlay';
 
 interface ImageGalleryProps {
   images: string[];
   alt: string;
   productCategory: string;
 }
+
 
 const THUMB_WINDOW = 3;
 
@@ -19,6 +21,7 @@ export const ImageGallery = ({ images, alt, productCategory }: ImageGalleryProps
   const [direction, setDirection] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [thumbOffset, setThumbOffset] = useState(0);
+  const { showLoader, startLoading, stopLoading } = useDelayedLoader();
   const touchStart = useRef<number>(0);
 
   useEffect(() => {
@@ -30,6 +33,7 @@ export const ImageGallery = ({ images, alt, productCategory }: ImageGalleryProps
   const navigate = (next: number) => {
     setDirection(next > selected ? 1 : -1);
     setSelected(next);
+    startLoading();
     if (images.length > THUMB_WINDOW) {
       setThumbOffset(prev => {
         if (next < prev) return next;
@@ -60,27 +64,18 @@ export const ImageGallery = ({ images, alt, productCategory }: ImageGalleryProps
         onTouchEnd={onTouchEnd}
         onClick={() => setLightboxOpen(true)}
       >
-        {productCategory === 'bambole' ? (
-          <div key={selected} className="absolute inset-0">
-            <Image
-              src={images[selected]}
-              alt={`${alt} — foto ${selected + 1}`}
-              fill
-              className="object-cover"
-              priority={selected === 0}
-            />
-          </div>
-        ) : (
-          <div key={selected} className="absolute inset-0">
-            <Image
-              src={images[selected]}
-              alt={`${alt} — foto ${selected + 1}`}
-              fill
-              className="object-contain p-[20px] sm:p-[28px]"
-              priority={selected === 0}
-            />
-          </div>
-        )}
+        <div key={selected} className="absolute inset-0">
+          <Image
+            src={images[selected]}
+            alt={`${alt} — foto ${selected + 1}`}
+            fill
+            className={productCategory === 'bambole' ? 'object-cover' : 'object-contain p-[20px] sm:p-[28px]'}
+            priority={selected === 0}
+            onLoad={stopLoading}
+          />
+        </div>
+
+        {showLoader && <LoaderOverlay />}
 
         {/* Desktop nav arrows */}
         {images.length > 1 && (
@@ -138,7 +133,7 @@ export const ImageGallery = ({ images, alt, productCategory }: ImageGalleryProps
                     : 'border-transparent opacity-55 hover:opacity-90 hover:border-[#acacac]'
                 }`}
               >
-                <Image src={img} alt={`${alt} miniatura ${i + 1}`} fill className={`${productCategory === 'bambole' ? 'object-cover ' : 'object-contain p-[6px]'}`} />
+                <Image src={img} alt={`${alt} miniatura ${i + 1}`} fill className={productCategory === 'bambole' ? 'object-cover' : 'object-contain p-[6px]'} />
               </button>
             );
           })}

@@ -180,13 +180,15 @@ export const Navigation = () => {
                             >
                               {cat.name}
                             </Link>
-                            <motion.div
-                              animate={{ rotate: isOpen ? 180 : 0 }}
-                              transition={{ duration: 0.25 }}
-                              className="ml-2 flex-shrink-0"
-                            >
-                              <ChevronDown className="w-[14px] h-[14px] text-[#86868b]" strokeWidth={2} />
-                            </motion.div>
+                            {subs.length > 0 && (
+                              <motion.div
+                                animate={{ rotate: isOpen ? 180 : 0 }}
+                                transition={{ duration: 0.25 }}
+                                className="ml-2 flex-shrink-0"
+                              >
+                                <ChevronDown className="w-[14px] h-[14px] text-[#86868b]" strokeWidth={2} />
+                              </motion.div>
+                            )}
                           </button>
 
                           {/* Subcategorie */}

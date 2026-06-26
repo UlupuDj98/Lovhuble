@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import { createPortal } from 'react-dom';
+import { useDelayedLoader, LoaderOverlay } from './LoaderOverlay';
 
 interface ImageLightboxProps {
   images: string[];
@@ -17,9 +18,10 @@ interface ImageLightboxProps {
 
 export const ImageLightbox = ({ images, alt, selected, onClose, onNavigate, productCategory }: ImageLightboxProps) => {
   const touchStart = useRef<number>(0);
+  const { showLoader, startLoading, stopLoading } = useDelayedLoader();
 
-  const prev = () => onNavigate((selected - 1 + images.length) % images.length);
-  const next = () => onNavigate((selected + 1) % images.length);
+  const prev = () => { startLoading(); onNavigate((selected - 1 + images.length) % images.length); };
+  const next = () => { startLoading(); onNavigate((selected + 1) % images.length); };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -72,8 +74,11 @@ export const ImageLightbox = ({ images, alt, selected, onClose, onNavigate, prod
             fill
             className={`${productCategory === 'bambole' ? 'object-cover' : 'object-contain p-[32px]'}`}
             priority
+            onLoad={stopLoading}
           />
         </div>
+
+        {showLoader && <LoaderOverlay />}
 
         {/* Tasto chiudi */}
         <button
