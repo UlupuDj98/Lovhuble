@@ -129,7 +129,7 @@ export const Checkout = () => {
           city: form.city,
           postal_code: form.postal_code,
           country_code: 'it',
-          ...(form.phone ? { phone: form.phone } : {}),
+          phone: form.phone,
         },
       });
 
@@ -263,7 +263,7 @@ export const Checkout = () => {
                   <Field label="CAP" name="postal_code" value={form.postal_code} onChange={set} placeholder="20100" required />
                 </div>
                 <Field label="Paese" name="country" value="Italia" onChange={() => {}} disabled />
-                <Field label="Telefono (opzionale)" name="phone" type="tel" value={form.phone} onChange={set} placeholder="+39 123 456 7890" />
+                <Field label="Telefono" name="phone" type="tel" value={form.phone} onChange={set} placeholder="+39 123 456 7890" required />
               </Card>
 
               {/* Pagamento */}

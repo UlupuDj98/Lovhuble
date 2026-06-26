@@ -20,6 +20,7 @@ interface RegisterData {
   password: string
   first_name: string
   last_name: string
+  phone: string
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -123,7 +124,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const register = async ({ email, password, first_name, last_name }: RegisterData) => {
+  const register = async ({ email, password, first_name, last_name, phone }: RegisterData) => {
     // Step 1 — crea credenziali; con type:'jwt' il SDK salva il token internamente
     // Medusa v2 restituisce 401 (non 409) se l'email è già registrata
     try {
@@ -139,7 +140,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     // Step 2 — crea profilo cliente; il SDK usa già il token salvato al passo 1
-    await medusa.store.customer.create({ first_name, last_name, email })
+    await medusa.store.customer.create({ first_name, last_name, email, phone })
 
     // Step 3 — login per ottenere un token di sessione completo
     await login(email, password)

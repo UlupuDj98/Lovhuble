@@ -11,10 +11,10 @@ export function Register() {
   const router = useRouter()
   const { register } = useAuth()
 
-  const [form, setForm] = useState({ first_name: '', last_name: '', email: '', password: '', confirm: '' })
+  const [form, setForm] = useState({ first_name: '', last_name: '', email: '', phone: '', password: '', confirm: '' })
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [errors, setErrors] = useState({ first_name: '', last_name: '', email: '', password: '', confirm: '' })
+  const [errors, setErrors] = useState({ first_name: '', last_name: '', email: '', phone: '', password: '', confirm: '' })
 
   const set = (field: string, value: string) => setForm(prev => ({ ...prev, [field]: value }))
 
@@ -33,6 +33,7 @@ export function Register() {
     first_name: v => !v.trim() ? 'Campo obbligatorio' : '',
     last_name: v => !v.trim() ? 'Campo obbligatorio' : '',
     email: v => v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? 'Email non valida' : '',
+    phone: v => !v.trim() ? 'Campo obbligatorio' : !/^\+?[\d\s\-().]{6,20}$/.test(v.trim()) ? 'Numero non valido' : '',
     password: validatePassword,
     confirm: v => v && v !== form.password ? 'Le password non coincidono' : '',
   }
@@ -59,6 +60,7 @@ export function Register() {
         password: form.password,
         first_name: form.first_name,
         last_name: form.last_name,
+        phone: form.phone,
       })
       router.push('/account')
     } catch (err: unknown) {
@@ -130,6 +132,21 @@ export function Register() {
                 className={`${inputClass} ${errors.email ? 'border-red-400' : ''}`}
               />
               {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-stone-700 mb-1.5">Telefono *</label>
+              <input
+                type="tel"
+                value={form.phone}
+                onChange={e => set('phone', e.target.value)}
+                onBlur={() => handleBlur('phone')}
+                required
+                placeholder="+39 123 456 7890"
+                disabled={isLoading}
+                className={`${inputClass} ${errors.phone ? 'border-red-400' : ''}`}
+              />
+              {errors.phone && <p className="mt-1 text-xs text-red-500">{errors.phone}</p>}
             </div>
 
             <div>
