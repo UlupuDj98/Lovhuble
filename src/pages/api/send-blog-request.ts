@@ -15,8 +15,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const { data, error } = await resend.emails.send({
-    from: 'Lovehuble Blog <onboarding@resend.dev>',
-    to: ['marco.gullo@devoz.it'],
+    from: 'Lovehuble Blog <info@lovehuble.com>',
+    to: ['info@lovehuble.com'],
     replyTo: email,
     subject: `[Proposta Articolo] ${title}`,
     html: `
