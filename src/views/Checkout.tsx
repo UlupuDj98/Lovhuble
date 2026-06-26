@@ -340,7 +340,7 @@ export const Checkout = () => {
                           disabled={promoLoading || !promoInput.trim()}
                           className="px-[16px] py-[10px] bg-[#1d1d1f] text-white text-[13px] font-medium rounded-[10px] disabled:opacity-50 flex-shrink-0"
                         >
-                          {promoLoading ? '...' : 'Applica'}
+                          {promoLoading ? '...' : 'Usa'}
                         </button>
                       </div>
                       {promoError && (

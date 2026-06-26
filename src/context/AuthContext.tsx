@@ -125,7 +125,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async ({ email, password, first_name, last_name }: RegisterData) => {
     // Step 1 — crea credenziali; con type:'jwt' il SDK salva il token internamente
-    await medusa.auth.register('customer', 'emailpass', { email, password })
+    // Medusa v2 restituisce 401 (non 409) se l'email è già registrata
+    try {
+      await medusa.auth.register('customer', 'emailpass', { email, password })
+    } catch (err: unknown) {
+      const status = (err as { status?: number })?.status
+      if (status === 401) {
+        const e = new Error('Email già registrata') as Error & { alreadyExists: boolean }
+        e.alreadyExists = true
+        throw e
+      }
+      throw err
+    }
 
     // Step 2 — crea profilo cliente; il SDK usa già il token salvato al passo 1
     await medusa.store.customer.create({ first_name, last_name, email })

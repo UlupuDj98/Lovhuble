@@ -62,11 +62,11 @@ export function Register() {
       })
       router.push('/account')
     } catch (err: unknown) {
-      const msg = (err as { message?: string })?.message ?? ''
-      if (msg.includes('409') || msg.toLowerCase().includes('exist')) {
+      const e = err as { message?: string; status?: number; alreadyExists?: boolean }
+      if (e.alreadyExists || e.status === 409 || e.message?.toLowerCase().includes('exist')) {
         toast.error('Email già registrata. Prova ad accedere.')
-      } else if (msg.toLowerCase().includes('password')) {
-        toast.error(msg)
+      } else if (e.message?.toLowerCase().includes('password')) {
+        toast.error(e.message)
       } else {
         toast.error('Errore durante la registrazione')
       }
@@ -76,7 +76,7 @@ export function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7] flex items-center justify-center px-4 py-20">
+    <div className="min-h-screen bg-[#f5f5f7] flex items-center justify-center px-4 py-34">
       <div className="w-full max-w-md">
 
         <div className="text-center mb-8">
