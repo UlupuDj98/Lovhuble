@@ -138,7 +138,7 @@ export const BlogCarouselPreview = ({ initialPosts }: BlogCarouselPreviewProps) 
               viewport={{ once: true, margin: '-40px' }}
               transition={{ delay: i * 0.07, duration: 0.5 }}
             >
-              <BlogCard post={post} />
+              <BlogCard post={post} verticalMobile />
             </motion.div>
           ))}
           <div className="w-[80px] lg:w-[140px] flex-shrink-0" aria-hidden />
