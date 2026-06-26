@@ -8,7 +8,7 @@ import { BlogRecommendedCards } from "../components/blog/BlogRecommendedCards";
 import { BlogRequestForm } from "../components/blog/BlogRequestForm";
 import { BlogPost } from "@/lib/sanity/types";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://lovehuble.vercel.app";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://lovehuble.com";
 
 interface BlogPostPageProps {
   post: BlogPost;
