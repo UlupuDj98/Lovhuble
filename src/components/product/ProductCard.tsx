@@ -6,6 +6,7 @@ import { Heart } from 'lucide-react';
 import { Product } from '../../data/products';
 import { ProductRating } from './ProductRating';
 import { useComparePrice } from '../../hooks/useComparePrice';
+import { formatPrice } from '../../utils/price';
 
 interface ProductCardProps {
   product: Product;
@@ -71,11 +72,11 @@ export const ProductCard = ({ product, onWishlist, wishlisted, imageSrc, priorit
           <div className="flex items-center justify-center gap-[8px]">
             {hasDiscount && (
               <span className="text-[12px] lg:text-[16px] text-[#6e6e73] line-through">
-                €{comparePrice}
+                {formatPrice(comparePrice!)}
               </span>
             )}
             <span className="text-[16px] lg:text-[22px] font-semibold text-[#1d1d1f]">
-              €{product.price}
+              {formatPrice(product.price)}
             </span>
           </div>
         </div>

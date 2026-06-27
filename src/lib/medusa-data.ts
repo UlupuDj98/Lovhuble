@@ -48,9 +48,9 @@ function mapProduct(
   knownParentCat?: any,
 ): Product {
   const firstVariant = p.variants?.[0]
-  const priceAmount = firstVariant?.calculated_price?.calculated_amount
+  const priceAmount = Number(firstVariant?.calculated_price?.calculated_amount
     ?? firstVariant?.prices?.[0]?.amount
-    ?? 0
+    ?? 0)
   const meta = p.metadata ?? {}
 
   const options: ProductOption[] = (p.options ?? []).map((opt: any) => ({
@@ -59,7 +59,7 @@ function mapProduct(
   }))
 
   const variants: ProductVariant[] = (p.variants ?? []).map((v: any) => {
-    const amount = v.calculated_price?.calculated_amount ?? v.prices?.[0]?.amount ?? 0
+    const amount = Number(v.calculated_price?.calculated_amount ?? v.prices?.[0]?.amount ?? 0)
     const variantOptions: Record<string, string> = {}
     for (const optVal of v.options ?? []) {
       const opt = (p.options ?? []).find((o: any) => o.id === optVal.option_id)
@@ -69,7 +69,7 @@ function mapProduct(
       id: v.id,
       title: v.title,
       options: variantOptions,
-      price: amount / 100,
+      price: amount,
       weight: v.weight ?? null,
       height: v.height ?? null,
       width: v.width ?? null,
@@ -127,7 +127,7 @@ function mapProduct(
     categorySlug: categoryHandle,
     subCategory: subCategoryName,
     subCategorySlug: subCategoryHandle,
-    price: priceAmount / 100,
+    price: priceAmount,
     image: p.thumbnail ?? p.images?.[0]?.url ?? '',
     imageNoBg: (meta.thumbnail_nobg as string) ?? null,
     images: p.images?.map((img: any) => img.url).filter(Boolean) ?? (p.thumbnail ? [p.thumbnail] : []),

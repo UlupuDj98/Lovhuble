@@ -13,6 +13,7 @@ import { SizeVariantSelector } from '../components/productdetail/SizeVariantSele
 import { getProductByHandle } from '../lib/medusa-data';
 import type { Product, ProductVariant } from '../data/products';
 import { useComparePrice } from '../hooks/useComparePrice';
+import { formatPrice } from '../utils/price';
 
 interface ProductDetailProps {
   initialProduct?: Product | null;
@@ -23,12 +24,6 @@ function slugifyDesign(str: string): string {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
-function formatPrice(n: number): string {
-  const rounded = Math.round(n * 100) / 100
-  return rounded % 1 === 0
-    ? rounded.toFixed(0)
-    : rounded.toFixed(2).replace('.', ',')
-}
 
 function formatWeight(g: number): string {
   return g >= 1000 ? `${(g / 1000).toFixed(1).replace('.', ',')} kg` : `${g} g`
@@ -258,7 +253,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
                       className="flex items-center gap-[10px] mb-[4px]"
                     >
                       <span className="text-[18px] sm:text-[20px] lg:text-[26px] text-[#6e6e73] line-through font-medium tracking-[-0.01em]">
-                        €{formatPrice(comparePrice!)}
+                        {formatPrice(comparePrice!)}
                       </span>
                       <span className="text-[12px] sm:text-[13px] font-bold bg-[#e03131] text-white px-[10px] py-[4px] rounded-full">
                         -{discountPercent}%
@@ -272,7 +267,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
                     transition={{ duration: 0.2 }}
                     className="text-[30px] sm:text-[32px] lg:text-[40px] font-bold tracking-[-0.01em] text-[#1d1d1f]"
                   >
-                    €{formatPrice(displayPrice)}
+                    {formatPrice(displayPrice)}
                   </motion.p>
                 </div>
                 {colorOption ? (
