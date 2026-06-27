@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Plus } from 'lucide-react';
 
-const faqs = [
+export const faqs = [
   {
     question: 'Quali sono i metodi di pagamento accettati?',
     answer:
@@ -35,6 +35,21 @@ const faqs = [
     answer:
       'Puoi raggiungerci via email a info@lovehuble.it o tramite la chat sul sito, disponibile dal lunedì al venerdì dalle 9:00 alle 18:00. Rispondiamo entro 24 ore.',
   },
+  {
+    question: 'Il mio acquisto appare in modo anonimo in fattura?',
+    answer:
+      'Sì. Tutti gli acquisti compaiono in estratto conto e in fattura con una denominazione generica che non rivela il contenuto o la natura del negozio. La tua privacy è garantita in ogni fase dell\'ordine.',
+  },
+  {
+    question: 'Che materiali usate per i vostri prodotti?',
+    answer:
+      'Utilizziamo esclusivamente materiali body-safe certificati: silicone medicale ipoallergenico, ABS privo di ftalati e acciaio inossidabile chirurgico. Nessun prodotto in TPE o PVC di bassa qualità.',
+  },
+  {
+    question: 'Posso acquistare senza registrarmi?',
+    answer:
+      'Sì, è possibile completare l\'acquisto come ospite senza creare un account. La registrazione è facoltativa e ti permette di tracciare gli ordini e salvare la lista dei desideri.',
+  },
 ];
 
 export const Faq = () => {
@@ -44,8 +59,19 @@ export const Faq = () => {
     setOpenIndex(prev => (prev === index ? null : index));
   };
 
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(f => ({
+      '@type': 'Question',
+      name: f.question,
+      acceptedAnswer: { '@type': 'Answer', text: f.answer },
+    })),
+  };
+
   return (
     <section className="py-[78px] lg:py-[110px] bg-[#f5f5f7]">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <div className="max-w-[1120px] mx-auto px-6 lg:px-8">
 
         {/* Heading */}

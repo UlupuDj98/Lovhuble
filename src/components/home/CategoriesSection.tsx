@@ -20,7 +20,7 @@ const CategoryCard = ({ category }: { category: CategoryCard }) => (
     <div className="w-[160px] h-[160px] lg:w-[200px] lg:h-[200px] rounded-full bg-white shadow-[0_10px_30px_rgba(0,0,0,0.12)] flex items-center justify-center overflow-hidden group-hover:shadow-[0_14px_40px_rgba(0,0,0,0.18)] transition-shadow duration-300">
       <Image
         src={category.imageSrc}
-        alt={category.title}
+        alt={`Categoria ${category.title} — Lovehuble`}
         width={148}
         height={148}
         className="object-contain w-[118px] h-[118px] lg:w-[148px] lg:h-[148px] group-hover:scale-105 transition-transform duration-300"

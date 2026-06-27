@@ -19,20 +19,32 @@ export default function ProdottoPage({ initialProduct, initialRelated }: Props) 
           canonical={`/prodotti/${initialProduct.categorySlug}/${initialProduct.subCategorySlug}/${initialProduct.slug}`}
           ogImage={initialProduct.image}
           ogType="product"
-          jsonLd={{
-            '@context': 'https://schema.org',
-            '@type': 'Product',
-            name: initialProduct.name,
-            description: initialProduct.description,
-            image: initialProduct.image,
-            offers: {
-              '@type': 'Offer',
-              price: initialProduct.price,
-              priceCurrency: 'EUR',
-              availability: 'https://schema.org/InStock',
-              url: `https://lovehuble.com/prodotti/${initialProduct.categorySlug}/${initialProduct.subCategorySlug}/${initialProduct.slug}`,
+          jsonLd={[
+            {
+              '@context': 'https://schema.org',
+              '@type': 'Product',
+              name: initialProduct.name,
+              description: initialProduct.description,
+              image: initialProduct.image,
+              offers: {
+                '@type': 'Offer',
+                price: initialProduct.price,
+                priceCurrency: 'EUR',
+                availability: 'https://schema.org/InStock',
+                url: `https://lovehuble.com/prodotti/${initialProduct.categorySlug}/${initialProduct.subCategorySlug}/${initialProduct.slug}`,
+              },
             },
-          }}
+            {
+              '@context': 'https://schema.org',
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://lovehuble.com' },
+                { '@type': 'ListItem', position: 2, name: initialProduct.category, item: `https://lovehuble.com/prodotti/${initialProduct.categorySlug}` },
+                { '@type': 'ListItem', position: 3, name: initialProduct.subCategory, item: `https://lovehuble.com/prodotti/${initialProduct.categorySlug}/${initialProduct.subCategorySlug}` },
+                { '@type': 'ListItem', position: 4, name: initialProduct.name, item: `https://lovehuble.com/prodotti/${initialProduct.categorySlug}/${initialProduct.subCategorySlug}/${initialProduct.slug}` },
+              ],
+            },
+          ]}
         />
       )}
       <ProductDetail initialProduct={initialProduct} initialRelated={initialRelated} />

@@ -22,7 +22,7 @@ export const ExclusiveProductCard = ({ product, imageSrc, gradientColor = '#ffff
       {/* Image */}
       <Image
         src={imageSrc ?? product.image}
-        alt={product.name}
+        alt={`${product.name} — ${product.category} | Lovehuble`}
         fill
         className="object-cover transition-transform duration-500"
       />

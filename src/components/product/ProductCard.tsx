@@ -22,7 +22,7 @@ export const ProductCard = ({ product, onWishlist, wishlisted, imageSrc, priorit
       <div className="relative flex-1 min-h-0">
         <Image
           src={imageSrc ?? product.imageNoBg ?? product.image}
-          alt={product.name}
+          alt={`${product.name} — ${product.subCategory || product.category} | Lovehuble`}
           fill
           priority={priority}
           sizes="(max-width: 768px) 50vw, 33vw"

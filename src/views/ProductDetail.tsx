@@ -194,9 +194,9 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
           className="sm:hidden space-y-[8px] mt-[20px]"
           key={product.id}
         >
-          <h1 className="text-[26px] font-bold tracking-[-0.02em] text-[#1d1d1f] leading-[1.1]">
+          <p className="text-[26px] font-bold tracking-[-0.02em] text-[#1d1d1f] leading-[1.1]">
             {product.name}
-          </h1>
+          </p>
         
         </motion.div>
       </div>
@@ -594,7 +594,7 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
               )}
 
          <div className='mt-14 space-y-3'>
-           <h4 className='text-[24px] text-[#1d1d1f] font-semibold'>Descrizione:</h4>
+           <h2 className='text-[24px] text-[#1d1d1f] font-semibold'>Descrizione:</h2>
           <p className="text-[14px] md:text-[16px]  text-[#6e6e73] leading-[1.65] whitespace-pre-line">
               {product.description}
             </p>

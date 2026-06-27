@@ -18,6 +18,15 @@ export default function CategoriaPage({ initialProducts, initialSubCategoryItems
         title={`${initialCategoryName} — Lovehuble`}
         description={`Esplora la nostra selezione di ${initialCategoryName.toLowerCase()}: prodotti per adulti di qualità premium con spedizione discreta.`}
         canonical={`/prodotti/${categorySlug}`}
+        ogImage={`/categorie/${categorySlug}.png`}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://lovehuble.com' },
+            { '@type': 'ListItem', position: 2, name: initialCategoryName, item: `https://lovehuble.com/prodotti/${categorySlug}` },
+          ],
+        }}
       />
       <Category key={categorySlug} initialProducts={initialProducts} initialSubCategoryItems={initialSubCategoryItems} categorySlug={categorySlug} initialCategoryName={initialCategoryName} />
     </>

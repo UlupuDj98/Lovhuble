@@ -11,7 +11,7 @@ interface SEOHeadProps {
   ogImage?: string
   ogType?: 'website' | 'article' | 'product'
   noIndex?: boolean
-  jsonLd?: Record<string, unknown>
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[]
 }
 
 export function SEOHead({
@@ -52,10 +52,11 @@ export function SEOHead({
       {description && <meta name="twitter:description" content={description} />}
       <meta name="twitter:image" content={ogImageUrl} />
       {jsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        Array.isArray(jsonLd)
+          ? jsonLd.map((ld, i) => (
+              <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
+            ))
+          : <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       )}
     </Head>
   )

@@ -38,6 +38,12 @@ export default function HomePage({ initialCategories, initialFeatured, initialNo
                 '@type': 'ImageObject',
                 url: 'https://lovehuble.com/logo-1.png',
               },
+              aggregateRating: {
+                '@type': 'AggregateRating',
+                ratingValue: '4.9',
+                reviewCount: '25000',
+                bestRating: '5',
+              },
             },
           ],
         }}

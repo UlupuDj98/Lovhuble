@@ -101,9 +101,9 @@ export const Guide = () => {
                 <div className="w-[48px] h-[48px] bg-[#1d1d1f] rounded-[12px] flex items-center justify-center mb-[20px]">
                   <section.icon className="w-[24px] h-[24px] text-white" strokeWidth={1.5} />
                 </div>
-                <h3 className="text-[24px] font-semibold text-[#1d1d1f] mb-[12px] tracking-[-0.007em]">
+                <h2 className="text-[24px] font-semibold text-[#1d1d1f] mb-[12px] tracking-[-0.007em]">
                   {section.title}
-                </h3>
+                </h2>
                 <p className="text-[17px] text-[#6e6e73] leading-[1.47] font-normal">
                   {section.content}
                 </p>
