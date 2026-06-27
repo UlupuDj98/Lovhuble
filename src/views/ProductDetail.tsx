@@ -12,6 +12,7 @@ import { ProdottiCorrelati } from '../components/productdetail/ProdottiCorrelati
 import { SizeVariantSelector } from '../components/productdetail/SizeVariantSelector';
 import { getProductByHandle } from '../lib/medusa-data';
 import type { Product, ProductVariant } from '../data/products';
+import { useComparePrice } from '../hooks/useComparePrice';
 
 interface ProductDetailProps {
   initialProduct?: Product | null;
@@ -54,6 +55,9 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
   const [activeVariant, setActiveVariant] = useState<ProductVariant | null>(null);
   const [quantity, setQuantity] = useState(1);
+
+  const activeVariantId = activeVariant?.id ?? product?.variantId
+  const comparePrice = useComparePrice(activeVariantId)
 
   const { slug, categoria, subcategoria } = router.query as Record<string, string>;
 
@@ -140,6 +144,8 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
   );
 
   const displayPrice = activeVariant?.price ?? product.price;
+  const hasDiscount = comparePrice !== null && comparePrice > displayPrice
+  const discountPercent = hasDiscount ? Math.round((1 - displayPrice / comparePrice!) * 100) : 0
 
   const handleAddToCart = () => {
     addItem({
@@ -243,15 +249,32 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
 
               {/* Prezzo (+ colore affiancato solo <640px) */}
               <div className="flex items-center justify-between gap-3 sm:block mx-1">
-                <motion.p
-                  key={displayPrice}
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="text-[30px] sm:text-[32px] lg:text-[40px] font-bold text-[#1d1d1f] tracking-[-0.01em] shrink-0"
-                >
-                  €{formatPrice(displayPrice)}
-                </motion.p>
+                <div className="shrink-0">
+                  {hasDiscount && (
+                    <motion.div
+                      key={`compare-${activeVariantId}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="flex items-center gap-[10px] mb-[4px]"
+                    >
+                      <span className="text-[18px] sm:text-[20px] lg:text-[26px] text-[#6e6e73] line-through font-medium tracking-[-0.01em]">
+                        €{formatPrice(comparePrice!)}
+                      </span>
+                      <span className="text-[12px] sm:text-[13px] font-bold bg-[#e03131] text-white px-[10px] py-[4px] rounded-full">
+                        -{discountPercent}%
+                      </span>
+                    </motion.div>
+                  )}
+                  <motion.p
+                    key={displayPrice}
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="text-[30px] sm:text-[32px] lg:text-[40px] font-bold tracking-[-0.01em] text-[#1d1d1f]"
+                  >
+                    €{formatPrice(displayPrice)}
+                  </motion.p>
+                </div>
                 {colorOption ? (
                   <div className="sm:hidden shrink-0">
                     <ColorVariantSelector
