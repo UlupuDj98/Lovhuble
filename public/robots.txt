@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /api/
+Allow: /
+
+Sitemap: https://lovehuble.com/sitemap.xml

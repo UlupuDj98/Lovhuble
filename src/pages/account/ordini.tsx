@@ -1,5 +1,11 @@
+import { SEOHead } from '@/components/SEOHead'
 import { AccountOrdini } from '@/views/AccountOrdini'
 
 export default function OrdiniPage() {
-  return <AccountOrdini />
+  return (
+    <>
+      <SEOHead title="I tuoi ordini — Lovehuble" noIndex />
+      <AccountOrdini />
+    </>
+  )
 }

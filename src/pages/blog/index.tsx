@@ -1,4 +1,5 @@
 import { GetStaticProps } from 'next';
+import { SEOHead } from '@/components/SEOHead'
 import BlogPage from '@/views/BlogPage';
 import { client } from '@/lib/sanity/client';
 import { blogPostsQuery } from '@/lib/sanity/queries';
@@ -14,5 +15,14 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 };
 
 export default function BlogIndexPage({ posts }: Props) {
-  return <BlogPage posts={posts} />;
+  return (
+    <>
+      <SEOHead
+        title="Blog sul benessere intimo — Lovehuble"
+        description="Articoli, consigli e approfondimenti sul piacere, la salute sessuale e il benessere intimo. Aggiornato ogni settimana."
+        canonical="/blog"
+      />
+      <BlogPage posts={posts} />
+    </>
+  )
 }

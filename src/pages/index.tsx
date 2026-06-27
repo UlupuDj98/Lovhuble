@@ -1,4 +1,5 @@
 import { GetStaticProps } from 'next'
+import { SEOHead } from '@/components/SEOHead'
 import { Home } from '@/views/Home'
 import { getMainCategories, getProductsByCategory, getExclusiveProducts } from '@/lib/medusa-data'
 import { client } from '@/lib/sanity/client'
@@ -16,13 +17,39 @@ interface Props {
 
 export default function HomePage({ initialCategories, initialFeatured, initialNovita, initialEsclusive, initialBlogPosts }: Props) {
   return (
-    <Home
-      initialCategories={initialCategories}
-      initialFeatured={initialFeatured}
-      initialNovita={initialNovita}
-      initialEsclusive={initialEsclusive}
-      initialBlogPosts={initialBlogPosts}
-    />
+    <>
+      <SEOHead
+        title="Sexy Shop Online — Lovehuble"
+        description="Scopri la selezione curata di Sexy Shop: sex toys, lingerie e accessori per adulti. Spedizione discreta, qualità premium."
+        canonical="/"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'WebSite',
+              name: 'Lovehuble',
+              url: 'https://lovehuble.com',
+            },
+            {
+              '@type': 'Organization',
+              name: 'Lovehuble',
+              url: 'https://lovehuble.com',
+              logo: {
+                '@type': 'ImageObject',
+                url: 'https://lovehuble.com/logo-1.png',
+              },
+            },
+          ],
+        }}
+      />
+      <Home
+        initialCategories={initialCategories}
+        initialFeatured={initialFeatured}
+        initialNovita={initialNovita}
+        initialEsclusive={initialEsclusive}
+        initialBlogPosts={initialBlogPosts}
+      />
+    </>
   )
 }
 

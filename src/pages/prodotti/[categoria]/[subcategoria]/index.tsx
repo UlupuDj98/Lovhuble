@@ -1,4 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
+import { SEOHead } from '@/components/SEOHead'
 import { Subcategory } from '@/views/Subcategory'
 import { getProductsBySubCategory, getCategoryName, getSubCategories, getAllSubcategoryPaths } from '@/lib/medusa-data'
 import type { Product } from '@/data/products'
@@ -13,14 +14,21 @@ interface Props {
 
 export default function SubcategoriaPage({ initialProducts, initialSubCategoryName, initialSubCategoryItems, subCategorySlug, categorySlug }: Props) {
   return (
-    <Subcategory
-      key={subCategorySlug}
-      initialProducts={initialProducts}
-      initialSubCategoryName={initialSubCategoryName}
-      initialSubCategoryItems={initialSubCategoryItems}
-      categorySlug={categorySlug}
-      subCategorySlug={subCategorySlug}
-    />
+    <>
+      <SEOHead
+        title={`${initialSubCategoryName} — Lovehuble`}
+        description={`Scopri la collezione ${initialSubCategoryName.toLowerCase()} di Lovehuble: qualità, discrezione e spedizione sicura.`}
+        canonical={`/prodotti/${categorySlug}/${subCategorySlug}`}
+      />
+      <Subcategory
+        key={subCategorySlug}
+        initialProducts={initialProducts}
+        initialSubCategoryName={initialSubCategoryName}
+        initialSubCategoryItems={initialSubCategoryItems}
+        categorySlug={categorySlug}
+        subCategorySlug={subCategorySlug}
+      />
+    </>
   )
 }
 

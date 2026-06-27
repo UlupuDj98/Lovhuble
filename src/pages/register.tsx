@@ -1,5 +1,11 @@
+import { SEOHead } from '@/components/SEOHead'
 import { Register } from '@/views/Register'
 
 export default function RegisterPage() {
-  return <Register />
+  return (
+    <>
+      <SEOHead title="Crea un account — Lovehuble" noIndex />
+      <Register />
+    </>
+  )
 }

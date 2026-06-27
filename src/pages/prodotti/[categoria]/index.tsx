@@ -1,4 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
+import { SEOHead } from '@/components/SEOHead'
 import { Category } from '@/views/Category'
 import { getProductsByParentCategory, getSubCategories, getTopLevelCategoryHandles, getCategoryName } from '@/lib/medusa-data'
 import type { Product } from '@/data/products'
@@ -11,7 +12,16 @@ interface Props {
 }
 
 export default function CategoriaPage({ initialProducts, initialSubCategoryItems, categorySlug, initialCategoryName }: Props) {
-  return <Category key={categorySlug} initialProducts={initialProducts} initialSubCategoryItems={initialSubCategoryItems} categorySlug={categorySlug} initialCategoryName={initialCategoryName} />
+  return (
+    <>
+      <SEOHead
+        title={`${initialCategoryName} — Lovehuble`}
+        description={`Esplora la nostra selezione di ${initialCategoryName.toLowerCase()}: prodotti per adulti di qualità premium con spedizione discreta.`}
+        canonical={`/prodotti/${categorySlug}`}
+      />
+      <Category key={categorySlug} initialProducts={initialProducts} initialSubCategoryItems={initialSubCategoryItems} categorySlug={categorySlug} initialCategoryName={initialCategoryName} />
+    </>
+  )
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {

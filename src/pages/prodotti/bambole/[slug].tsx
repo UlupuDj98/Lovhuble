@@ -1,4 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
+import { SEOHead } from '@/components/SEOHead'
 import { ProductDetail } from '@/views/ProductDetail'
 import { getProductByHandle, getProductsByParentCategory } from '@/lib/medusa-data'
 import type { Product } from '@/data/products'
@@ -9,7 +10,34 @@ interface Props {
 }
 
 export default function BambolaPage({ initialProduct, initialRelated }: Props) {
-  return <ProductDetail initialProduct={initialProduct} initialRelated={initialRelated} />
+  return (
+    <>
+      {initialProduct && (
+        <SEOHead
+          title={`${initialProduct.name} — ${initialProduct.category} | Lovehuble`}
+          description={initialProduct.subtitle || initialProduct.description?.slice(0, 155)}
+          canonical={`/prodotti/bambole/${initialProduct.slug}`}
+          ogImage={initialProduct.image}
+          ogType="product"
+          jsonLd={{
+            '@context': 'https://schema.org',
+            '@type': 'Product',
+            name: initialProduct.name,
+            description: initialProduct.description,
+            image: initialProduct.image,
+            offers: {
+              '@type': 'Offer',
+              price: initialProduct.price,
+              priceCurrency: 'EUR',
+              availability: 'https://schema.org/InStock',
+              url: `https://lovehuble.com/prodotti/bambole/${initialProduct.slug}`,
+            },
+          }}
+        />
+      )}
+      <ProductDetail initialProduct={initialProduct} initialRelated={initialRelated} />
+    </>
+  )
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {

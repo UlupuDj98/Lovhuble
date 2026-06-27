@@ -1,5 +1,11 @@
+import { SEOHead } from '@/components/SEOHead'
 import { AccountProfilo } from '@/views/AccountProfilo'
 
 export default function ProfiloPage() {
-  return <AccountProfilo />
+  return (
+    <>
+      <SEOHead title="Profilo — Lovehuble" noIndex />
+      <AccountProfilo />
+    </>
+  )
 }
