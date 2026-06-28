@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { CustomerAddress } from "@/types/customer";
+import { validateAddress } from "@/utils/validateAddress";
 
 const ITALIAN_PROVINCES = [
   { code: "AG", name: "Agrigento" }, { code: "AL", name: "Alessandria" }, { code: "AN", name: "Ancona" },
@@ -58,6 +59,8 @@ function resolveProvinceCode(province?: string): string {
 }
 
 export default function AddressForm({ address, onSubmit, onCancel, isLoading = false }: AddressFormProps) {
+  const [validating, setValidating] = useState(false);
+  const [validationError, setValidationError] = useState("");
   const [form, setForm] = useState({
     first_name: address?.first_name || "",
     last_name: address?.last_name || "",
@@ -99,6 +102,19 @@ export default function AddressForm({ address, onSubmit, onCancel, isLoading = f
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setValidationError("");
+    setValidating(true);
+    const isValid = await validateAddress({
+      street: form.address_1,
+      city: form.city,
+      postalCode: form.postal_code,
+      countryCode: form.country_code,
+    });
+    setValidating(false);
+    if (!isValid) {
+      setValidationError("Indirizzo non trovato. Verifica via, città e CAP e riprova.");
+      return;
+    }
     await onSubmit({ ...form, id: address?.id || "" } as CustomerAddress);
   };
 
@@ -185,14 +201,20 @@ export default function AddressForm({ address, onSubmit, onCancel, isLoading = f
         <span className="text-sm text-stone-600">Imposta come indirizzo predefinito</span>
       </label>
 
+      {validationError && (
+        <p className="text-sm text-red-500 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+          {validationError}
+        </p>
+      )}
+
       <div className="flex gap-3 pt-2">
-        <button type="button" onClick={onCancel} disabled={isLoading}
+        <button type="button" onClick={onCancel} disabled={isLoading || validating}
           className="flex-1 py-3 border border-stone-300 rounded-xl text-stone-600 font-medium hover:bg-stone-50 transition-colors disabled:opacity-50">
           Annulla
         </button>
-        <button type="submit" disabled={isLoading}
+        <button type="submit" disabled={isLoading || validating}
           className="flex-1 py-3 rounded-xl text-white font-semibold transition-colors disabled:opacity-50 bg-[#d4a5a5] hover:bg-[#c49494]">
-          {isLoading ? "Salvataggio..." : address ? "Salva modifiche" : "Aggiungi indirizzo"}
+          {validating ? "Verifica indirizzo..." : isLoading ? "Salvataggio..." : address ? "Salva modifiche" : "Aggiungi indirizzo"}
         </button>
       </div>
     </form>

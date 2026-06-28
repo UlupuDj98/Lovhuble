@@ -7,6 +7,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { formatPrice } from '../utils/price';
 import { medusa } from '../lib/medusa';
+import { validateAddress } from '../utils/validateAddress';
 
 const CART_ID_KEY = 'lovehuble-cart-id';
 
@@ -110,6 +111,17 @@ export const Checkout = () => {
     if (!cartId) { setError('Carrello non trovato. Aggiungi prodotti al carrello.'); return; }
 
     setLoading(true);
+    const isValidAddress = await validateAddress({
+      street: form.address_1,
+      city: form.city,
+      postalCode: form.postal_code,
+      countryCode: 'it',
+    });
+    if (!isValidAddress) {
+      setError('Indirizzo non trovato. Verifica via, città e CAP e riprova.');
+      setLoading(false);
+      return;
+    }
     try {
       // Se l'utente è loggato, trasferisce il cart al suo account prima di completarlo
       if (customer) {
