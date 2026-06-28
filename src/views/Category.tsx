@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { motion } from 'motion/react';
 import { useWishlist } from '../context/WishlistContext';
 import { ProductCard } from '../components/product/ProductCard';
 import { SubCategoriesSection } from '../components/home/SubCategorySection';
@@ -46,18 +45,28 @@ export const Category = ({ initialProducts, initialSubCategoryItems, categorySlu
     [allProducts],
   );
 
-  const [price, setPrice] = useState<[number, number]>([0, 5000]);
+  const [price, setPrice] = useState<[number, number]>([0, maxPrice]);
+
+  const applyNewProducts = (prods: typeof allProducts) => {
+    const newMax = prods.length > 0 ? Math.ceil(Math.max(...prods.map(p => p.price)) / 50) * 50 : 5000;
+    setAllProducts(prods);
+    setPrice([0, newMax]);
+    setFilters({ onlyInStock: false, checkedOptions: {} });
+  };
+
+  // Sincronizza le props quando Next.js carica una nuova categoria (senza remount)
+  useEffect(() => {
+    if (initialProducts) {
+      applyNewProducts(initialProducts);
+      setLoading(false);
+    }
+  }, [initialProducts]);
 
   useEffect(() => {
-    setPrice([0, maxPrice]);
-  }, [maxPrice]);
-
-  useEffect(() => {
-    // Skip fetch se i prodotti arrivano già dal server (SSR)
     if (!categorySlug || initialProducts) return;
     setLoading(true);
     getProductsByParentCategory(categorySlug)
-      .then(setAllProducts)
+      .then(applyNewProducts)
       .finally(() => setLoading(false));
   }, [categorySlug, initialProducts]);
 
@@ -112,12 +121,9 @@ export const Category = ({ initialProducts, initialSubCategoryItems, categorySlu
                 ) : (
                   <div className="grid grid-cols-2 lg:grid-cols-3 gap-[16px] lg:gap-[20px] -mx-2 lg:mx-0">
                     {categoryProducts.map((product, i) => (
-                      <motion.div
+                      <div
                         key={product.id}
                         className="h-[380px] lg:h-[520px]"
-                        initial={{ y: 16 }}
-                        animate={{ y: 0 }}
-                        transition={{ delay: Math.min(i * 0.04, 0.3), duration: 0.4 }}
                       >
                         <ProductCard
                           product={product}
@@ -125,7 +131,7 @@ export const Category = ({ initialProducts, initialSubCategoryItems, categorySlu
                           wishlisted={isInWishlist(product.id)}
                           onWishlist={e => { e.preventDefault(); toggleWishlist(product); }}
                         />
-                      </motion.div>
+                      </div>
                     ))}
                   </div>
                 )}

@@ -32,7 +32,6 @@ export default function SubcategoriaPage({ initialProducts, initialSubCategoryNa
         }}
       />
       <Subcategory
-        key={subCategorySlug}
         initialProducts={initialProducts}
         initialSubCategoryName={initialSubCategoryName}
         initialSubCategoryItems={initialSubCategoryItems}

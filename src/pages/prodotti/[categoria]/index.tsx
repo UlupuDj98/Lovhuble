@@ -28,7 +28,7 @@ export default function CategoriaPage({ initialProducts, initialSubCategoryItems
           ],
         }}
       />
-      <Category key={categorySlug} initialProducts={initialProducts} initialSubCategoryItems={initialSubCategoryItems} categorySlug={categorySlug} initialCategoryName={initialCategoryName} />
+      <Category initialProducts={initialProducts} initialSubCategoryItems={initialSubCategoryItems} categorySlug={categorySlug} initialCategoryName={initialCategoryName} />
     </>
   )
 }
