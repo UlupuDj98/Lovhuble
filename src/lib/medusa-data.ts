@@ -143,6 +143,7 @@ function mapProduct(
     weight: p.weight ?? null,
     options: options.length > 0 ? options : null,
     variants: variants.length > 0 ? variants : null,
+    saleEndDate: (meta.sale_end_date as string) ?? null,
   }
 }
 
@@ -357,6 +358,12 @@ export async function searchProducts(q: string): Promise<Product[]> {
     const info = catMap.get(p.id)
     return mapProduct(p, categories, info?.subCat, info?.parentCat)
   })
+}
+
+export async function getFlashOffers(): Promise<Product[]> {
+  const data = await storeGet<{ offers: any[] }>('/store/offers')
+  const categories = await fetchCategories()
+  return (data.offers ?? []).map((p: any) => mapProduct(p, categories))
 }
 
 // ── Sottocategorie per categoria principale ───────────────────────────────

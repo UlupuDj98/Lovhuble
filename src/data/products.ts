@@ -52,4 +52,5 @@ export interface Product {
   weight?: number | null;
   options?: ProductOption[] | null;
   variants?: ProductVariant[] | null;
+  saleEndDate?: string | null;
 }
