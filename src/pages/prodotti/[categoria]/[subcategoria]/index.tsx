@@ -60,6 +60,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     getCategoryName(categoria).catch(() => ''),
     getSubCategories(categoria).catch(() => []),
   ])
+
+  if (!initialSubCategoryName || !initialCategoryName) {
+    return { notFound: true }
+  }
+
   const initialSubCategoryItems = subCats.map(s => ({
     title: s.name,
     imageSrc: s.image,

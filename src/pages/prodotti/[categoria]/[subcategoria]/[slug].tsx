@@ -68,6 +68,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   // Usa categoria e subcategoria dall'URL per iniettarle direttamente nel prodotto
   const initialProduct = await getProductByHandleWithCategory(slug, subcategoria, categoria).catch(() => null)
 
+  if (!initialProduct) {
+    return { notFound: true }
+  }
+
   let initialRelated: Product[] = []
   if (initialProduct) {
     const sameCat = await getProductsByCategory(subcategoria).catch(() => [])

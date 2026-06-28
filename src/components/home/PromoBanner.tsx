@@ -63,7 +63,7 @@ export default function PromoBanner() {
       setCurrentProductIndex((prev) =>
         prev === allProducts.length - 1 ? 0 : prev + 1
       )
-    }, 5000)
+    }, 4000)
 
     return () => clearInterval(id)
   }, [allProducts, isPaused])

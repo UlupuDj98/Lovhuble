@@ -1,5 +1,7 @@
 import type { Product, ProductOption, ProductVariant, Category, SubCategory } from '../data/products'
 
+const HIDDEN_CATEGORIES = ['offerte-flash']
+
 const BASE = typeof window !== 'undefined'
   ? '/api/medusa'
   : (process.env.NEXT_PUBLIC_MEDUSA_URL ?? 'http://localhost:9000')
@@ -276,7 +278,7 @@ export async function getProductByHandleWithCategory(
 export async function getMainCategories(): Promise<Category[]> {
   const all = await fetchCategories()
   return all
-    .filter((c: any) => !c.parent_category_id)
+    .filter((c: any) => !c.parent_category_id && !HIDDEN_CATEGORIES.includes(c.handle))
     .map((c: any) => ({
       name: c.name,
       slug: c.handle,
@@ -307,7 +309,9 @@ export async function getAllProducts(): Promise<Product[]> {
 
 export async function getTopLevelCategoryHandles(): Promise<string[]> {
   const all = await fetchCategories()
-  return all.filter((c: any) => !c.parent_category_id).map((c: any) => c.handle)
+  return all
+    .filter((c: any) => !c.parent_category_id && !HIDDEN_CATEGORIES.includes(c.handle))
+    .map((c: any) => c.handle)
 }
 
 export async function getAllSubcategoryPaths(): Promise<{ categoria: string; subcategoria: string }[]> {

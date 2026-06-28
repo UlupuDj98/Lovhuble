@@ -17,13 +17,13 @@ export const Hero = () => (
       />
     </div>
 
-    <div className="relative z-20 text-center px-6 max-w-[980px] mx-auto">
+    <div className="relative z-20 text-center px-6 max-w-[980px] mx-auto mb-10">
       <motion.div
         initial={{ y: 30 }}
         animate={{ y: 0 }}
         transition={{ delay: 0.2, duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
       >
-        <h1 className="text-[48px] lg:text-[80px] font-semibold tracking-[-0.015em] text-white mb-[18px] leading-[1.05] lg:leading-[1.05]">
+        <h1 className="text-[42px] lg:text-[80px] font-semibold tracking-[-0.015em] text-white mb-[18px] leading-[1.05] lg:leading-[1.05]">
           Scopri il piacere,<br className="hidden lg:block" />
           senza compromessi.
         </h1>

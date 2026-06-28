@@ -41,13 +41,25 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
+const HIDDEN_CATEGORIES = ['offerte-flash']
+
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const categoria = params?.categoria as string
+
+  if (HIDDEN_CATEGORIES.includes(categoria)) {
+    return { notFound: true }
+  }
+
   const [initialProducts, subCats, initialCategoryName] = await Promise.all([
     getProductsByParentCategory(categoria).catch(() => []),
     getSubCategories(categoria).catch(() => []),
     getCategoryName(categoria).catch(() => ''),
   ])
+
+  if (!initialCategoryName) {
+    return { notFound: true }
+  }
+
   const initialSubCategoryItems = subCats.map(s => ({
     title: s.name,
     imageSrc: s.image,
