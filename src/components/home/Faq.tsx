@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Plus } from 'lucide-react';
+import Link from 'next/link';
 
 export const faqs = [
   {
@@ -52,8 +53,14 @@ export const faqs = [
   },
 ];
 
-export const Faq = () => {
+interface FaqProps {
+  items?: typeof faqs;
+  showAll?: boolean;
+}
+
+export const Faq = ({ items, showAll = false }: FaqProps) => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const displayedFaqs = items ?? (showAll ? faqs : faqs.slice(0, 5));
 
   const toggle = (index: number) => {
     setOpenIndex(prev => (prev === index ? null : index));
@@ -62,7 +69,7 @@ export const Faq = () => {
   const faqJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: faqs.map(f => ({
+    mainEntity: displayedFaqs.map(f => ({
       '@type': 'Question',
       name: f.question,
       acceptedAnswer: { '@type': 'Answer', text: f.answer },
@@ -90,7 +97,7 @@ export const Faq = () => {
 
         {/* Accordion */}
         <div className="flex flex-col gap-[12px] py-2">
-          {faqs.map((faq, index) => {
+          {displayedFaqs.map((faq, index) => {
             const isOpen = openIndex === index;
 
             return (
@@ -143,6 +150,15 @@ export const Faq = () => {
             );
           })}
         </div>
+
+        {!showAll && (
+          <Link
+            href="/faq"
+            className="flex justify-center items-center gap-[6px] mt-[40px] lg:mt-[56px] text-[20px] sm:text-[20px] md:text-[22px] lg:text-[26px] text-black underline underline-offset-4 hover:text-[#86868b] transition-colors duration-200"
+          >
+            Vedi tutte le FAQ →
+          </Link>
+        )}
       </div>
     </section>
   );
