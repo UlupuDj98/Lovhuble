@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { searchProducts } from '../lib/medusa-data';
 import type { Product } from '../data/products';
+import { formatPrice } from '../utils/price';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -121,13 +122,13 @@ export const SearchModal = ({ isOpen, onClose }: SearchModalProps) => {
                                 className="group flex items-center gap-3 p-3 rounded-[12px] hover:bg-[#f5f5f7] transition-colors"
                               >
                                 <div className="relative w-[46px] h-[46px] rounded-[10px] bg-[#f5f5f7] overflow-hidden flex-shrink-0">
-                                  <Image src={product.image} alt={product.name} fill className="object-contain p-2" />
+                                  <Image src={product.image} alt={product.name} fill sizes="46px" className="object-contain p-2" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <p className="text-[13px] font-semibold text-[#1d1d1f] truncate leading-[1.3]">{product.name}</p>
                                   <p className="text-[11px] text-[#86868b] mt-[2px]">{product.category.trim()}</p>
                                 </div>
-                                <span className="text-[14px] font-semibold text-[#1d1d1f] flex-shrink-0">€{product.price}</span>
+                                <span className="text-[14px] font-semibold text-[#1d1d1f] flex-shrink-0">{formatPrice(product.price)}</span>
                               </Link>
                             </motion.div>
                           ))}

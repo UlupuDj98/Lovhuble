@@ -24,6 +24,8 @@ export const ExclusiveProductCard = ({ product, imageSrc, gradientColor = '#ffff
         src={imageSrc ?? product.image}
         alt={`${product.name} — ${product.category} | Lovehuble`}
         fill
+        sizes="(max-width: 1024px) 100vw, 50vw"
+        priority
         className="object-cover transition-transform duration-500"
       />
 

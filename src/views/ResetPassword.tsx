@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
@@ -54,7 +55,7 @@ export function ResetPassword() {
       <div className="min-h-screen bg-[#f5f5f7] flex items-center justify-center px-4 py-20">
         <div className="w-full max-w-md text-center">
           <Link href="/">
-            <img src="/logo-1.png" alt="Lovehuble" className="h-12 mx-auto mb-6" />
+            <Image src="/logo-1.png" alt="Lovehuble" width={192} height={48} className="h-12 w-auto mx-auto mb-6" />
           </Link>
           <div className="bg-white rounded-2xl shadow-sm border border-stone-200 p-8">
             <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">

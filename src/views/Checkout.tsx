@@ -305,7 +305,7 @@ export const Checkout = () => {
                     <div key={item.id} className="flex items-center gap-[12px]">
                       {item.image && (
                         <div className="relative w-[54px] h-[54px] bg-[#f5f5f7] rounded-[12px] overflow-hidden flex-shrink-0">
-                          <Image src={item.image} alt={item.name} fill className="object-contain p-[8px]" />
+                          <Image src={item.image} alt={item.name} fill sizes="54px" className="object-contain p-[8px]" />
                         </div>
                       )}
                       <div className="flex-1 min-w-0">

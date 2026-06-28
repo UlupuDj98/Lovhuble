@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
+import NextImage from 'next/image'
 import { AlarmClock, Loader } from 'lucide-react'
 import { useSpecialOffers } from '../../hooks/useSpecialOffers'
 
@@ -196,14 +197,31 @@ function ProductSlide({
   }
 
   const imgClass = size === 'lg' ? 'w-4/5 h-4/5' : 'w-3/4 h-3/4'
+  const nextIndex = (currentIndex + 1) % products.length
 
   return (
     <>
-      <img
-        src={products[currentIndex]?.images?.[0] || '/placeholder-product.jpg'}
-        alt={products[currentIndex]?.name || 'Prodotto'}
-        className={`${imgClass} object-contain`}
-      />
+      <div className={`relative ${imgClass}`}>
+        <NextImage
+          src={products[currentIndex]?.images?.[0] || '/placeholder-product.jpg'}
+          alt={products[currentIndex]?.name || 'Prodotto'}
+          fill
+          className="object-contain"
+          sizes="(max-width: 640px) 225px, 336px"
+          priority
+        />
+      </div>
+      {/* Preload immagine successiva */}
+      {products.length > 1 && (
+        <NextImage
+          src={products[nextIndex]?.images?.[0] || '/placeholder-product.jpg'}
+          alt=""
+          width={1}
+          height={1}
+          className="absolute opacity-0 pointer-events-none w-px h-px"
+          priority
+        />
+      )}
       <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
         {products.map((_, index) => (
           <button

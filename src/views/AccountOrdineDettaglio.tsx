@@ -121,7 +121,7 @@ export function AccountOrdineDettaglio() {
                       <div key={item.id} className="flex items-center gap-4">
                         {item.thumbnail ? (
                           <div className="w-14 h-14 rounded-xl overflow-hidden bg-stone-100 flex-shrink-0 relative">
-                            <Image src={item.thumbnail} alt={item.title} fill className="object-contain" />
+                            <Image src={item.thumbnail} alt={item.title} fill sizes="56px" className="object-contain" />
                           </div>
                         ) : (
                           <div className="w-14 h-14 rounded-xl bg-stone-100 flex-shrink-0 flex items-center justify-center">

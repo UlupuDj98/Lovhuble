@@ -72,6 +72,7 @@ export const ImageLightbox = ({ images, alt, selected, onClose, onNavigate, prod
             src={images[selected]}
             alt={`${alt} — foto ${selected + 1}`}
             fill
+            sizes="(max-width: 860px) 90vw, 860px"
             className={`${productCategory === 'bambole' ? 'object-cover' : 'object-contain p-[32px]'}`}
             priority
             onLoad={stopLoading}

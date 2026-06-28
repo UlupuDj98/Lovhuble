@@ -69,6 +69,7 @@ export const ImageGallery = ({ images, alt, productCategory }: ImageGalleryProps
             src={images[selected]}
             alt={`${alt} — foto ${selected + 1}`}
             fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 500px"
             className={productCategory === 'bambole' ? 'object-cover' : 'object-contain p-[20px] sm:p-[28px]'}
             priority={selected === 0}
             onLoad={stopLoading}
@@ -76,6 +77,19 @@ export const ImageGallery = ({ images, alt, productCategory }: ImageGalleryProps
         </div>
 
         {showLoader && <LoaderOverlay />}
+
+        {/* Preload immagine successiva */}
+        {images.length > 1 && (
+          <span className="sr-only" aria-hidden>
+            <Image
+              src={images[(selected + 1) % images.length]}
+              alt=""
+              fill
+              sizes="500px"
+              priority
+            />
+          </span>
+        )}
 
         {/* Desktop nav arrows */}
         {images.length > 1 && (
@@ -133,7 +147,7 @@ export const ImageGallery = ({ images, alt, productCategory }: ImageGalleryProps
                     : 'border-transparent opacity-55 hover:opacity-90 hover:border-[#acacac]'
                 }`}
               >
-                <Image src={img} alt={`${alt} miniatura ${i + 1}`} fill className={productCategory === 'bambole' ? 'object-cover' : 'object-contain p-[6px]'} />
+                <Image src={img} alt={`${alt} miniatura ${i + 1}`} fill sizes="155px" className={productCategory === 'bambole' ? 'object-cover' : 'object-contain p-[6px]'} />
               </button>
             );
           })}
