@@ -21,14 +21,36 @@ export const ImageGallery = ({ images, alt, productCategory }: ImageGalleryProps
   const [direction, setDirection] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [thumbOffset, setThumbOffset] = useState(0);
+  const [mobileActive, setMobileActive] = useState(0);
   const { showLoader, startLoading, stopLoading } = useDelayedLoader();
   const touchStart = useRef<number>(0);
+  const sliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setSelected(0);
     setDirection(0);
     setThumbOffset(0);
+    setMobileActive(0);
   }, [images[0]]);
+
+  // IntersectionObserver per aggiornare il dot attivo nello slider mobile
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+    const slides = slider.querySelectorAll<HTMLElement>('[data-slide]');
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+            setMobileActive(Number((entry.target as HTMLElement).dataset.slide));
+          }
+        });
+      },
+      { root: slider, threshold: 0.5 }
+    );
+    slides.forEach(s => observer.observe(s));
+    return () => observer.disconnect();
+  }, [images]);
 
   const navigate = (next: number) => {
     setDirection(next > selected ? 1 : -1);
@@ -57,9 +79,60 @@ export const ImageGallery = ({ images, alt, productCategory }: ImageGalleryProps
 
   return (
     <div className="flex flex-col gap-[16px]">
-      {/* Main image */}
+
+      {/* ── MOBILE: slider orizzontale scorrevole ── */}
+      <div className="relative sm:hidden">
+
+         {/* Gradient fade right */}
+        <div
+          className="pointer-events-none absolute right-0 top-0 h-full w-[10px] z-10"
+          style={{ background: 'linear-gradient(to left, #f5f5f7 0%, transparent 100%)' }}
+        />
+
+        <div
+          ref={sliderRef}
+          className="flex overflow-x-auto snap-x snap-mandatory gap-[12px] pl-[16px] pr-[16px]"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
+        >
+          {images.map((img, i) => (
+            <div
+              key={img}
+              data-slide={i}
+              className="snap-start flex-shrink-0 w-[78%] aspect-[3/4] relative rounded-[15px] overflow-hidden bg-white shadow-[0_4px_20px_rgba(0,0,0,0.08)] cursor-zoom-in"
+              onClick={() => { setSelected(i); setLightboxOpen(true); }}
+            >
+              <Image
+                src={img}
+                alt={`${alt} — foto ${i + 1}`}
+                fill
+                sizes="84vw"
+                className={productCategory === 'bambole' ? 'object-cover' : 'object-contain p-[20px]'}
+                priority={i === 0}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Dots sovrapposti in basso a sinistra */}
+        {images.length > 1 && (
+          <div className="absolute bottom-[14px] left-[28px] flex gap-[6px] items-center pointer-events-none">
+            {images.map((_, i) => (
+              <div
+                key={i}
+                className={`h-[5px] rounded-full transition-all duration-300 ${
+                  mobileActive === i
+                    ? 'bg-black w-[16px] border border-black shadow-[0_1px_4px_rgba(0,0,0,0.3)]'
+                    : 'bg-[#f5f5f7] w-[6px]'
+                }`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ── DESKTOP: immagine principale ── */}
       <div
-        className="relative w-full aspect-[3/4] sm:aspect-auto sm:h-[650px] lg:w-[500px] lg:h-[700px] rounded-[24px] overflow-hidden bg-white shadow-[0_8px_40px_rgba(0,0,0,0.08)] cursor-zoom-in"
+        className="hidden sm:block relative w-full sm:aspect-auto sm:h-[650px] lg:w-[500px] lg:h-[700px] rounded-[24px] overflow-hidden bg-white shadow-[0_8px_40px_rgba(0,0,0,0.08)] cursor-zoom-in"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
         onClick={() => setLightboxOpen(true)}
@@ -69,8 +142,8 @@ export const ImageGallery = ({ images, alt, productCategory }: ImageGalleryProps
             src={images[selected]}
             alt={`${alt} — foto ${selected + 1}`}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 500px"
-            className={productCategory === 'bambole' ? 'object-cover' : 'object-contain p-[20px] sm:p-[28px]'}
+            sizes="500px"
+            className={productCategory === 'bambole' ? 'object-cover' : 'object-contain p-[28px]'}
             priority={selected === 0}
             onLoad={stopLoading}
           />
@@ -97,14 +170,14 @@ export const ImageGallery = ({ images, alt, productCategory }: ImageGalleryProps
             <button
               onClick={e => { e.stopPropagation(); prev(); }}
               aria-label="Foto precedente"
-              className="hidden lg:flex absolute left-[12px] top-1/2 -translate-y-1/2 w-[38px] h-[38px] bg-white/85 backdrop-blur-sm rounded-full items-center justify-center shadow-[0_2px_12px_rgba(0,0,0,0.12)] hover:bg-white transition-all duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.16)]"
+              className="flex absolute left-[12px] top-1/2 -translate-y-1/2 w-[38px] h-[38px] bg-white/85 backdrop-blur-sm rounded-full items-center justify-center shadow-[0_2px_12px_rgba(0,0,0,0.12)] hover:bg-white transition-all duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.16)]"
             >
               <ChevronLeft className="w-[16px] h-[16px] text-[#1d1d1f]" strokeWidth={2} />
             </button>
             <button
               onClick={e => { e.stopPropagation(); next(); }}
               aria-label="Foto successiva"
-              className="hidden lg:flex absolute right-[12px] top-1/2 -translate-y-1/2 w-[38px] h-[38px] bg-white/85 backdrop-blur-sm rounded-full items-center justify-center shadow-[0_2px_12px_rgba(0,0,0,0.12)] hover:bg-white transition-all duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.16)]"
+              className="flex absolute right-[12px] top-1/2 -translate-y-1/2 w-[38px] h-[38px] bg-white/85 backdrop-blur-sm rounded-full items-center justify-center shadow-[0_2px_12px_rgba(0,0,0,0.12)] hover:bg-white transition-all duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.16)]"
             >
               <ChevronRight className="w-[16px] h-[16px] text-[#1d1d1f]" strokeWidth={2} />
             </button>
@@ -162,22 +235,6 @@ export const ImageGallery = ({ images, alt, productCategory }: ImageGalleryProps
               <ChevronRight className="w-[15px] h-[15px] text-[#1d1d1f]" strokeWidth={2} />
             </button>
           )}
-        </div>
-      )}
-
-      {/* Dots — mobile */}
-      {images.length > 1 && (
-        <div className="flex gap-[8px] justify-center lg:hidden">
-          {images.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => navigate(i)}
-              aria-label={`Vai alla foto ${i + 1}`}
-              className={`h-[6px] rounded-full transition-all duration-300 ${
-                selected === i ? 'bg-[#1d1d1f] w-[20px]' : 'bg-[#1d1d1f]/25 w-[6px]'
-              }`}
-            />
-          ))}
         </div>
       )}
 
