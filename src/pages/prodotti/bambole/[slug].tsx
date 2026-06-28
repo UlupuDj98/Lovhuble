@@ -64,6 +64,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const initialProduct = await getProductByHandle(slug).catch(() => null)
 
+  if (!initialProduct) {
+    return { notFound: true }
+  }
+
   let initialRelated: Product[] = []
   if (initialProduct) {
     const all = await getProductsByParentCategory('bambole').catch(() => [])

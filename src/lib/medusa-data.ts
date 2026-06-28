@@ -347,7 +347,7 @@ export async function getAllProductPaths(): Promise<{ categoria: string; subcate
 export async function getCategoryName(handle: string): Promise<string> {
   const categories = await fetchCategories()
   const cat = categories.find((c: any) => c.handle === handle)
-  return cat?.name ?? handle
+  return cat?.name ?? ''
 }
 
 // ── Ricerca prodotti ──────────────────────────────────────────────────────
