@@ -122,7 +122,7 @@ export const SubCategoriesSection = ({ mainCategorySlug, initialItems, disableIt
   if (items.length === 0) return null;
 
   return (
-    <section className="pt-[10px] pb-[40px] lg:pt-[20px] lg:pb-[90px] bg-[#f5f5f7]">
+    <section className="pb-[40px] lg:pt-[20px] lg:pb-[90px] bg-[#f5f5f7]">
       <div className="max-w-[1120px] mx-auto relative">
         {showDesktopControls && (
           <div
@@ -165,8 +165,8 @@ export const SubCategoriesSection = ({ mainCategorySlug, initialItems, disableIt
           onScroll={onScroll}
           className="scrollbar-hide flex gap-[32px] lg:gap-[56px] overflow-x-auto snap-x snap-mandatory select-none"
           style={{
-            paddingTop: '60px',
-            paddingBottom: '60px',
+            paddingTop: '50px',
+            paddingBottom: '50px',
             paddingLeft: '24px',
             paddingRight: '24px',
             marginTop: '-60px',

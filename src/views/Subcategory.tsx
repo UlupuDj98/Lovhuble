@@ -94,7 +94,7 @@ export const Subcategory = ({ initialProducts, initialSubCategoryName, initialSu
 
       <SubCategoriesSection mainCategorySlug={categorySlug} initialItems={initialSubCategoryItems} disableItemAnimations />
 
-      <div className="max-w-[1120px] mx-auto px-6 lg:px-8 pt-[40px] pb-[8px]">
+      <div className="max-w-[1120px] mx-auto px-6 lg:px-8 pt-[16px] pb-[8px]">
         <PriceRangeBar value={price} onChange={setPrice} max={maxPrice} />
       </div>
 

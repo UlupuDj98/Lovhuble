@@ -14,7 +14,7 @@ interface PageHeaderProps {
 
 export const PageHeader = ({ title, subtitle, description, breadcrumbItems }: PageHeaderProps) => {
   return (
-    <section className="pt-[68px] lg:pt-[80px]">
+    <section className="pt-[48px] lg:pt-[80px]">
       <div className="max-w-[1120px] mx-auto px-6 lg:px-8 py-12 lg:py-20">
         {breadcrumbItems && (
           <div className="mb-6">

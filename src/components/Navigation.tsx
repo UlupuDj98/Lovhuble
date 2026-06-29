@@ -38,7 +38,7 @@ export const Navigation = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#f5f5f7]/70 backdrop-blur-2xl border-b border-black/[0.04]">
         <ComponenteScorrevole />
         <div className="max-w-[1120px] mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-[68px] lg:h-[80px]">
+          <div className="flex items-center justify-between h-[55px] lg:h-[80px]">
             {/* Logo */}
             <Link href="/" className="flex items-center group">
               <motion.div

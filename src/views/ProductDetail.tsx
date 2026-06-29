@@ -185,8 +185,8 @@ export const ProductDetail = ({ initialProduct, initialRelated }: ProductDetailP
     setSelectedOptions(prev => ({ ...prev, [title]: value }));
 
   return (
-    <div className="pt-[68px] lg:pt-[130px] min-h-screen bg-[#f5f5f7]">
-      <div className="max-w-[1100px] mx-auto px-6 lg:px-8 pb-[28px] pt-[46px] lg:pt-[36px]">
+    <div className="pt-[48px] lg:pt-[130px] min-h-screen bg-[#f5f5f7]">
+      <div className="max-w-[1100px] mx-auto px-6 lg:px-8 pb-[24px] pt-[46px] lg:pt-[36px]">
         <Breadcrumb items={breadcrumbItems} />
         <motion.div
           initial={{ opacity: 0, y: 8 }}

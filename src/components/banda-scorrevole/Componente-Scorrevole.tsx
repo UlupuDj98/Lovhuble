@@ -30,7 +30,7 @@ export default function ComponenteScorrevole() {
     }, [frasi.length]);
 
     return (
-        <div className="h-6 sm:h-8 w-full flex items-center justify-center py-1 bg-[#d4a5a5]">
+        <div className="h-5 sm:h-8 w-full flex items-center justify-center py-1 bg-[#d4a5a5]">
             <div 
                 key={indiceCorrente}
                 className={`text-black font-medium text-xs sm:text-sm md:text-base lg:text-lg whitespace-nowrap text-center transition-opacity duration-300 ${
