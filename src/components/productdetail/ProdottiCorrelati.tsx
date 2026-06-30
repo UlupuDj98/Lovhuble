@@ -49,14 +49,14 @@ export const ProdottiCorrelati = ({ currentProduct, initialRelated }: ProdottiCo
   if (related.length === 0) return null;
 
   return (
-    <section className="py-[64px] bg-[#fbfbfd]">
+    <section className="py-[40px] lg:py-[55px] bg-[#fbfbfd]">
       <div className="max-w-[1100px] mx-auto px-6 lg:px-8">
         <motion.h2
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.6 }}
-          className="text-[32px] font-semibold text-[#1d1d1f] mb-[40px] tracking-[-0.009em]"
+          className="text-[26px] lg:text-[32px] font-semibold text-[#1d1d1f] mb-[40px] tracking-[-0.009em]"
         >
           Potrebbero Piacerti Anche
         </motion.h2>
