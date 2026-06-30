@@ -5,11 +5,12 @@ import { useRouter } from 'next/router';
 import { useWishlist } from '../context/WishlistContext';
 import { ProductCard } from '../components/product/ProductCard';
 import { SubCategoriesSection } from '../components/home/SubCategorySection';
-import { FilterBar, FilterState } from '../components/product/FilterBar';
+import { FilterBar, FilterState, ActiveFilterChips } from '../components/product/FilterBar';
+import { SortSelector, SortOption } from '../components/product/SortSelector';
 import { PriceRangeBar } from '../components/product/PriceRangeBar';
 import { PageHeader } from '../components/PageHeader';
 import { getProductsBySubCategory, getCategoryName } from '../lib/medusa-data';
-import { applyFilters } from '../utils/product-filters';
+import { applyFilters, getAvailableFilterDefs } from '../utils/product-filters';
 import { getPageDescription } from '../data/page-descriptions';
 import type { Product } from '../data/products';
 
@@ -35,6 +36,8 @@ export const Subcategory = ({ initialProducts, initialSubCategoryName, initialSu
     checkedOptions: {},
   });
 
+  const [sort, setSort] = useState<SortOption>('none');
+
   const maxPrice = useMemo(
     () => allProducts.length > 0 ? Math.ceil(Math.max(...allProducts.map(p => p.price)) / 50) * 50 : 5000,
     [allProducts],
@@ -42,15 +45,17 @@ export const Subcategory = ({ initialProducts, initialSubCategoryName, initialSu
 
   const [price, setPrice] = useState<[number, number]>([0, maxPrice]);
 
+  const filterDefs = useMemo(() => getAvailableFilterDefs(allProducts), [allProducts]);
+
   const applyNewProducts = (prods: typeof allProducts, name: string) => {
     const newMax = prods.length > 0 ? Math.ceil(Math.max(...prods.map(p => p.price)) / 50) * 50 : 5000;
     setAllProducts(prods);
     setSubCategoryName(name);
     setPrice([0, newMax]);
     setFilters({ onlyInStock: false, checkedOptions: {} });
+    setSort('none');
   };
 
-  // Sincronizza le props quando Next.js carica una nuova sottocategoria (senza remount)
   useEffect(() => {
     if (initialProducts) {
       applyNewProducts(initialProducts, initialSubCategoryName ?? '');
@@ -72,15 +77,15 @@ export const Subcategory = ({ initialProducts, initialSubCategoryName, initialSu
   const { isInWishlist, toggleWishlist } = useWishlist();
 
   const filteredProducts = useMemo(
-    () => applyFilters(allProducts, price, filters),
-    [allProducts, price, filters],
+    () => applyFilters(allProducts, price, filters, sort),
+    [allProducts, price, filters, sort],
   );
 
   const subCategoryLabel = subCategoryName || allProducts[0]?.subCategory || subCategorySlug;
   const categoryLabel = allProducts[0]?.category ?? categorySlug;
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7]">
+    <div className="min-h-screen bg-[#f5f5f7] lg:pb-20">
       <PageHeader
         title={subCategoryLabel}
         subtitle={`Esplora la nostra selezione di ${subCategoryLabel.toLowerCase()}`}
@@ -94,13 +99,33 @@ export const Subcategory = ({ initialProducts, initialSubCategoryName, initialSu
 
       <SubCategoriesSection mainCategorySlug={categorySlug} initialItems={initialSubCategoryItems} disableItemAnimations />
 
-      <div className="max-w-[1120px] mx-auto px-6 lg:px-8 pt-[16px] pb-[8px]">
-        <PriceRangeBar value={price} onChange={setPrice} max={maxPrice} />
-      </div>
-
-      <section className="py-[32px] lg:py-[48px]">
+      <section className="py-[32px] lg:py-[10px]">
         <div className="max-w-[1120px] mx-auto px-6 lg:px-8">
-          <FilterBar value={filters} onChange={setFilters} />
+          <div className="mb-[24px]">
+            <div className="flex items-center justify-center lg:justify-between">
+              <div className="hidden lg:block lg:w-[580px]">
+                <PriceRangeBar value={price} onChange={setPrice} max={maxPrice} />
+              </div>
+              <div className="flex items-center gap-[8px]">
+                <FilterBar
+                  value={filters}
+                  onChange={setFilters}
+                  filterDefs={filterDefs}
+                  price={price}
+                  onPriceChange={setPrice}
+                  maxPrice={maxPrice}
+                />
+                <SortSelector value={sort} onChange={setSort} />
+              </div>
+            </div>
+            <ActiveFilterChips
+              value={filters}
+              onChange={setFilters}
+              price={price}
+              onPriceChange={setPrice}
+              maxPrice={maxPrice}
+            />
+          </div>
 
           <div>
             {loading ? (
@@ -122,10 +147,7 @@ export const Subcategory = ({ initialProducts, initialSubCategoryName, initialSu
                 ) : (
                   <div className="grid grid-cols-2 lg:grid-cols-3 gap-[16px] lg:gap-[20px] -mx-2 lg:mx-0">
                     {filteredProducts.map((product, i) => (
-                      <div
-                        key={product.id}
-                        className="h-[380px] lg:h-[520px]"
-                      >
+                      <div key={product.id} className="h-[380px] lg:h-[520px]">
                         <ProductCard
                           product={product}
                           priority={i < 4}

@@ -18,16 +18,16 @@ interface SubCategoriesSectionProps {
 
 const CategoryCard = ({ title, imageSrc, link, isSelected }: { title: string; imageSrc: string; link: string; isSelected?: boolean }) => (
   <Link href={link} className="flex flex-col items-center gap-[16px] group">
-    <div className={`w-[160px] h-[160px] lg:w-[200px] lg:h-[200px] rounded-full bg-white flex items-center justify-center overflow-hidden transition-shadow duration-300 ${isSelected ? ' ring-[3px] ring-[#d4a5a5]' : 'shadow-[0_10px_30px_rgba(0,0,0,0.12)] group-hover:shadow-[0_14px_40px_rgba(0,0,0,0.18)]'}`}>
+    <div className={`w-[130px] h-[130px] lg:w-[180px] lg:h-[180px] rounded-full bg-white flex items-center justify-center overflow-hidden transition-shadow duration-300 ${isSelected ? ' ring-[3px] ring-[#d4a5a5]' : 'shadow-[0_10px_30px_rgba(0,0,0,0.12)] group-hover:shadow-[0_14px_40px_rgba(0,0,0,0.18)]'}`}>
       <Image
         src={imageSrc}
         alt={title}
         width={160}
         height={160}
-        className="object-contain w-[130px] h-[130px] lg:w-[160px] lg:h-[160px] group-hover:scale-105 transition-transform duration-300"
+        className="object-contain w-[110px] h-[110px] lg:w-[150px] lg:h-[150px] group-hover:scale-105 transition-transform duration-300"
       />
     </div>
-    <span className={`text-[18px] lg:text-[26px] text-[#1d1d1f] text-center leading-[1.4] capitalize ${isSelected ? 'font-bold' : 'font-semibold'}`}>
+    <span className={`text-[15px] lg:text-[23px] text-[#1d1d1f] text-center leading-[1.4] capitalize ${isSelected ? 'font-bold' : 'font-semibold'}`}>
       {title}
     </span>
   </Link>
@@ -122,7 +122,7 @@ export const SubCategoriesSection = ({ mainCategorySlug, initialItems, disableIt
   if (items.length === 0) return null;
 
   return (
-    <section className="pb-[40px] lg:pt-[20px] lg:pb-[90px] bg-[#f5f5f7]">
+    <section className="pb-[40px] lg:pt-[10px] lg:pb-[80px] bg-[#f5f5f7]">
       <div className="max-w-[1120px] mx-auto relative">
         {showDesktopControls && (
           <div
@@ -163,10 +163,10 @@ export const SubCategoriesSection = ({ mainCategorySlug, initialItems, disableIt
           onMouseLeave={onMouseUp}
           onClickCapture={onClickCapture}
           onScroll={onScroll}
-          className="scrollbar-hide flex gap-[32px] lg:gap-[56px] overflow-x-auto snap-x snap-mandatory select-none"
+          className="scrollbar-hide flex gap-[26px] lg:gap-[56px] overflow-x-auto snap-x snap-mandatory select-none"
           style={{
-            paddingTop: '50px',
-            paddingBottom: '50px',
+            paddingTop: '40px',
+            paddingBottom: '40px',
             paddingLeft: '24px',
             paddingRight: '24px',
             marginTop: '-60px',

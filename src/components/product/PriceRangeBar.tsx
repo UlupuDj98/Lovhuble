@@ -58,7 +58,6 @@ export const PriceRangeBar = ({
 
   return (
     <div className="w-full select-none">
-     <p className="text-[14px] font-medium text-[#1d1d1f] mb-[12px]">Seleziona il prezzo</p>
       {/* Current values */}
       <div className="flex items-end justify-between mb-6">
         <div>

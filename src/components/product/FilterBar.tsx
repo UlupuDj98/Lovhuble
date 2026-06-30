@@ -3,28 +3,26 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { SlidersHorizontal, X, Plus, Minus } from 'lucide-react';
+import { PriceRangeBar } from './PriceRangeBar';
+import type { FilterDef } from '../../utils/product-filters';
 
 export interface FilterState {
   onlyInStock: boolean;
   checkedOptions: Record<string, string[]>;
 }
 
-const FILTER_DEFS = [
-  { key: 'stimolazione', label: 'Stimolazione', options: ['Clitorideo', 'Vaginale', 'Anale', 'Punto G', 'Doppio'] },
-  { key: 'lunghezza',    label: 'Lunghezza',    options: ['< 15 cm', '15–20 cm', '> 20 cm'] },
-  { key: 'diametro',     label: 'Diametro',     options: ['< 3 cm', '3–4 cm', '> 4 cm'] },
-  { key: 'materiale',    label: 'Materiale',    options: ['Silicone', 'TPE', 'Seta', 'Plastica ABS'] },
-  { key: 'rating',       label: 'Rating',       options: ['5 stelle', '4+ stelle', '3+ stelle'] },
-  { key: 'disponibilita', label: 'Disponibilità' },
-];
-
-function countActive(value: FilterState): number {
+function countActive(value: FilterState, price: [number, number], maxPrice: number): number {
   const checked = Object.values(value.checkedOptions).filter(a => a.length > 0).length;
-  return checked + (value.onlyInStock ? 1 : 0);
+  const priceActive = price[0] > 0 || price[1] < maxPrice ? 1 : 0;
+  return checked + (value.onlyInStock ? 1 : 0) + priceActive;
 }
 
-function getActiveChips(value: FilterState) {
+function getActiveChips(value: FilterState, price: [number, number], maxPrice: number) {
   const chips: { id: string; label: string }[] = [];
+  if (price[0] > 0 || price[1] < maxPrice) {
+    const fmt = (v: number) => `€${v.toLocaleString('it-IT')}`;
+    chips.push({ id: 'prezzo', label: `${fmt(price[0])} – ${fmt(price[1])}` });
+  }
   for (const [key, opts] of Object.entries(value.checkedOptions)) {
     for (const opt of opts) chips.push({ id: `${key}::${opt}`, label: opt });
   }
@@ -77,9 +75,13 @@ function Accordion({ label, isOpen, onToggle, children }: {
 interface FilterBarProps {
   value: FilterState;
   onChange: (v: FilterState) => void;
+  filterDefs: FilterDef[];
+  price: [number, number];
+  onPriceChange: (v: [number, number]) => void;
+  maxPrice: number;
 }
 
-export const FilterBar = ({ value, onChange }: FilterBarProps) => {
+export const FilterBar = ({ value, onChange, filterDefs, price, onPriceChange, maxPrice }: FilterBarProps) => {
   const [open, setOpen] = useState(false);
   const [openAccordions, setOpenAccordions] = useState<Record<string, boolean>>({});
 
@@ -92,53 +94,31 @@ export const FilterBar = ({ value, onChange }: FilterBarProps) => {
     onChange({ ...value, checkedOptions: { ...value.checkedOptions, [filterKey]: next } });
   };
 
-  const reset = () => onChange({ onlyInStock: false, checkedOptions: {} });
+  const reset = () => {
+    onChange({ onlyInStock: false, checkedOptions: {} });
+    onPriceChange([0, maxPrice]);
+  };
 
-  const activeCount = countActive(value);
-  const chips = getActiveChips(value);
+  const activeCount = countActive(value, price, maxPrice);
 
   return (
     <>
-      {/* ── Bar ── */}
-      <div className="flex flex-wrap items-center gap-[8px] mb-[24px]">
-        {/* Filtri button */}
-        <button
-          onClick={() => setOpen(true)}
-          className="flex items-center gap-[6px] px-[14px] py-[8px] rounded-full border border-[#d0d0d5] bg-white text-[13px] font-medium text-[#1d1d1f] hover:border-[#1d1d1f] transition-colors"
-        >
-          <SlidersHorizontal className="w-[13px] h-[13px]" strokeWidth={2} />
-          Filtri
-          {activeCount > 0 && (
-            <span className="w-[18px] h-[18px] rounded-full bg-[#1d1d1f] text-white text-[10px] font-bold flex items-center justify-center">
-              {activeCount}
-            </span>
-          )}
-        </button>
-
-        {/* Active chips */}
-        {chips.map(chip => (
-          <button
-            key={chip.id}
-            onClick={() => onChange(removeChip(chip.id, value))}
-            className="flex items-center gap-[5px] px-[12px] py-[7px] rounded-full bg-[#1d1d1f] text-white text-[12px] font-medium"
-          >
-            {chip.label}
-            <X className="w-[10px] h-[10px]" strokeWidth={2.5} />
-          </button>
-        ))}
-
+      <button
+        onClick={() => setOpen(true)}
+        className="flex items-center justify-center gap-[7px] lg:gap-[8px] w-[174px] h-[42px] lg:w-auto lg:h-auto lg:px-[19px] lg:py-[11px] rounded-full bg-[#d4a5a5] text-[16px] lg:text-[18px] font-medium text-black hover:bg-[#c09090] transition-colors"
+      >
+        <SlidersHorizontal className="w-[14px] h-[14px] lg:w-[18px] lg:h-[18px] text-black font-bold" strokeWidth={2} />
+        Filtri
         {activeCount > 0 && (
-          <button onClick={reset} className="text-[12px] text-[#6e6e73] hover:text-[#1d1d1f] transition-colors px-[4px]">
-            Azzera tutto
-          </button>
+          <span className="w-[18px] h-[18px] lg:w-[25px] lg:h-[25px] rounded-full bg-[#1d1d1f] text-white text-[10px] lg:text-[13px] font-bold flex items-center justify-center">
+            {activeCount}
+          </span>
         )}
-      </div>
+      </button>
 
-      {/* ── Bottom sheet ── */}
       <AnimatePresence>
         {open && (
           <>
-            {/* Backdrop */}
             <motion.div
               key="bd"
               initial={{ opacity: 0 }}
@@ -149,7 +129,6 @@ export const FilterBar = ({ value, onChange }: FilterBarProps) => {
               className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-[2px]"
             />
 
-            {/* Sheet */}
             <motion.div
               key="sheet"
               initial={{ y: '100%' }}
@@ -158,12 +137,10 @@ export const FilterBar = ({ value, onChange }: FilterBarProps) => {
               transition={{ type: 'spring', stiffness: 340, damping: 38 }}
               className="fixed bottom-0 left-0 right-0 z-[70] bg-white rounded-t-[24px] shadow-[0_-8px_40px_rgba(0,0,0,0.14)] flex flex-col max-h-[80vh]"
             >
-              {/* Handle */}
               <div className="flex justify-center pt-[12px] pb-[4px] flex-shrink-0">
                 <div className="w-[36px] h-[4px] rounded-full bg-[#e0e0e5]" />
               </div>
 
-              {/* Header */}
               <div className="flex items-center justify-between px-6 py-[14px] border-b border-[#e0e0e5] flex-shrink-0">
                 <span className="text-[15px] font-semibold text-[#1d1d1f]">Filtri</span>
                 <div className="flex items-center gap-[12px]">
@@ -178,10 +155,19 @@ export const FilterBar = ({ value, onChange }: FilterBarProps) => {
                 </div>
               </div>
 
-              {/* Filter list */}
               <div className="flex-1 overflow-y-auto px-6 pb-[24px]">
                 <div className="border-t border-[#e0e0e5]">
-                  {FILTER_DEFS.map(f => (
+                  <div className="lg:hidden">
+                    <Accordion
+                      label="Prezzo"
+                      isOpen={!!openAccordions['prezzo']}
+                      onToggle={() => toggle('prezzo')}
+                    >
+                      <PriceRangeBar value={price} onChange={onPriceChange} max={maxPrice} />
+                    </Accordion>
+                  </div>
+
+                  {filterDefs.map(f => (
                     <Accordion
                       key={f.key}
                       label={f.label}
@@ -191,7 +177,8 @@ export const FilterBar = ({ value, onChange }: FilterBarProps) => {
                       {f.key === 'disponibilita' ? (
                         <label className="flex items-center gap-[8px] cursor-pointer">
                           <input
-                            type="checkbox" checked={value.onlyInStock}
+                            type="checkbox"
+                            checked={value.onlyInStock}
                             onChange={e => onChange({ ...value, onlyInStock: e.target.checked })}
                             className="accent-[#d4a5a5] w-[14px] h-[14px]"
                           />
@@ -217,7 +204,6 @@ export const FilterBar = ({ value, onChange }: FilterBarProps) => {
                 </div>
               </div>
 
-              {/* CTA */}
               <div className="flex-shrink-0 px-6 py-[16px] border-t border-[#e0e0e5]">
                 <button
                   onClick={() => setOpen(false)}
@@ -231,5 +217,44 @@ export const FilterBar = ({ value, onChange }: FilterBarProps) => {
         )}
       </AnimatePresence>
     </>
+  );
+};
+
+interface ActiveFilterChipsProps {
+  value: FilterState;
+  onChange: (v: FilterState) => void;
+  price: [number, number];
+  onPriceChange: (v: [number, number]) => void;
+  maxPrice: number;
+}
+
+export const ActiveFilterChips = ({ value, onChange, price, onPriceChange, maxPrice }: ActiveFilterChipsProps) => {
+  const chips = getActiveChips(value, price, maxPrice);
+  if (chips.length === 0) return null;
+
+  const reset = () => {
+    onChange({ onlyInStock: false, checkedOptions: {} });
+    onPriceChange([0, maxPrice]);
+  };
+
+  return (
+    <div className="flex flex-wrap items-center gap-[8px] mt-[36px] lg:mt-[54px]">
+      {chips.map(chip => (
+        <button
+          key={chip.id}
+          onClick={() => {
+            if (chip.id === 'prezzo') onPriceChange([0, maxPrice]);
+            else onChange(removeChip(chip.id, value));
+          }}
+          className="flex items-center gap-[5px] px-[12px] py-[7px] rounded-full bg-[#1d1d1f] text-white text-[12px] font-medium"
+        >
+          {chip.label}
+          <X className="w-[10px] h-[10px]" strokeWidth={2.5} />
+        </button>
+      ))}
+      <button onClick={reset} className="text-[12px] text-[#6e6e73] hover:text-[#1d1d1f] transition-colors px-[4px]">
+        Azzera tutto
+      </button>
+    </div>
   );
 };

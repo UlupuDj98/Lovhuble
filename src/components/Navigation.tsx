@@ -266,6 +266,8 @@ export const Navigation = () => {
                   </div>
                 </div>
 
+                
+
                 {/* Account */}
                 <div>
                   <p className="text-[10px] font-bold tracking-[0.1em] text-[#86868b] uppercase mb-[10px]">

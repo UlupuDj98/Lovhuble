@@ -14,7 +14,7 @@ interface PageHeaderProps {
 
 export const PageHeader = ({ title, subtitle, description, breadcrumbItems }: PageHeaderProps) => {
   return (
-    <section className="pt-[48px] lg:pt-[80px]">
+    <section className="pt-[48px] lg:pt-[60px]">
       <div className="max-w-[1120px] mx-auto px-6 lg:px-8 py-12 lg:py-20">
         {breadcrumbItems && (
           <div className="mb-6">
@@ -22,16 +22,16 @@ export const PageHeader = ({ title, subtitle, description, breadcrumbItems }: Pa
           </div>
         )}
 
-        <h1 className="text-[40px] lg:text-[64px] font-semibold tracking-[-0.015em] text-black leading-[1.07] mb-3">
+        <h1 className="text-[36px] lg:text-[60px] font-semibold tracking-[-0.015em] text-black leading-[1.07] mb-3">
           {title}
         </h1>
 
-        <p className="text-[17px] lg:text-[21px] text-black/70 font-normal leading-[1.4] tracking-[-0.003em] max-w-[600px]">
+        <p className="text-[16px] lg:text-[20px] text-black/70 font-normal leading-[1.4] tracking-[-0.003em] max-w-[600px]">
           {subtitle}
         </p>
 
         {description && (
-          <p className="mt-4 text-[15px] lg:text-[17px] text-black/50 font-normal leading-[1.6] max-w-[560px]">
+          <p className="mt-4 text-[14px] lg:text-[16px] text-black/50 font-normal leading-[1.6] max-w-[560px]">
             {description}
           </p>
         )}
